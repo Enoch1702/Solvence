@@ -1,4 +1,5 @@
 import { CalendarClock, CheckCircle2, ShieldAlert } from 'lucide-react';
+import { CurrencyDisplay } from '../common/CurrencyDisplay';
 import { formatCurrency } from '../../utils/currency';
 
 export function UpcomingObligationsCard({ runwayData }) {
@@ -13,39 +14,45 @@ export function UpcomingObligationsCard({ runwayData }) {
   const hasCommittedBills = committedBills > 0;
 
   return (
-    <div className="bg-white rounded-2xl border border-stone-200/80 shadow-framer-xs hover:shadow-framer-md transition-all duration-200 p-6 flex flex-col justify-between">
+    <div className="saas-card p-5 sm:p-6 flex flex-col justify-between h-full bg-[var(--bg-card)] border border-[var(--border-subtle)] shadow-framer-xs">
       <div>
-        <div className="flex items-center justify-between gap-2 mb-3">
-          <div className="flex items-center gap-2">
-            <div className={`w-8 h-8 rounded-xl flex items-center justify-center ${hasCommittedBills ? 'bg-amber-50 text-amber-600' : 'bg-emerald-50 text-emerald-600'}`}>
-              <CalendarClock className="w-4 h-4 stroke-[2.2]" />
+        <div className="flex items-center justify-between gap-2 mb-4">
+          <div className="flex items-center gap-2.5">
+            <div className={`w-8 h-8 rounded-xl flex items-center justify-center ${
+              hasCommittedBills
+                ? 'bg-amber-500/10 text-amber-500'
+                : 'bg-emerald-500/10 text-emerald-500'
+            }`}>
+              <CalendarClock className="w-4 h-4 stroke-[2]" />
             </div>
             <div>
-              <h4 className="text-sm font-semibold text-stone-900">
+              <h4 className="text-sm font-semibold text-[var(--text-primary)]">
                 Committed Obligations
               </h4>
-              <span className="text-[11px] text-stone-400">
+              <span className="text-[11px] text-[var(--text-muted)]">
                 Cycle Protection Buffer
               </span>
             </div>
           </div>
 
           <span
-            className={`text-xs px-2.5 py-0.5 rounded-full font-semibold border ${
+            className={`text-[10px] px-2 py-0.5 rounded-md font-semibold ${
               hasCommittedBills
-                ? 'bg-amber-50 text-amber-700 border-amber-200'
-                : 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20'
+                : 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20'
             }`}
           >
-            {hasCommittedBills ? 'Active Obligations' : 'Zero Obligations'}
+            {hasCommittedBills ? 'Active Bills' : 'Zero Obligations'}
           </span>
         </div>
 
         <div className="my-3">
-          <span className="text-2xl sm:text-3xl font-extrabold font-display-num tracking-tight text-stone-900">
-            {formatCurrency(committedBills)}
-          </span>
-          <p className="text-xs text-stone-500 mt-1">
+          <CurrencyDisplay
+            amount={committedBills}
+            size="2xl"
+            className={hasCommittedBills ? 'text-amber-500' : 'text-[var(--text-primary)]'}
+          />
+          <p className="text-xs text-[var(--text-secondary)] mt-1.5 leading-relaxed">
             {hasCommittedBills
               ? `Reserved to cover upcoming mandatory bills due within the next ${daysRemaining} days.`
               : 'No upcoming recurring obligations due in the remainder of this cycle.'}
@@ -53,19 +60,19 @@ export function UpcomingObligationsCard({ runwayData }) {
         </div>
       </div>
 
-      <div className="pt-3 border-t border-stone-100 mt-2">
+      <div className="pt-3 border-t border-[var(--border-subtle)] mt-4">
         {hasCommittedBills ? (
-          <div className="flex items-center gap-2 text-xs text-amber-700 bg-amber-50/70 p-2.5 rounded-xl border border-amber-200/60">
-            <ShieldAlert className="w-4 h-4 text-amber-600 shrink-0" />
+          <div className="flex items-center gap-2 text-xs text-amber-600 dark:text-amber-400 bg-amber-500/10 p-2.5 rounded-xl border border-amber-500/20">
+            <ShieldAlert className="w-4 h-4 shrink-0" />
             <span>
-              This amount is quarantined from Safe Daily Spend calculations to prevent overdraft.
+              Quarantined from Safe Daily Spend to guarantee solvency.
             </span>
           </div>
         ) : (
-          <div className="flex items-center gap-2 text-xs text-emerald-700 bg-emerald-50/70 p-2.5 rounded-xl border border-emerald-200/60">
-            <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+          <div className="flex items-center gap-2 text-xs text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 p-2.5 rounded-xl border border-emerald-500/20">
+            <CheckCircle2 className="w-4 h-4 shrink-0" />
             <span>
-              100% of liquid reserve ({formatCurrency(liquidReserve)}) is unencumbered for daily safe spend.
+              100% of liquid reserve ({formatCurrency(liquidReserve)}) is unencumbered.
             </span>
           </div>
         )}

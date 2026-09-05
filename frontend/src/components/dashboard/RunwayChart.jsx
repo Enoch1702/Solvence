@@ -1,5 +1,5 @@
 import { useState, useRef, useMemo, useCallback } from 'react';
-import { Sparkles } from 'lucide-react';
+import { CurrencyDisplay } from '../common/CurrencyDisplay';
 import { formatCurrency } from '../../utils/currency';
 import { formatDate } from '../../utils/date';
 
@@ -26,7 +26,6 @@ export function RunwayChart({ runwayData }) {
       pointDate.setDate(startDate.getDate() + (day - 1));
       const dateStr = pointDate.toISOString().split('T')[0];
 
-      // Model projected cash trajectory based on safe daily spend
       let projectedBalance;
       if (day <= currDay) {
         projectedBalance = liquidReserve;
@@ -53,14 +52,12 @@ export function RunwayChart({ runwayData }) {
     return { points: pts, currentDay: currDay, totalDays: numDays };
   }, [liquidReserve, committedBills, safeDailySpend, daysRemaining, cycleStart]);
 
-  // Chart dimensions & viewBox coordinates
   const width = 800;
   const height = 300;
   const padding = useMemo(() => ({ top: 30, right: 30, bottom: 40, left: 70 }), []);
   const graphWidth = width - padding.left - padding.right;
   const graphHeight = height - padding.top - padding.bottom;
 
-  // Find min and max for scaling
   const maxBalance = useMemo(() => {
     return Math.max(...points.map((p) => p.projectedBalance), liquidReserve * 1.15, 1000);
   }, [points, liquidReserve]);
@@ -76,7 +73,7 @@ export function RunwayChart({ runwayData }) {
     [padding.top, graphHeight, minBalance, maxBalance]
   );
 
-  // Construct smooth SVG path coordinates
+  // Cubic bezier SVG path
   const pathD = useMemo(() => {
     if (points.length === 0) return '';
     let d = `M ${getX(0)} ${getY(points[0].projectedBalance)}`;
@@ -85,7 +82,6 @@ export function RunwayChart({ runwayData }) {
       const prevY = getY(points[i - 1].projectedBalance);
       const currX = getX(i);
       const currY = getY(points[i].projectedBalance);
-      // Smooth cubic bezier control points
       const cp1x = prevX + (currX - prevX) / 2;
       const cp1y = prevY;
       const cp2x = prevX + (currX - prevX) / 2;
@@ -95,146 +91,114 @@ export function RunwayChart({ runwayData }) {
     return d;
   }, [points, getX, getY]);
 
-  // Area path closing at the bottom baseline
   const areaD = useMemo(() => {
     if (!pathD || points.length === 0) return '';
-    const lastX = getX(points.length - 1);
-    const firstX = getX(0);
-    const bottomY = padding.top + graphHeight;
-    return `${pathD} L ${lastX} ${bottomY} L ${firstX} ${bottomY} Z`;
-  }, [pathD, points.length, getX, padding.top, graphHeight]);
+    const startX = getX(0);
+    const endX = getX(points.length - 1);
+    const baselineY = getY(0);
+    return `${pathD} L ${endX} ${baselineY} L ${startX} ${baselineY} Z`;
+  }, [pathD, points, getX, getY]);
 
-  if (!runwayData) return null;
-
-  // Handle mouse move for interactive inspection
+  // Handle pointer hover across graph
   const handleMouseMove = (e) => {
     if (!svgRef.current) return;
     const rect = svgRef.current.getBoundingClientRect();
-    const mouseX = e.clientX - rect.left;
-    const normalizedX = (mouseX / rect.width) * width;
-
-    if (normalizedX < padding.left || normalizedX > width - padding.right) {
-      setHoverIndex(null);
-      return;
-    }
-
-    const relativeX = normalizedX - padding.left;
-    const pointWidth = graphWidth / (totalDays - 1);
-    const index = Math.min(
-      totalDays - 1,
-      Math.max(0, Math.round(relativeX / pointWidth))
-    );
-    setHoverIndex(index);
+    const mouseX = ((e.clientX - rect.left) / rect.width) * width;
+    const boundedX = Math.max(padding.left, Math.min(width - padding.right, mouseX));
+    const ratio = (boundedX - padding.left) / graphWidth;
+    const rawIndex = Math.round(ratio * (totalDays - 1));
+    const clampedIndex = Math.max(0, Math.min(totalDays - 1, rawIndex));
+    setHoverIndex(clampedIndex);
   };
 
-  const activePoint = hoverIndex !== null ? points[hoverIndex] : points[currentDay - 1] || points[0];
-  const activeX = hoverIndex !== null ? getX(hoverIndex) : getX(currentDay - 1);
-  const activeY = hoverIndex !== null ? getY(activePoint.projectedBalance) : getY(activePoint.projectedBalance);
+  const handleMouseLeave = () => {
+    setHoverIndex(null);
+  };
 
-  // Horizontal Grid Lines
+  const activePoint = hoverIndex !== null ? points[hoverIndex] : points[currentDay - 1];
+
   const yTicks = [
-    { value: maxBalance, label: formatCurrency(maxBalance, { showFraction: false }) },
-    { value: maxBalance * 0.66, label: formatCurrency(maxBalance * 0.66, { showFraction: false }) },
-    { value: maxBalance * 0.33, label: formatCurrency(maxBalance * 0.33, { showFraction: false }) },
-    { value: 0, label: '₹0' },
+    maxBalance,
+    maxBalance * 0.75,
+    maxBalance * 0.5,
+    maxBalance * 0.25,
+    0,
   ];
 
   return (
-    <div className="bg-white rounded-2xl border border-stone-200/80 shadow-framer-xs hover:shadow-framer-md transition-all duration-200 p-6 mb-8">
+    <div className="saas-card p-5 sm:p-6 bg-[var(--bg-card)] border border-[var(--border-subtle)] shadow-framer-xs">
       {/* Chart Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[var(--border-subtle)]">
         <div>
-          <div className="flex items-center gap-2 mb-1">
-            <h3 className="text-base font-semibold text-stone-900">
-              Runway Burn &amp; Cashflow Trajectory
+          <div className="flex items-center gap-2">
+            <h3 className="text-sm font-semibold text-[var(--text-primary)]">
+              Cashflow &amp; Runway Trajectory
             </h3>
-            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-indigo-50 text-indigo-700 border border-indigo-200/60">
-              <Sparkles className="w-3 h-3 text-indigo-500" />
-              Pay Cycle Model
+            <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-indigo-500/10 text-indigo-500 dark:text-indigo-400 border border-indigo-500/20">
+              30-Day Model
             </span>
           </div>
-          <p className="text-xs text-stone-500">
-            Projected reserve safety through {formatDate(cycleEnd)} at current ₹{Number(safeDailySpend).toFixed(0)}/day safe spending pace.
+          <p className="text-xs text-[var(--text-secondary)] mt-0.5">
+            Dynamic forward burn path maintaining committed reserve until cycle completion.
           </p>
         </div>
 
-        {/* Legend */}
-        <div className="flex items-center gap-4 text-xs">
-          <div className="flex items-center gap-1.5">
-            <span className="w-3 h-1 bg-indigo-600 rounded-full" />
-            <span className="font-medium text-stone-600">Safe Runway Curve</span>
-          </div>
-          <div className="flex items-center gap-1.5">
-            <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 ring-2 ring-emerald-200" />
-            <span className="font-medium text-stone-600">Today (Day {currentDay})</span>
-          </div>
-          {committedBills > 0 && (
-            <div className="flex items-center gap-1.5">
-              <span className="w-3 h-0.5 border-b-2 border-dashed border-amber-500" />
-              <span className="font-medium text-stone-600">Obligation Floor</span>
+        {/* Live Hover Stat Callout */}
+        {activePoint && (
+          <div className="flex items-center gap-3 bg-[var(--bg-card-subtle)] px-3 py-1.5 rounded-xl border border-[var(--border-subtle)]">
+            <div>
+              <span className="block text-[10px] uppercase font-semibold text-[var(--text-muted)]">
+                {activePoint.isToday ? 'Today · Projected' : formatDate(activePoint.date)}
+              </span>
+              <CurrencyDisplay
+                amount={activePoint.projectedBalance}
+                size="sm"
+                className="text-[var(--text-primary)]"
+              />
             </div>
-          )}
-        </div>
+            <div className="w-px h-6 bg-[var(--border-subtle)]" />
+            <div>
+              <span className="block text-[10px] uppercase font-semibold text-[var(--text-muted)]">
+                Spend Velocity
+              </span>
+              <span className="text-xs font-semibold font-display-num text-indigo-500 dark:text-indigo-400">
+                {formatCurrency(safeDailySpend)}/d
+              </span>
+            </div>
+          </div>
+        )}
       </div>
 
-      {/* Interactive Floating Detail Strip */}
-      <div className="bg-stone-50/80 border border-stone-200/70 rounded-xl p-3 mb-4 flex flex-wrap items-center justify-between gap-3 text-xs">
-        <div className="flex items-center gap-2">
-          <span className="font-semibold text-stone-700">Inspecting:</span>
-          <span className="font-mono font-medium text-stone-900 bg-white px-2 py-0.5 rounded-md border border-stone-200">
-            Day {activePoint.day} ({formatDate(activePoint.date)})
-          </span>
-          {activePoint.isToday && (
-            <span className="px-2 py-0.5 rounded-md font-semibold bg-emerald-100 text-emerald-800 text-[11px]">
-              Today
-            </span>
-          )}
-        </div>
-
-        <div className="flex items-center gap-5">
-          <div>
-            <span className="text-stone-500 mr-1.5">Projected Balance:</span>
-            <span className="font-display-num font-bold text-stone-900">
-              {formatCurrency(activePoint.projectedBalance)}
-            </span>
-          </div>
-          <div>
-            <span className="text-stone-500 mr-1.5">Daily Safe Spend:</span>
-            <span className="font-display-num font-bold text-indigo-700">
-              {formatCurrency(activePoint.safeDailySpend)}/day
-            </span>
-          </div>
-        </div>
-      </div>
-
-      {/* SVG Canvas Container */}
-      <div className="relative w-full overflow-hidden select-none">
+      {/* SVG Canvas */}
+      <div className="relative mt-4 w-full overflow-hidden select-none">
         <svg
           ref={svgRef}
           viewBox={`0 0 ${width} ${height}`}
-          className="w-full h-auto cursor-crosshair overflow-visible"
+          className="w-full h-auto cursor-crosshair"
           onMouseMove={handleMouseMove}
-          onMouseLeave={() => setHoverIndex(null)}
-          role="img"
-          aria-label="Runway Cashflow Trajectory Chart"
+          onMouseLeave={handleMouseLeave}
         >
           <defs>
-            {/* Smooth Indigo Area Gradient */}
-            <linearGradient id="runwayGradient" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#6366f1" stopOpacity="0.18" />
-              <stop offset="70%" stopColor="#818cf8" stopOpacity="0.04" />
-              <stop offset="100%" stopColor="#ffffff" stopOpacity="0" />
+            {/* Smooth ethereal area gradient */}
+            <linearGradient id="copilotAreaGrad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="#6366f1" stopOpacity="0.22" />
+              <stop offset="60%" stopColor="#6366f1" stopOpacity="0.04" />
+              <stop offset="100%" stopColor="#6366f1" stopOpacity="0.0" />
             </linearGradient>
 
-            {/* Glowing filter for active day dot */}
-            <filter id="glowEffect" x="-20%" y="-20%" width="140%" height="140%">
-              <feDropShadow dx="0" dy="0" stdDeviation="3" floodColor="#6366f1" floodOpacity="0.4" />
+            {/* Glowing line filter */}
+            <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+              <feGaussianBlur stdDeviation="3" result="blur" />
+              <feMerge>
+                <feMergeNode in="blur" />
+                <feMergeNode in="SourceGraphic" />
+              </feMerge>
             </filter>
           </defs>
 
-          {/* Background Grid Lines & Y-Axis Labels */}
+          {/* Horizontal Grid Hairlines */}
           {yTicks.map((tick, i) => {
-            const y = getY(tick.value);
+            const y = getY(tick);
             return (
               <g key={i}>
                 <line
@@ -242,130 +206,122 @@ export function RunwayChart({ runwayData }) {
                   y1={y}
                   x2={width - padding.right}
                   y2={y}
-                  stroke="#e2e8f0"
-                  strokeDasharray={i === yTicks.length - 1 ? 'none' : '3 3'}
+                  stroke="currentColor"
+                  className="text-zinc-200 dark:text-zinc-800"
+                  strokeDasharray="4 4"
                   strokeWidth="1"
                 />
                 <text
                   x={padding.left - 10}
                   y={y + 4}
                   textAnchor="end"
-                  className="text-[10px] font-mono fill-stone-400"
+                  className="text-[10px] fill-zinc-400 dark:fill-zinc-600 font-display-num"
                 >
-                  {tick.label}
+                  ₹{Math.round(tick).toLocaleString('en-IN')}
                 </text>
               </g>
             );
           })}
 
-          {/* Committed Floor Line (if any) */}
-          {committedBills > 0 && (
-            <line
-              x1={padding.left}
-              y1={getY(committedBills)}
-              x2={width - padding.right}
-              y2={getY(committedBills)}
-              stroke="#f59e0b"
-              strokeDasharray="4 4"
-              strokeWidth="1.5"
-            />
-          )}
-
           {/* Area Fill */}
-          <path d={areaD} fill="url(#runwayGradient)" />
+          <path d={areaD} fill="url(#copilotAreaGrad)" />
 
-          {/* Trajectory Stroke Line */}
+          {/* Glowing Trajectory Curve */}
           <path
             d={pathD}
             fill="none"
             stroke="#6366f1"
-            strokeWidth="2.75"
+            strokeWidth="2.5"
             strokeLinecap="round"
-            strokeLinejoin="round"
+            filter="url(#glow)"
           />
 
-          {/* Active Hover Crosshair Line */}
-          {hoverIndex !== null && (
+          {/* Today Indicator (Day 6) */}
+          {currentDay && (
             <g>
               <line
-                x1={activeX}
+                x1={getX(currentDay - 1)}
                 y1={padding.top}
-                x2={activeX}
-                y2={padding.top + graphHeight}
-                stroke="#94a3b8"
-                strokeWidth="1.5"
-                strokeDasharray="3 3"
+                x2={getX(currentDay - 1)}
+                y2={height - padding.bottom}
+                stroke="#6366f1"
+                strokeWidth="1"
+                strokeDasharray="2 2"
+                opacity="0.6"
               />
-              <circle
-                cx={activeX}
-                cy={activeY}
-                r="6"
-                fill="#4f46e5"
-                stroke="#ffffff"
-                strokeWidth="2.5"
-                filter="url(#glowEffect)"
-              />
-            </g>
-          )}
-
-          {/* Current Day Pulse Marker */}
-          {hoverIndex === null && (
-            <g>
               <circle
                 cx={getX(currentDay - 1)}
                 cy={getY(points[currentDay - 1]?.projectedBalance || liquidReserve)}
-                r="10"
-                fill="#10b981"
-                fillOpacity="0.2"
+                r="4"
+                fill="#6366f1"
+              />
+              <circle
+                cx={getX(currentDay - 1)}
+                cy={getY(points[currentDay - 1]?.projectedBalance || liquidReserve)}
+                r="8"
+                fill="#6366f1"
+                opacity="0.25"
                 className="animate-ping"
               />
+            </g>
+          )}
+
+          {/* Hover Crosshair & Dot */}
+          {hoverIndex !== null && activePoint && (
+            <g>
+              <line
+                x1={getX(hoverIndex)}
+                y1={padding.top}
+                x2={getX(hoverIndex)}
+                y2={height - padding.bottom}
+                stroke="currentColor"
+                className="text-zinc-400 dark:text-zinc-500"
+                strokeWidth="1"
+              />
               <circle
-                cx={getX(currentDay - 1)}
-                cy={getY(points[currentDay - 1]?.projectedBalance || liquidReserve)}
-                r="6"
-                fill="#10b981"
-                stroke="#ffffff"
+                cx={getX(hoverIndex)}
+                cy={getY(activePoint.projectedBalance)}
+                r="5"
+                className="fill-white dark:fill-zinc-900 stroke-indigo-500"
                 strokeWidth="2.5"
               />
             </g>
           )}
 
-          {/* X-Axis Milestone Labels */}
-          <g className="text-[11px] font-mono fill-stone-500">
-            {/* Day 1 */}
-            <text x={getX(0)} y={height - 12} textAnchor="start">
-              Day 1 ({formatDate(cycleStart)})
-            </text>
-
-            {/* Today */}
-            <text
-              x={getX(currentDay - 1)}
-              y={height - 12}
-              textAnchor="middle"
-              className="font-semibold fill-emerald-700"
-            >
-              Today (Day {currentDay})
-            </text>
-
-            {/* Mid-cycle */}
-            <text x={getX(14)} y={height - 12} textAnchor="middle">
-              Day 15
-            </text>
-
-            {/* End of cycle */}
-            <text x={getX(totalDays - 1)} y={height - 12} textAnchor="end">
-              Day 30 ({formatDate(cycleEnd)})
-            </text>
-          </g>
+          {/* X Axis Labels */}
+          {points
+            .filter((p) => p.day === 1 || p.day === 10 || p.day === 20 || p.day === 30)
+            .map((p) => (
+              <text
+                key={p.day}
+                x={getX(p.day - 1)}
+                y={height - padding.bottom + 20}
+                textAnchor="middle"
+                className="text-[10px] fill-zinc-400 dark:fill-zinc-500 font-display-num"
+              >
+                Day {p.day}
+              </text>
+            ))}
         </svg>
       </div>
 
-      {/* Accessible Description */}
-      <p className="sr-only">
-        Interactive cashflow chart illustrating financial runway across {totalDays} days of current pay cycle.
-        Today is day {currentDay} with {daysRemaining} days remaining, a liquid reserve of {formatCurrency(liquidReserve)},
-        and a calculated safe daily spend capacity of {formatCurrency(safeDailySpend)}.
-      </p>
+      {/* Chart Footer Legend */}
+      <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-[var(--border-subtle)] text-[11px] text-[var(--text-muted)]">
+        <div className="flex items-center gap-4">
+          <span className="flex items-center gap-1.5">
+            <span className="w-2.5 h-0.5 bg-indigo-500 rounded" />
+            Projected Cash Trajectory
+          </span>
+          <span className="flex items-center gap-1.5">
+            <span className="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-pulse" />
+            Today (Day {currentDay})
+          </span>
+        </div>
+
+        <span className="text-[var(--text-secondary)] font-medium">
+          Cycle: {formatDate(cycleStart)} – {formatDate(cycleEnd)}
+        </span>
+      </div>
     </div>
   );
 }

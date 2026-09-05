@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import {
   Trash2,
-  Clock,
   ArrowUpRight,
   ArrowDownRight,
   Utensils,
@@ -13,19 +12,20 @@ import {
   Tag,
   Search
 } from 'lucide-react';
+import { CurrencyDisplay } from '../common/CurrencyDisplay';
 import { TableRowSkeleton } from '../common/Skeleton';
 import { EmptyState } from '../common/EmptyState';
-import { formatCurrency, formatLifeHours } from '../../utils/currency';
+import { formatLifeHours } from '../../utils/currency';
 import { formatDate } from '../../utils/date';
 
-// Map categories to dedicated icons and warm tint colors
+// Category color dot and styling map (Copilot jewel tones)
 const categoryConfig = {
-  food: { icon: Utensils, bg: 'bg-orange-50 text-orange-600 border-orange-200/70' },
-  transport: { icon: Car, bg: 'bg-blue-50 text-blue-600 border-blue-200/70' },
-  rent: { icon: Home, bg: 'bg-purple-50 text-purple-600 border-purple-200/70' },
-  salary: { icon: Briefcase, bg: 'bg-emerald-50 text-emerald-600 border-emerald-200/70' },
-  entertainment: { icon: Tv, bg: 'bg-pink-50 text-pink-600 border-pink-200/70' },
-  utilities: { icon: Zap, bg: 'bg-amber-50 text-amber-600 border-amber-200/70' },
+  food: { icon: Utensils, dot: 'bg-amber-500', pill: 'bg-amber-500/10 text-amber-600 dark:text-amber-400' },
+  transport: { icon: Car, dot: 'bg-sky-500', pill: 'bg-sky-500/10 text-sky-600 dark:text-sky-400' },
+  rent: { icon: Home, dot: 'bg-violet-500', pill: 'bg-violet-500/10 text-violet-600 dark:text-violet-400' },
+  salary: { icon: Briefcase, dot: 'bg-emerald-500', pill: 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400' },
+  entertainment: { icon: Tv, dot: 'bg-pink-500', pill: 'bg-pink-500/10 text-pink-600 dark:text-pink-400' },
+  utilities: { icon: Zap, dot: 'bg-indigo-500', pill: 'bg-indigo-500/10 text-indigo-600 dark:text-indigo-400' },
 };
 
 export function TransactionLedger({
@@ -35,17 +35,16 @@ export function TransactionLedger({
   onNewTransaction,
   deletingId,
 }) {
-  const [filterType, setFilterType] = useState('ALL'); // 'ALL' | 'EXPENSE' | 'INCOME'
+  const [filterType, setFilterType] = useState('ALL');
   const [searchTerm, setSearchTerm] = useState('');
 
   if (loading) {
     return (
-      <div className="bg-white rounded-2xl border border-stone-200/80 shadow-framer-xs overflow-hidden">
-        <div className="p-5 border-b border-stone-100 flex items-center justify-between">
-          <div className="h-4 bg-stone-200 rounded w-32 animate-pulse" />
+      <div className="saas-card bg-[var(--bg-card)] border border-[var(--border-subtle)] overflow-hidden shadow-framer-xs">
+        <div className="p-5 border-b border-[var(--border-subtle)] flex items-center justify-between">
+          <div className="h-4 bg-zinc-200 dark:bg-zinc-800 rounded w-32 animate-pulse" />
         </div>
-        <div className="divide-y divide-stone-100 p-4 space-y-3">
-          <TableRowSkeleton />
+        <div className="divide-y divide-[var(--border-subtle)] p-4 space-y-3">
           <TableRowSkeleton />
           <TableRowSkeleton />
           <TableRowSkeleton />
@@ -58,7 +57,6 @@ export function TransactionLedger({
     return <EmptyState onAction={onNewTransaction} />;
   }
 
-  // Filter transactions based on type and search query
   const filtered = transactions.filter((tx) => {
     const matchesType = filterType === 'ALL' || tx.type === filterType;
     const matchesSearch =
@@ -69,184 +67,222 @@ export function TransactionLedger({
   });
 
   return (
-    <div className="bg-white rounded-2xl border border-stone-200/80 shadow-framer-xs hover:shadow-framer-md transition-all duration-200 overflow-hidden">
+    <div className="saas-card bg-[var(--bg-card)] border border-[var(--border-subtle)] shadow-framer-xs overflow-hidden">
       {/* Header & Controls */}
-      <div className="p-5 sm:p-6 border-b border-stone-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="p-5 sm:p-6 border-b border-[var(--border-subtle)] flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2">
-            <h3 className="text-base font-semibold text-stone-900">
-              Financial Activity Feed
+            <h3 className="text-sm font-semibold text-[var(--text-primary)]">
+              Financial Activity Stream
             </h3>
-            <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-stone-100 text-stone-600">
-              {transactions.length} record{transactions.length === 1 ? '' : 's'}
+            <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-[var(--bg-card-elevated)] text-[var(--text-muted)] border border-[var(--border-subtle)]">
+              {transactions.length} total
             </span>
           </div>
-          <p className="text-xs text-stone-500 mt-0.5">
-            Real-time transaction stream impacting cashflow and life hours.
+          <p className="text-xs text-[var(--text-secondary)] mt-0.5">
+            Real-time ledger events impacting reserve liquidity and life hours.
           </p>
         </div>
 
         {/* Filter Switch & Search */}
         <div className="flex flex-wrap items-center gap-2.5">
           {/* Segmented Filter */}
-          <div className="flex items-center p-1 bg-stone-100 rounded-xl text-xs font-medium">
+          <div className="flex items-center p-1 bg-[var(--bg-card-subtle)] rounded-xl border border-[var(--border-subtle)] text-xs font-medium">
             <button
               type="button"
               onClick={() => setFilterType('ALL')}
-              className={`px-3 py-1.5 rounded-lg transition-all ${
+              className={`px-3 py-1 rounded-lg transition-all cursor-pointer ${
                 filterType === 'ALL'
-                  ? 'bg-white text-stone-900 font-semibold shadow-xs'
-                  : 'text-stone-500 hover:text-stone-800'
+                  ? 'bg-[var(--bg-card)] text-[var(--text-primary)] font-semibold shadow-xs'
+                  : 'text-[var(--text-muted)] hover:text-[var(--text-primary)]'
               }`}
             >
               All
             </button>
             <button
               type="button"
-              onClick={() => setFilterType('EXPENSE')}
-              className={`px-3 py-1.5 rounded-lg transition-all ${
-                filterType === 'EXPENSE'
-                  ? 'bg-white text-rose-700 font-semibold shadow-xs'
-                  : 'text-stone-500 hover:text-stone-800'
-              }`}
-            >
-              Expenses
-            </button>
-            <button
-              type="button"
               onClick={() => setFilterType('INCOME')}
-              className={`px-3 py-1.5 rounded-lg transition-all ${
+              className={`px-3 py-1 rounded-lg transition-all cursor-pointer ${
                 filterType === 'INCOME'
-                  ? 'bg-white text-emerald-700 font-semibold shadow-xs'
-                  : 'text-stone-500 hover:text-stone-800'
+                  ? 'bg-[var(--bg-card)] text-emerald-600 dark:text-emerald-400 font-semibold shadow-xs'
+                  : 'text-[var(--text-muted)] hover:text-[var(--text-primary)]'
               }`}
             >
               Inflows
             </button>
+            <button
+              type="button"
+              onClick={() => setFilterType('EXPENSE')}
+              className={`px-3 py-1 rounded-lg transition-all cursor-pointer ${
+                filterType === 'EXPENSE'
+                  ? 'bg-[var(--bg-card)] text-[var(--text-primary)] font-semibold shadow-xs'
+                  : 'text-[var(--text-muted)] hover:text-[var(--text-primary)]'
+              }`}
+            >
+              Outflows
+            </button>
           </div>
 
-          {/* Quick Search */}
+          {/* Search Box */}
           <div className="relative">
-            <Search className="w-3.5 h-3.5 text-stone-400 absolute left-3 top-1/2 -translate-y-1/2" />
+            <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)]" />
             <input
               type="text"
-              placeholder="Search activity..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-8 pr-3 py-1.5 text-xs bg-stone-50 hover:bg-stone-100/80 focus:bg-white border border-stone-200/80 rounded-xl text-stone-900 placeholder:text-stone-400 focus:outline-hidden focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-colors w-36 sm:w-44"
+              placeholder="Search..."
+              className="pl-8 pr-3 py-1.5 text-xs bg-[var(--bg-card-subtle)] border border-[var(--border-subtle)] rounded-xl text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-hidden focus:border-indigo-500 w-32 sm:w-44 transition-all"
             />
           </div>
         </div>
       </div>
 
-      {/* Activity Feed Rows */}
-      {filtered.length === 0 ? (
-        <div className="p-8 text-center text-xs text-stone-400">
-          No transactions match current filters.
-        </div>
-      ) : (
-        <div className="divide-y divide-stone-100">
-          {filtered.map((tx) => {
-            const isIncome = tx.type === 'INCOME';
-            const slug = (tx.categorySlug || tx.categoryName || '').toLowerCase();
-            const config = categoryConfig[slug] || {
-              icon: Tag,
-              bg: 'bg-stone-100 text-stone-600 border-stone-200',
-            };
-            const Icon = config.icon;
-            const lifeHoursFormatted = formatLifeHours(tx.lifeHours);
+      {/* Ledger Table */}
+      <div className="overflow-x-auto">
+        <table className="w-full text-left border-collapse text-xs">
+          <thead>
+            <tr className="border-b border-[var(--border-subtle)] bg-[var(--bg-card-subtle)]/50 text-[10px] font-semibold uppercase tracking-wider text-[var(--text-muted)]">
+              <th className="py-3 px-4 sm:px-6">Description</th>
+              <th className="py-3 px-4">Category</th>
+              <th className="py-3 px-4">Date</th>
+              <th className="py-3 px-4 text-right">Life Hours</th>
+              <th className="py-3 px-4 sm:px-6 text-right">Amount</th>
+              <th className="py-3 px-4 text-center w-16">Action</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-[var(--border-subtle)]">
+            {filtered.length === 0 ? (
+              <tr>
+                <td colSpan="6" className="py-8 text-center text-xs text-[var(--text-muted)]">
+                  No matching transactions found.
+                </td>
+              </tr>
+            ) : (
+              filtered.map((tx) => {
+                const isIncome = tx.type === 'INCOME';
+                const catLower = (tx.categoryName || '').toLowerCase();
+                const catInfo = categoryConfig[catLower] || {
+                  icon: Tag,
+                  dot: 'bg-zinc-400',
+                  pill: 'bg-zinc-500/10 text-zinc-600 dark:text-zinc-400',
+                };
+                const CatIcon = catInfo.icon;
+                const isDeleting = deletingId === tx.id;
 
-            return (
-              <div
-                key={tx.id}
-                className={`group flex items-center justify-between p-4 sm:px-6 hover:bg-stone-50/70 transition-all duration-150 ${
-                  deletingId === tx.id ? 'opacity-40 pointer-events-none' : ''
-                }`}
-              >
-                {/* Left: Category Icon + Details */}
-                <div className="flex items-center gap-3.5 min-w-0">
-                  <div
-                    className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 border ${config.bg} transition-transform group-hover:scale-105`}
+                return (
+                  <tr
+                    key={tx.id}
+                    className="hover:bg-[var(--bg-card-hover)] transition-colors group"
                   >
-                    <Icon className="w-4 h-4 stroke-[2.2]" />
-                  </div>
+                    {/* Description & Type Icon */}
+                    <td className="py-3.5 px-4 sm:px-6">
+                      <div className="flex items-center gap-3">
+                        <div
+                          className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 ${
+                            isIncome
+                              ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400'
+                              : 'bg-[var(--bg-card-subtle)] text-[var(--text-muted)]'
+                          }`}
+                        >
+                          {isIncome ? (
+                            <ArrowUpRight className="w-4 h-4 stroke-[2.2]" />
+                          ) : (
+                            <ArrowDownRight className="w-4 h-4 stroke-[2.2]" />
+                          )}
+                        </div>
+                        <div className="min-w-0">
+                          <span className="font-semibold text-[var(--text-primary)] block truncate">
+                            {tx.description || (isIncome ? 'Income credit' : 'Expense debit')}
+                          </span>
+                          {tx.isRecurring && (
+                            <span className="inline-block text-[9px] font-semibold text-amber-500 mt-0.5">
+                              Recurring Bill
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    </td>
 
-                  <div className="min-w-0">
-                    <div className="flex items-center gap-2">
-                      <span className="text-sm font-semibold text-stone-900 truncate">
-                        {tx.description || tx.categoryName}
+                    {/* Category */}
+                    <td className="py-3.5 px-4 whitespace-nowrap">
+                      <span
+                        className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md text-[10px] font-semibold ${catInfo.pill}`}
+                      >
+                        <CatIcon className="w-3 h-3 stroke-[2]" />
+                        <span>{tx.categoryName || 'General'}</span>
                       </span>
-                      {tx.description && (
-                        <span className="hidden sm:inline-block text-[11px] px-2 py-0.5 rounded-full bg-stone-100 text-stone-600 font-medium">
-                          {tx.categoryName}
-                        </span>
-                      )}
-                    </div>
-                    <div className="flex items-center gap-2 text-xs text-stone-400 mt-0.5">
-                      <span className="font-mono text-[11px]">{formatDate(tx.transactionDate)}</span>
-                      {tx.type === 'INCOME' ? (
-                        <span className="inline-flex items-center gap-0.5 text-emerald-600 font-medium text-[11px]">
-                          <ArrowUpRight className="w-3 h-3" /> Inflow
+                    </td>
+
+                    {/* Date */}
+                    <td className="py-3.5 px-4 whitespace-nowrap text-[var(--text-muted)] font-display-num">
+                      {formatDate(tx.transactionDate)}
+                    </td>
+
+                    {/* Life Hours Impact */}
+                    <td className="py-3.5 px-4 text-right whitespace-nowrap font-display-num">
+                      {tx.lifeHoursImpact ? (
+                        <span
+                          className={`text-xs font-medium ${
+                            isIncome
+                              ? 'text-emerald-600 dark:text-emerald-400'
+                              : 'text-[var(--text-muted)]'
+                          }`}
+                        >
+                          {isIncome ? '+' : '-'}
+                          {formatLifeHours(tx.lifeHoursImpact)}
                         </span>
                       ) : (
-                        <span className="inline-flex items-center gap-0.5 text-rose-600 font-medium text-[11px]">
-                          <ArrowDownRight className="w-3 h-3" /> Outflow
-                        </span>
+                        <span className="text-[var(--text-muted)]">—</span>
                       )}
-                    </div>
-                  </div>
-                </div>
+                    </td>
 
-                {/* Right: Amount, Life Hours & Actions */}
-                <div className="flex items-center gap-4 sm:gap-6 shrink-0 ml-4">
-                  {/* Life Hours Badge (for expenses) */}
-                  <div className="hidden md:flex flex-col items-end">
-                    {lifeHoursFormatted ? (
-                      <span
-                        className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-display-num font-semibold bg-violet-50 text-violet-700 border border-violet-200/60"
-                        title="Life hours spent based on hourly wage"
+                    {/* Amount */}
+                    <td className="py-3.5 px-4 sm:px-6 text-right whitespace-nowrap">
+                      <div className="inline-flex items-baseline font-display-num">
+                        <span
+                          className={`text-xs font-semibold mr-0.5 ${
+                            isIncome
+                              ? 'text-emerald-600 dark:text-emerald-400'
+                              : 'text-[var(--text-primary)]'
+                          }`}
+                        >
+                          {isIncome ? '+' : '-'}
+                        </span>
+                        <CurrencyDisplay
+                          amount={tx.amount}
+                          size="sm"
+                          className={
+                            isIncome
+                              ? 'text-emerald-600 dark:text-emerald-400'
+                              : 'text-[var(--text-primary)]'
+                          }
+                        />
+                      </div>
+                    </td>
+
+                    {/* Actions */}
+                    <td className="py-3.5 px-4 text-center whitespace-nowrap">
+                      <button
+                        type="button"
+                        onClick={() => onDelete(tx.id)}
+                        disabled={isDeleting}
+                        title="Remove transaction"
+                        className="p-1.5 rounded-lg text-[var(--text-muted)] hover:text-rose-500 hover:bg-rose-500/10 opacity-0 group-hover:opacity-100 transition-all cursor-pointer focus:opacity-100"
                       >
-                        <Clock className="w-3 h-3 text-violet-500" />
-                        {lifeHoursFormatted}
-                      </span>
-                    ) : (
-                      <span className="text-stone-300 font-display-num text-xs">—</span>
-                    )}
-                  </div>
-
-                  {/* Formatted Amount */}
-                  <div className="text-right">
-                    <span
-                      className={`text-sm sm:text-base font-extrabold font-display-num tracking-tight ${
-                        isIncome ? 'text-emerald-600' : 'text-stone-900'
-                      }`}
-                    >
-                      {isIncome ? '+' : '-'}
-                      {formatCurrency(tx.amount)}
-                    </span>
-                    {lifeHoursFormatted && (
-                      <span className="block md:hidden text-[10px] font-display-num text-violet-600">
-                        {lifeHoursFormatted} work
-                      </span>
-                    )}
-                  </div>
-
-                  {/* Delete Action Button */}
-                  <button
-                    type="button"
-                    onClick={() => onDelete(tx.id)}
-                    disabled={deletingId === tx.id}
-                    aria-label={`Delete transaction ${tx.description || tx.id}`}
-                    className="p-2 text-stone-400 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-colors focus:ring-2 focus:ring-rose-500/20 focus:outline-hidden disabled:opacity-50"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </button>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      )}
+                        {isDeleting ? (
+                          <div className="w-3.5 h-3.5 border-2 border-rose-500 border-t-transparent rounded-full animate-spin" />
+                        ) : (
+                          <Trash2 className="w-3.5 h-3.5" />
+                        )}
+                      </button>
+                    </td>
+                  </tr>
+                );
+              })
+            )}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }

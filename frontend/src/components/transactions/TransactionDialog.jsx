@@ -1,277 +1,252 @@
-import { useState, useEffect, useRef } from 'react';
-import { X, ArrowUpRight, ArrowDownRight, Loader2, Sparkles, Check } from 'lucide-react';
-import { getTodayISO } from '../../utils/date';
+import { useState, useEffect } from 'react';
+import { X, ArrowDownRight, ArrowUpRight, AlertCircle, Loader2 } from 'lucide-react';
+import api from '../../services/api';
 
-export function TransactionDialog({
-  isOpen,
-  onClose,
-  categories = [],
-  onSubmit,
-  isSubmitting,
-  error,
-}) {
-  const [type, setType] = useState('EXPENSE');
+export function TransactionDialog({ isOpen, onClose, onSubmit, isSubmitting, error }) {
+  const [type, setType] = useState('EXPENSE'); // 'EXPENSE' | 'INCOME'
   const [amount, setAmount] = useState('');
-  const [categoryId, setCategoryId] = useState('');
   const [description, setDescription] = useState('');
-  const [transactionDate, setTransactionDate] = useState(getTodayISO());
-  const [formError, setFormError] = useState('');
+  const [categoryId, setCategoryId] = useState('');
+  const [isRecurring, setIsRecurring] = useState(false);
+  const [transactionDate, setTransactionDate] = useState(
+    new Date().toISOString().split('T')[0]
+  );
+  const [categories, setCategories] = useState([]);
+  const [validationErrors, setValidationErrors] = useState({});
 
-  const amountInputRef = useRef(null);
-
-  // Filter categories matching selected type
-  const filteredCategories = categories.filter((cat) => cat.type === type);
-
-  // Auto-select first matching category when type changes or dialog opens
   useEffect(() => {
     if (isOpen) {
-      const matching = categories.filter((cat) => cat.type === type);
-      if (matching.length > 0) {
-        setCategoryId(String(matching[0].id));
-      } else if (categories.length > 0) {
-        setCategoryId(String(categories[0].id));
-      }
-      setAmount('');
-      setDescription('');
-      setTransactionDate(getTodayISO());
-      setFormError('');
-
-      // Auto-focus amount field
-      setTimeout(() => {
-        amountInputRef.current?.focus();
-      }, 75);
+      api.getCategories()
+        .then((cats) => {
+          setCategories(cats);
+          if (cats && cats.length > 0 && !categoryId) {
+            setCategoryId(cats[0].id.toString());
+          }
+        })
+        .catch(() => {});
     }
-  }, [isOpen, type, categories]);
-
-  // Handle ESC key to close
-  useEffect(() => {
-    function handleKeyDown(e) {
-      if (e.key === 'Escape' && isOpen) {
-        onClose();
-      }
-    }
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isOpen, onClose]);
+  }, [isOpen, categoryId]);
 
   if (!isOpen) return null;
 
-  function handleSubmit(e) {
-    e.preventDefault();
-    setFormError('');
-
-    const numericAmount = parseFloat(amount);
-    if (!amount || isNaN(numericAmount) || numericAmount <= 0) {
-      setFormError('Please enter a valid positive monetary amount.');
-      return;
+  const validate = () => {
+    const errs = {};
+    if (!amount || isNaN(amount) || parseFloat(amount) <= 0) {
+      errs.amount = 'Amount must be greater than zero.';
     }
-
+    if (!description.trim()) {
+      errs.description = 'Description is required.';
+    }
     if (!categoryId) {
-      setFormError('Please select a valid category.');
-      return;
+      errs.categoryId = 'Please select a category.';
     }
-
     if (!transactionDate) {
-      setFormError('Please select a valid transaction date.');
-      return;
+      errs.transactionDate = 'Date is required.';
     }
+    setValidationErrors(errs);
+    return Object.keys(errs).length === 0;
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!validate()) return;
 
     onSubmit({
-      amount: numericAmount,
       type,
+      amount: parseFloat(amount),
+      description: description.trim(),
       categoryId: parseInt(categoryId, 10),
-      description: description.trim() || undefined,
+      isRecurring,
       transactionDate,
     });
-  }
+  };
 
   return (
-    <div
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="dialog-title"
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-stone-900/40 backdrop-blur-sm transition-all animate-fade-in-up"
-      onClick={(e) => {
-        if (e.target === e.currentTarget) onClose();
-      }}
-    >
-      <div className="bg-white rounded-3xl border border-stone-200 shadow-framer-lg max-w-md w-full overflow-hidden transition-all">
-        {/* Header */}
-        <div className="px-6 py-5 border-b border-stone-100 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center">
-              <Sparkles className="w-4 h-4" />
-            </div>
-            <div>
-              <h2 id="dialog-title" className="text-base font-semibold text-stone-900">
-                Record Financial Activity
-              </h2>
-              <p className="text-[11px] text-stone-400">
-                Updates runway and safe daily spend instantly
-              </p>
-            </div>
-          </div>
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+      {/* Frosted Backdrop */}
+      <div
+        className="fixed inset-0 bg-black/60 backdrop-blur-xs transition-opacity"
+        onClick={onClose}
+      />
 
+      {/* Modal Box */}
+      <div className="saas-card relative w-full max-w-md bg-[var(--bg-card)] border border-[var(--border-subtle)] shadow-2xl p-6 z-10 animate-fade-in-up">
+        {/* Header */}
+        <div className="flex items-center justify-between pb-4 border-b border-[var(--border-subtle)]">
+          <div>
+            <h3 className="text-base font-semibold text-[var(--text-primary)]">
+              Record Financial Event
+            </h3>
+            <p className="text-xs text-[var(--text-secondary)] mt-0.5">
+              Live calculation into liquid reserve &amp; safe runway.
+            </p>
+          </div>
           <button
             type="button"
             onClick={onClose}
-            aria-label="Close dialog"
-            className="p-1.5 rounded-xl text-stone-400 hover:text-stone-700 hover:bg-stone-100 transition-colors"
+            className="p-1 rounded-lg text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-card-hover)] cursor-pointer"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
-        {/* Form */}
-        <form onSubmit={handleSubmit} className="p-6 space-y-5">
-          {/* Error Notice */}
-          {(formError || error) && (
-            <div className="p-3 text-xs text-rose-700 bg-rose-50 border border-rose-200/80 rounded-xl">
-              {formError || error}
-            </div>
-          )}
+        {/* Global Error Notice */}
+        {error && (
+          <div className="mt-4 p-3 bg-rose-500/10 border border-rose-500/20 rounded-xl flex items-center gap-2 text-xs text-rose-500">
+            <AlertCircle className="w-4 h-4 shrink-0" />
+            <span>{error}</span>
+          </div>
+        )}
 
-          {/* Type Toggle Switch */}
+        <form onSubmit={handleSubmit} className="mt-4 space-y-4 text-xs">
+          {/* Type Switcher */}
           <div>
-            <div className="grid grid-cols-2 gap-1.5 p-1.5 bg-stone-100 rounded-2xl">
+            <label className="block text-[10px] font-semibold uppercase tracking-wider text-[var(--text-muted)] mb-1.5">
+              Flow Direction
+            </label>
+            <div className="grid grid-cols-2 gap-2 p-1 bg-[var(--bg-card-subtle)] border border-[var(--border-subtle)] rounded-xl">
               <button
                 type="button"
                 onClick={() => setType('EXPENSE')}
-                className={`flex items-center justify-center gap-2 py-2.5 text-xs font-semibold rounded-xl transition-all ${
+                className={`flex items-center justify-center gap-1.5 py-2 rounded-lg font-semibold transition-all cursor-pointer ${
                   type === 'EXPENSE'
-                    ? 'bg-white text-rose-700 shadow-framer-xs'
-                    : 'text-stone-500 hover:text-stone-900'
+                    ? 'bg-[var(--bg-card)] text-[var(--text-primary)] shadow-xs border border-[var(--border-subtle)]'
+                    : 'text-[var(--text-muted)] hover:text-[var(--text-primary)]'
                 }`}
               >
-                <ArrowDownRight className="w-4 h-4 text-rose-600" />
-                Expense (Outflow)
+                <ArrowDownRight className="w-3.5 h-3.5" />
+                <span>Outflow / Expense</span>
               </button>
               <button
                 type="button"
                 onClick={() => setType('INCOME')}
-                className={`flex items-center justify-center gap-2 py-2.5 text-xs font-semibold rounded-xl transition-all ${
+                className={`flex items-center justify-center gap-1.5 py-2 rounded-lg font-semibold transition-all cursor-pointer ${
                   type === 'INCOME'
-                    ? 'bg-white text-emerald-700 shadow-framer-xs'
-                    : 'text-stone-500 hover:text-stone-900'
+                    ? 'bg-[var(--bg-card)] text-emerald-600 dark:text-emerald-400 shadow-xs border border-[var(--border-subtle)]'
+                    : 'text-[var(--text-muted)] hover:text-[var(--text-primary)]'
                 }`}
               >
-                <ArrowUpRight className="w-4 h-4 text-emerald-600" />
-                Income (Inflow)
+                <ArrowUpRight className="w-3.5 h-3.5" />
+                <span>Inflow / Income</span>
               </button>
             </div>
           </div>
 
-          {/* Prominent Amount Input (Hero field) */}
-          <div className="bg-stone-50/70 border border-stone-200/80 rounded-2xl p-4 text-center">
-            <label
-              htmlFor="tx-amount"
-              className="block text-[11px] font-semibold uppercase tracking-wider text-stone-500 mb-1"
-            >
-              Amount (INR) *
+          {/* Amount */}
+          <div>
+            <label className="block text-[10px] font-semibold uppercase tracking-wider text-[var(--text-muted)] mb-1">
+              Amount (₹)
             </label>
-            <div className="relative inline-flex items-center justify-center max-w-xs w-full">
-              <span className="text-2xl sm:text-3xl font-display-num font-bold text-stone-400 mr-2">
+            <div className="relative">
+              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-[var(--text-muted)]">
                 ₹
               </span>
               <input
-                id="tx-amount"
-                ref={amountInputRef}
                 type="number"
                 step="0.01"
                 min="0.01"
-                required
                 placeholder="0.00"
                 value={amount}
                 onChange={(e) => setAmount(e.target.value)}
-                className="w-full text-center text-3xl sm:text-4xl font-display-num font-bold bg-transparent text-stone-900 placeholder:text-stone-300 focus:outline-hidden"
+                className="w-full pl-7 pr-3 py-2 text-sm font-display-num bg-[var(--bg-card-subtle)] border border-[var(--border-subtle)] rounded-xl text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-hidden focus:border-indigo-500 transition-colors"
               />
             </div>
-          </div>
-
-          {/* Category Dropdown */}
-          <div>
-            <label
-              htmlFor="tx-category"
-              className="block text-xs font-semibold uppercase tracking-wider text-stone-600 mb-1.5"
-            >
-              Category *
-            </label>
-            <select
-              id="tx-category"
-              required
-              value={categoryId}
-              onChange={(e) => setCategoryId(e.target.value)}
-              className="w-full px-3.5 py-2.5 text-sm bg-white border border-stone-200/90 rounded-xl text-stone-900 focus:outline-hidden focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-colors shadow-xs"
-            >
-              {filteredCategories.map((cat) => (
-                <option key={cat.id} value={cat.id}>
-                  {cat.name} {cat.isEssential ? '• Essential' : ''}
-                </option>
-              ))}
-            </select>
+            {validationErrors.amount && (
+              <p className="text-rose-500 text-[11px] mt-1">{validationErrors.amount}</p>
+            )}
           </div>
 
           {/* Description */}
           <div>
-            <label
-              htmlFor="tx-description"
-              className="block text-xs font-semibold uppercase tracking-wider text-stone-600 mb-1.5"
-            >
-              Description (Optional)
+            <label className="block text-[10px] font-semibold uppercase tracking-wider text-[var(--text-muted)] mb-1">
+              Description / Merchant
             </label>
             <input
-              id="tx-description"
               type="text"
-              maxLength={255}
-              placeholder="e.g. Groceries, Team Lunch, Client Payment"
+              placeholder="e.g. Server hosting, Groceries, Client invoice"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              className="w-full px-3.5 py-2.5 text-sm bg-white border border-stone-200/90 rounded-xl text-stone-900 placeholder:text-stone-400 focus:outline-hidden focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-colors shadow-xs"
+              className="w-full px-3 py-2 bg-[var(--bg-card-subtle)] border border-[var(--border-subtle)] rounded-xl text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-hidden focus:border-indigo-500 transition-colors"
             />
+            {validationErrors.description && (
+              <p className="text-rose-500 text-[11px] mt-1">{validationErrors.description}</p>
+            )}
           </div>
 
-          {/* Date Picker */}
-          <div>
-            <label
-              htmlFor="tx-date"
-              className="block text-xs font-semibold uppercase tracking-wider text-stone-600 mb-1.5"
-            >
-              Transaction Date *
+          {/* Category & Date */}
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="block text-[10px] font-semibold uppercase tracking-wider text-[var(--text-muted)] mb-1">
+                Category
+              </label>
+              <select
+                value={categoryId}
+                onChange={(e) => setCategoryId(e.target.value)}
+                className="w-full px-3 py-2 bg-[var(--bg-card-subtle)] border border-[var(--border-subtle)] rounded-xl text-[var(--text-primary)] focus:outline-hidden focus:border-indigo-500 transition-colors cursor-pointer"
+              >
+                {categories.map((cat) => (
+                  <option key={cat.id} value={cat.id} className="bg-[var(--bg-card)]">
+                    {cat.name}
+                  </option>
+                ))}
+              </select>
+              {validationErrors.categoryId && (
+                <p className="text-rose-500 text-[11px] mt-1">{validationErrors.categoryId}</p>
+              )}
+            </div>
+
+            <div>
+              <label className="block text-[10px] font-semibold uppercase tracking-wider text-[var(--text-muted)] mb-1">
+                Date
+              </label>
+              <input
+                type="date"
+                value={transactionDate}
+                onChange={(e) => setTransactionDate(e.target.value)}
+                className="w-full px-3 py-2 bg-[var(--bg-card-subtle)] border border-[var(--border-subtle)] rounded-xl text-[var(--text-primary)] focus:outline-hidden focus:border-indigo-500 transition-colors"
+              />
+              {validationErrors.transactionDate && (
+                <p className="text-rose-500 text-[11px] mt-1">{validationErrors.transactionDate}</p>
+              )}
+            </div>
+          </div>
+
+          {/* Recurring Checkbox */}
+          <div className="pt-1">
+            <label className="flex items-center gap-2 cursor-pointer select-none">
+              <input
+                type="checkbox"
+                checked={isRecurring}
+                onChange={(e) => setIsRecurring(e.target.checked)}
+                className="w-4 h-4 rounded border-[var(--border-subtle)] text-indigo-600 focus:ring-indigo-500"
+              />
+              <span className="text-[11px] text-[var(--text-secondary)]">
+                Mark as Recurring Mandatory Obligation (quarantined from daily spend)
+              </span>
             </label>
-            <input
-              id="tx-date"
-              type="date"
-              required
-              value={transactionDate}
-              onChange={(e) => setTransactionDate(e.target.value)}
-              className="w-full px-3.5 py-2.5 text-sm font-mono bg-white border border-stone-200/90 rounded-xl text-stone-900 focus:outline-hidden focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-colors shadow-xs"
-            />
           </div>
 
           {/* Action Buttons */}
-          <div className="pt-3 flex items-center justify-end gap-3 border-t border-stone-100">
+          <div className="pt-3 border-t border-[var(--border-subtle)] flex items-center justify-end gap-2">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2.5 text-sm font-medium text-stone-600 hover:text-stone-800 hover:bg-stone-100 rounded-xl transition-colors"
+              className="px-3.5 py-2 rounded-xl text-[var(--text-secondary)] hover:bg-[var(--bg-card-hover)] font-medium cursor-pointer"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={isSubmitting}
-              className="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 disabled:opacity-60 rounded-xl shadow-framer-xs hover:shadow-framer-sm transition-all focus:ring-2 focus:ring-indigo-500/20 focus:outline-hidden"
+              className="flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-500 dark:bg-white dark:text-black dark:hover:bg-zinc-200 text-white font-semibold rounded-xl shadow-framer-xs transition-all disabled:opacity-50 cursor-pointer"
             >
               {isSubmitting ? (
                 <>
-                  <Loader2 className="w-4 h-4 animate-spin" />
-                  Updating Runway...
+                  <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                  <span>Processing...</span>
                 </>
               ) : (
-                <>
-                  <Check className="w-4 h-4 stroke-[2.5]" />
-                  Record Transaction
-                </>
+                <span>Confirm &amp; Recalculate</span>
               )}
             </button>
           </div>
