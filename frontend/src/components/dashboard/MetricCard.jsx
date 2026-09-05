@@ -74,7 +74,7 @@ export function MetricCard({
 
         {/* Display Number */}
         <div className="flex flex-wrap items-baseline gap-2 mb-1.5">
-          <span className={`text-2xl sm:text-3xl font-bold font-mono tracking-tight ${style.text}`}>
+          <span className={`text-2xl sm:text-3xl font-extrabold font-display-num tracking-tight ${style.text}`}>
             {numericValue !== undefined ? (
               <AnimatedNumber value={numericValue} formatFn={formatFn} />
             ) : (

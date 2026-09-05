@@ -203,21 +203,21 @@ export function TransactionLedger({
                   <div className="hidden md:flex flex-col items-end">
                     {lifeHoursFormatted ? (
                       <span
-                        className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-mono font-semibold bg-violet-50 text-violet-700 border border-violet-200/60"
+                        className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-display-num font-semibold bg-violet-50 text-violet-700 border border-violet-200/60"
                         title="Life hours spent based on hourly wage"
                       >
                         <Clock className="w-3 h-3 text-violet-500" />
                         {lifeHoursFormatted}
                       </span>
                     ) : (
-                      <span className="text-stone-300 font-mono text-xs">—</span>
+                      <span className="text-stone-300 font-display-num text-xs">—</span>
                     )}
                   </div>
 
                   {/* Formatted Amount */}
                   <div className="text-right">
                     <span
-                      className={`text-sm sm:text-base font-bold font-mono tracking-tight ${
+                      className={`text-sm sm:text-base font-extrabold font-display-num tracking-tight ${
                         isIncome ? 'text-emerald-600' : 'text-stone-900'
                       }`}
                     >
@@ -225,7 +225,7 @@ export function TransactionLedger({
                       {formatCurrency(tx.amount)}
                     </span>
                     {lifeHoursFormatted && (
-                      <span className="block md:hidden text-[10px] font-mono text-violet-600">
+                      <span className="block md:hidden text-[10px] font-display-num text-violet-600">
                         {lifeHoursFormatted} work
                       </span>
                     )}

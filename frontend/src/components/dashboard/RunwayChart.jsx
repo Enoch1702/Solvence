@@ -194,13 +194,13 @@ export function RunwayChart({ runwayData }) {
         <div className="flex items-center gap-5">
           <div>
             <span className="text-stone-500 mr-1.5">Projected Balance:</span>
-            <span className="font-mono font-bold text-stone-900">
+            <span className="font-display-num font-bold text-stone-900">
               {formatCurrency(activePoint.projectedBalance)}
             </span>
           </div>
           <div>
             <span className="text-stone-500 mr-1.5">Daily Safe Spend:</span>
-            <span className="font-mono font-semibold text-indigo-700">
+            <span className="font-display-num font-bold text-indigo-700">
               {formatCurrency(activePoint.safeDailySpend)}/day
             </span>
           </div>

@@ -95,10 +95,17 @@ export function RunwayHero({ runwayData }) {
               Safe Daily Spend
             </span>
             <div className="flex items-baseline gap-3">
-              <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold font-mono tracking-tight text-stone-900">
+              <h2 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold font-display-num tracking-tight text-stone-900">
+                <span className="text-stone-300 font-normal mr-1 text-3xl sm:text-4xl lg:text-5xl">₹</span>
                 <AnimatedNumber
                   value={safeDailySpend}
-                  formatFn={(v) => formatCurrency(v, { showFraction: true })}
+                  formatFn={(v) => {
+                    const num = typeof v === 'string' ? parseFloat(v) : v;
+                    return new Intl.NumberFormat('en-IN', {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2,
+                    }).format(num || 0);
+                  }}
                 />
               </h2>
               <span className="text-sm sm:text-base font-semibold text-indigo-600 bg-indigo-50/80 px-2.5 py-1 rounded-lg border border-indigo-100">
@@ -117,7 +124,7 @@ export function RunwayHero({ runwayData }) {
                 <span className="block text-[11px] font-semibold uppercase text-stone-500 tracking-wider">
                   Liquid Reserve
                 </span>
-                <span className="text-base sm:text-lg font-bold font-mono text-emerald-700">
+                <span className="text-base sm:text-lg font-bold font-display-num text-emerald-700">
                   <AnimatedNumber
                     value={liquidReserve}
                     formatFn={(v) => formatCurrency(v, { showFraction: false })}
@@ -130,7 +137,7 @@ export function RunwayHero({ runwayData }) {
                 <span className="block text-[11px] font-semibold uppercase text-stone-500 tracking-wider">
                   Committed Bills
                 </span>
-                <span className="text-base sm:text-lg font-bold font-mono text-amber-700">
+                <span className="text-base sm:text-lg font-bold font-display-num text-amber-700">
                   <AnimatedNumber
                     value={committedBills}
                     formatFn={(v) => formatCurrency(v, { showFraction: false })}
@@ -184,18 +191,18 @@ export function RunwayHero({ runwayData }) {
             <div className="flex items-center gap-1.5">
               <ShieldCheck className="w-4 h-4 text-emerald-600" />
               <span>
-                Net Available Cash: <strong className="font-mono text-stone-800">{formatCurrency(availableCash)}</strong>
+                Net Available Cash: <strong className="font-display-num font-bold text-stone-800">{formatCurrency(availableCash)}</strong>
               </span>
             </div>
 
             <div className="flex items-center gap-4">
               <div className="flex items-center gap-1">
                 <TrendingUp className="w-3.5 h-3.5 text-emerald-600" />
-                <span>Inflows: <strong className="font-mono text-emerald-700">+{formatCurrency(totalIncome)}</strong></span>
+                <span>Inflows: <strong className="font-display-num font-bold text-emerald-700">+{formatCurrency(totalIncome)}</strong></span>
               </div>
               <div className="flex items-center gap-1">
                 <span className="w-1.5 h-1.5 rounded-full bg-stone-300" />
-                <span>Outflows: <strong className="font-mono text-rose-700">-{formatCurrency(totalExpenses)}</strong></span>
+                <span>Outflows: <strong className="font-display-num font-bold text-rose-700">-{formatCurrency(totalExpenses)}</strong></span>
               </div>
             </div>
           </div>

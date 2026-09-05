@@ -42,7 +42,7 @@ export function UpcomingObligationsCard({ runwayData }) {
         </div>
 
         <div className="my-3">
-          <span className="text-2xl sm:text-3xl font-bold font-mono tracking-tight text-stone-900">
+          <span className="text-2xl sm:text-3xl font-extrabold font-display-num tracking-tight text-stone-900">
             {formatCurrency(committedBills)}
           </span>
           <p className="text-xs text-stone-500 mt-1">

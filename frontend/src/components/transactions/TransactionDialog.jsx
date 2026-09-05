@@ -170,7 +170,7 @@ export function TransactionDialog({
               Amount (INR) *
             </label>
             <div className="relative inline-flex items-center justify-center max-w-xs w-full">
-              <span className="text-2xl sm:text-3xl font-mono font-bold text-stone-400 mr-2">
+              <span className="text-2xl sm:text-3xl font-display-num font-bold text-stone-400 mr-2">
                 ₹
               </span>
               <input
@@ -183,7 +183,7 @@ export function TransactionDialog({
                 placeholder="0.00"
                 value={amount}
                 onChange={(e) => setAmount(e.target.value)}
-                className="w-full text-center text-3xl sm:text-4xl font-mono font-bold bg-transparent text-stone-900 placeholder:text-stone-300 focus:outline-hidden"
+                className="w-full text-center text-3xl sm:text-4xl font-display-num font-bold bg-transparent text-stone-900 placeholder:text-stone-300 focus:outline-hidden"
               />
             </div>
           </div>

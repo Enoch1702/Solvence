@@ -88,7 +88,7 @@ export function FinancialSummaryGrid({ runwayData, loading }) {
             <span className="text-[11px] font-semibold text-stone-500 uppercase tracking-wider block mb-1">
               Opening Balance
             </span>
-            <span className="font-mono text-sm sm:text-base font-semibold text-stone-800">
+            <span className="font-display-num text-sm sm:text-base font-bold text-stone-800">
               {formatCurrency(openingBalance)}
             </span>
             <span className="block text-[10px] text-stone-400 mt-0.5">Cycle baseline</span>
@@ -101,7 +101,7 @@ export function FinancialSummaryGrid({ runwayData, loading }) {
             </span>
             <div className="flex items-center gap-1.5">
               <ArrowUpRight className="w-4 h-4 text-emerald-600" />
-              <span className="font-mono text-sm sm:text-base font-semibold text-emerald-700">
+              <span className="font-display-num text-sm sm:text-base font-bold text-emerald-700">
                 +{formatCurrency(totalIncome)}
               </span>
             </div>
@@ -115,7 +115,7 @@ export function FinancialSummaryGrid({ runwayData, loading }) {
             </span>
             <div className="flex items-center gap-1.5">
               <ArrowDownRight className="w-4 h-4 text-rose-600" />
-              <span className="font-mono text-sm sm:text-base font-semibold text-rose-700">
+              <span className="font-display-num text-sm sm:text-base font-bold text-rose-700">
                 -{formatCurrency(totalExpenses)}
               </span>
             </div>
@@ -129,7 +129,7 @@ export function FinancialSummaryGrid({ runwayData, loading }) {
             </span>
             <div className="flex items-center gap-1.5">
               <Briefcase className="w-4 h-4 text-stone-500" />
-              <span className="font-mono text-sm sm:text-base font-semibold text-stone-800">
+              <span className="font-display-num text-sm sm:text-base font-bold text-stone-800">
                 {formatCurrency(hourlyRate)}/hr
               </span>
             </div>
