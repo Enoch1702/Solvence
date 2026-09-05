@@ -1,34 +1,130 @@
 @import "tailwindcss";
 
 @layer base {
-  body {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  :root {
+    --canvas-bg: #fbfbfa;
+    --surface-bg: #ffffff;
+    --border-subtle: rgba(15, 23, 42, 0.07);
+    --border-hover: rgba(15, 23, 42, 0.12);
   }
 
-  /* Ensure all monospace numbers are strictly tabular for perfect ledger alignment */
+  body {
+    background-color: var(--canvas-bg);
+    color: #0f172a;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11", "tnum";
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Strict tabular numbers for stable, non-jittery financial figures */
   .font-mono,
   .tabular-nums {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
     font-variant-numeric: tabular-nums;
   }
 }
 
-/* Custom scrollbars for dense data ledgers */
+/* Framer-inspired ambient shadows */
+.shadow-framer-xs {
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04), 0 1px 3px rgba(15, 23, 42, 0.02);
+}
+
+.shadow-framer-sm {
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.05), 0 6px 16px -4px rgba(15, 23, 42, 0.04);
+}
+
+.shadow-framer-md {
+  box-shadow: 0 4px 6px -1px rgba(15, 23, 42, 0.04), 0 12px 28px -6px rgba(15, 23, 42, 0.07);
+}
+
+.shadow-framer-lg {
+  box-shadow: 0 10px 15px -3px rgba(15, 23, 42, 0.05), 0 24px 48px -12px rgba(15, 23, 42, 0.1);
+}
+
+.shadow-glow-emerald {
+  box-shadow: 0 0 24px -4px rgba(16, 185, 129, 0.25);
+}
+
+.shadow-glow-indigo {
+  box-shadow: 0 0 28px -4px rgba(99, 102, 241, 0.25);
+}
+
+/* Shimmer animation for skeleton loaders */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.animate-shimmer {
+  background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.8s ease-in-out infinite;
+}
+
+/* Subtle entrance fade */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Subtle pulse for live status and current-day charts */
+@keyframes pulseSubtle {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.15);
+    opacity: 0.75;
+  }
+}
+
+.animate-pulse-subtle {
+  animation: pulseSubtle 2.5s ease-in-out infinite;
+}
+
+/* Clean minimal scrollbars */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #f1f5f9;
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
   background: #cbd5e1;
-  border-radius: 3px;
+  border-radius: 9999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
   background: #94a3b8;
+}
+
+/* Reduced Motion Override for Accessibility */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
