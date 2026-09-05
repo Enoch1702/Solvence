@@ -3,13 +3,13 @@ import { CurrencyDisplay } from '../common/CurrencyDisplay';
 import { formatCurrency } from '../../utils/currency';
 import { formatDate } from '../../utils/date';
 
-export function RunwayChart({ runwayData }) {
+export function RunwayChart({ runwayData, customSafeDailySpend = null }) {
   const [hoverIndex, setHoverIndex] = useState(null);
   const svgRef = useRef(null);
 
   const liquidReserve = runwayData?.liquidReserve ?? 65000;
   const committedBills = runwayData?.committedBills ?? 0;
-  const safeDailySpend = runwayData?.safeDailySpend ?? 2600;
+  const safeDailySpend = customSafeDailySpend !== null ? customSafeDailySpend : (runwayData?.safeDailySpend ?? 2600);
   const daysRemaining = runwayData?.daysRemaining ?? 25;
   const cycleStart = runwayData?.cycleStart ?? '2026-09-01';
   const cycleEnd = runwayData?.cycleEnd ?? '2026-09-30';
@@ -126,7 +126,7 @@ export function RunwayChart({ runwayData }) {
   ];
 
   return (
-    <div className="saas-card p-5 sm:p-6 bg-[var(--bg-card)] border border-[var(--border-subtle)] shadow-framer-xs">
+    <div className="saas-glass-card p-5 sm:p-6 shadow-framer-md">
       {/* Chart Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[var(--border-subtle)]">
         <div>
@@ -134,7 +134,7 @@ export function RunwayChart({ runwayData }) {
             <h3 className="text-sm font-semibold text-[var(--text-primary)]">
               Cashflow &amp; Runway Trajectory
             </h3>
-            <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-indigo-500/10 text-indigo-500 dark:text-indigo-400 border border-indigo-500/20">
+            <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-500/20">
               30-Day Model
             </span>
           </div>
@@ -145,7 +145,7 @@ export function RunwayChart({ runwayData }) {
 
         {/* Live Hover Stat Callout */}
         {activePoint && (
-          <div className="flex items-center gap-3 bg-[var(--bg-card-subtle)] px-3 py-1.5 rounded-xl border border-[var(--border-subtle)]">
+          <div className="flex items-center gap-3 bg-[var(--bg-card-subtle)] px-3 py-1.5 rounded-xl border border-[var(--border-subtle)] shadow-xs">
             <div>
               <span className="block text-[10px] uppercase font-semibold text-[var(--text-muted)]">
                 {activePoint.isToday ? 'Today · Projected' : formatDate(activePoint.date)}
@@ -161,7 +161,7 @@ export function RunwayChart({ runwayData }) {
               <span className="block text-[10px] uppercase font-semibold text-[var(--text-muted)]">
                 Spend Velocity
               </span>
-              <span className="text-xs font-semibold font-display-num text-indigo-500 dark:text-indigo-400">
+              <span className="text-xs font-semibold font-display-num text-indigo-600 dark:text-indigo-400">
                 {formatCurrency(safeDailySpend)}/d
               </span>
             </div>
@@ -181,8 +181,8 @@ export function RunwayChart({ runwayData }) {
           <defs>
             {/* Smooth ethereal area gradient */}
             <linearGradient id="copilotAreaGrad" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#6366f1" stopOpacity="0.22" />
-              <stop offset="60%" stopColor="#6366f1" stopOpacity="0.04" />
+              <stop offset="0%" stopColor="#6366f1" stopOpacity="0.25" />
+              <stop offset="60%" stopColor="#6366f1" stopOpacity="0.05" />
               <stop offset="100%" stopColor="#6366f1" stopOpacity="0.0" />
             </linearGradient>
 
@@ -196,7 +196,7 @@ export function RunwayChart({ runwayData }) {
             </filter>
           </defs>
 
-          {/* Horizontal Grid Hairlines */}
+          {/* Horizontal Grid Hairlines with crisp light/dark visibility */}
           {yTicks.map((tick, i) => {
             const y = getY(tick);
             return (
@@ -207,7 +207,7 @@ export function RunwayChart({ runwayData }) {
                   x2={width - padding.right}
                   y2={y}
                   stroke="currentColor"
-                  className="text-zinc-200 dark:text-zinc-800"
+                  className="text-slate-200 dark:text-zinc-800/80"
                   strokeDasharray="4 4"
                   strokeWidth="1"
                 />
@@ -215,7 +215,7 @@ export function RunwayChart({ runwayData }) {
                   x={padding.left - 10}
                   y={y + 4}
                   textAnchor="end"
-                  className="text-[10px] fill-zinc-400 dark:fill-zinc-600 font-display-num"
+                  className="text-[10px] fill-slate-500 dark:fill-slate-400 font-display-num font-medium"
                 >
                   ₹{Math.round(tick).toLocaleString('en-IN')}
                 </text>
@@ -247,7 +247,7 @@ export function RunwayChart({ runwayData }) {
                 stroke="#6366f1"
                 strokeWidth="1"
                 strokeDasharray="2 2"
-                opacity="0.6"
+                opacity="0.7"
               />
               <circle
                 cx={getX(currentDay - 1)}
@@ -260,7 +260,7 @@ export function RunwayChart({ runwayData }) {
                 cy={getY(points[currentDay - 1]?.projectedBalance || liquidReserve)}
                 r="8"
                 fill="#6366f1"
-                opacity="0.25"
+                opacity="0.3"
                 className="animate-ping"
               />
             </g>
@@ -275,7 +275,7 @@ export function RunwayChart({ runwayData }) {
                 x2={getX(hoverIndex)}
                 y2={height - padding.bottom}
                 stroke="currentColor"
-                className="text-zinc-400 dark:text-zinc-500"
+                className="text-slate-400 dark:text-slate-400"
                 strokeWidth="1"
               />
               <circle
@@ -297,7 +297,7 @@ export function RunwayChart({ runwayData }) {
                 x={getX(p.day - 1)}
                 y={height - padding.bottom + 20}
                 textAnchor="middle"
-                className="text-[10px] fill-zinc-400 dark:fill-zinc-500 font-display-num"
+                className="text-[10px] fill-slate-500 dark:fill-slate-400 font-display-num font-medium"
               >
                 Day {p.day}
               </text>

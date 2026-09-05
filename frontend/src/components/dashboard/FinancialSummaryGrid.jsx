@@ -73,8 +73,8 @@ export function FinancialSummaryGrid({ runwayData, loading }) {
         />
       </div>
 
-      {/* Cashflow Flow Reconciliation Strip (Linear / Ramp style) */}
-      <div className="saas-card p-4 bg-[var(--bg-card-subtle)] border border-[var(--border-subtle)]">
+      {/* Cashflow Flow Reconciliation Strip (Glass Panel) */}
+      <div className="saas-glass-card p-4 shadow-framer-xs">
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 divide-y sm:divide-y-0 sm:divide-x divide-[var(--border-subtle)] text-center sm:text-left">
           <div className="sm:pr-4">
             <span className="block text-[10px] font-semibold text-[var(--text-muted)] uppercase tracking-wider">

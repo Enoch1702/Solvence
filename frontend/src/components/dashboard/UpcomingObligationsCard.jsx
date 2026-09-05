@@ -14,11 +14,11 @@ export function UpcomingObligationsCard({ runwayData }) {
   const hasCommittedBills = committedBills > 0;
 
   return (
-    <div className="saas-card p-5 sm:p-6 flex flex-col justify-between h-full bg-[var(--bg-card)] border border-[var(--border-subtle)] shadow-framer-xs">
+    <div className="saas-glass-card p-5 sm:p-6 flex flex-col justify-between h-full shadow-framer-md">
       <div>
         <div className="flex items-center justify-between gap-2 mb-4">
           <div className="flex items-center gap-2.5">
-            <div className={`w-8 h-8 rounded-xl flex items-center justify-center ${
+            <div className={`w-8 h-8 rounded-xl flex items-center justify-center shadow-xs ${
               hasCommittedBills
                 ? 'bg-amber-500/10 text-amber-500'
                 : 'bg-emerald-500/10 text-emerald-500'
@@ -62,14 +62,14 @@ export function UpcomingObligationsCard({ runwayData }) {
 
       <div className="pt-3 border-t border-[var(--border-subtle)] mt-4">
         {hasCommittedBills ? (
-          <div className="flex items-center gap-2 text-xs text-amber-600 dark:text-amber-400 bg-amber-500/10 p-2.5 rounded-xl border border-amber-500/20">
+          <div className="flex items-center gap-2 text-xs text-amber-600 dark:text-amber-400 bg-amber-500/10 p-2.5 rounded-xl border border-amber-500/20 shadow-xs">
             <ShieldAlert className="w-4 h-4 shrink-0" />
             <span>
               Quarantined from Safe Daily Spend to guarantee solvency.
             </span>
           </div>
         ) : (
-          <div className="flex items-center gap-2 text-xs text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 p-2.5 rounded-xl border border-emerald-500/20">
+          <div className="flex items-center gap-2 text-xs text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 p-2.5 rounded-xl border border-emerald-500/20 shadow-xs">
             <CheckCircle2 className="w-4 h-4 shrink-0" />
             <span>
               100% of liquid reserve ({formatCurrency(liquidReserve)}) is unencumbered.

@@ -1,5 +1,15 @@
-import { useState, useEffect, useCallback } from 'react';
-import { Plus, CheckCircle2, ShieldCheck, Sparkles, TrendingUp } from 'lucide-react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
+import {
+  Plus,
+  CheckCircle2,
+  ShieldCheck,
+  Sparkles,
+  TrendingUp,
+  Sliders,
+  CalendarCheck,
+  Clock,
+  Shield
+} from 'lucide-react';
 import api from '../services/api';
 import { RunwayHero } from '../components/dashboard/RunwayHero';
 import { FinancialSummaryGrid } from '../components/dashboard/FinancialSummaryGrid';
@@ -9,10 +19,16 @@ import { TransactionLedger } from '../components/transactions/TransactionLedger'
 import { TransactionDialog } from '../components/transactions/TransactionDialog';
 import { ErrorBanner } from '../components/common/ErrorBanner';
 import { RunwayHeroSkeleton } from '../components/common/Skeleton';
+import { CurrencyDisplay } from '../components/common/CurrencyDisplay';
 import { formatDate } from '../utils/date';
 import { formatCurrency } from '../utils/currency';
 
-export function Dashboard({ onCycleUpdate, activeView = 'dashboard', refreshTrigger = 0 }) {
+export function Dashboard({
+  onCycleUpdate,
+  activeView = 'dashboard',
+  onViewChange,
+  refreshTrigger = 0,
+}) {
   const [runwayData, setRunwayData] = useState(null);
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -24,6 +40,9 @@ export function Dashboard({ onCycleUpdate, activeView = 'dashboard', refreshTrig
   const [deletingId, setDeletingId] = useState(null);
   const [toastMessage, setToastMessage] = useState(null);
 
+  // Runway Scenario Simulator State
+  const [simulatedSpend, setSimulatedSpend] = useState(2600);
+
   const loadAllData = useCallback(async () => {
     try {
       setError(null);
@@ -34,6 +53,9 @@ export function Dashboard({ onCycleUpdate, activeView = 'dashboard', refreshTrig
 
       setRunwayData(runwayRes);
       setTransactions(txRes);
+      if (runwayRes.safeDailySpend) {
+        setSimulatedSpend(runwayRes.safeDailySpend);
+      }
 
       if (onCycleUpdate && runwayRes.cycleStart && runwayRes.cycleEnd) {
         onCycleUpdate(`${formatDate(runwayRes.cycleStart)} - ${formatDate(runwayRes.cycleEnd)}`);
@@ -95,6 +117,16 @@ export function Dashboard({ onCycleUpdate, activeView = 'dashboard', refreshTrig
     }
   }
 
+  // Simulation calculations
+  const simResults = useMemo(() => {
+    if (!runwayData) return null;
+    const available = (runwayData.liquidReserve || 0) - (runwayData.committedBills || 0);
+    const spend = Math.max(100, simulatedSpend);
+    const simDays = Math.max(0, Math.floor(available / spend));
+    const deltaDays = simDays - (runwayData.daysRemaining || 25);
+    return { simDays, deltaDays, spend };
+  }, [runwayData, simulatedSpend]);
+
   return (
     <div className="space-y-6 sm:space-y-8 animate-fade-in-up pb-12">
       {/* Toast Notification */}
@@ -126,8 +158,8 @@ export function Dashboard({ onCycleUpdate, activeView = 'dashboard', refreshTrig
           {/* Copilot-Style Smart Financial Intelligence Feed */}
           {runwayData && (
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="saas-card p-4 bg-[var(--bg-card-subtle)] border border-[var(--border-subtle)] flex items-start gap-3">
-                <div className="p-2 rounded-xl bg-emerald-500/10 text-emerald-500 shrink-0">
+              <div className="saas-glass-card p-4 flex items-start gap-3 shadow-framer-xs">
+                <div className="p-2 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 shrink-0">
                   <ShieldCheck className="w-4 h-4" />
                 </div>
                 <div>
@@ -135,32 +167,32 @@ export function Dashboard({ onCycleUpdate, activeView = 'dashboard', refreshTrig
                     100% Reserve Protected
                   </h5>
                   <p className="text-[11px] text-[var(--text-secondary)] mt-0.5 leading-relaxed">
-                    Zero committed bills due this cycle. All {formatCurrency(runwayData.liquidReserve)} is unencumbered.
+                    Zero committed bills due this cycle. All {formatCurrency(runwayData.liquidReserve)} remains unencumbered.
                   </p>
                 </div>
               </div>
 
-              <div className="saas-card p-4 bg-[var(--bg-card-subtle)] border border-[var(--border-subtle)] flex items-start gap-3">
-                <div className="p-2 rounded-xl bg-indigo-500/10 text-indigo-500 shrink-0">
+              <div className="saas-glass-card p-4 flex items-start gap-3 shadow-framer-xs">
+                <div className="p-2 rounded-xl bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 shrink-0">
                   <Sparkles className="w-4 h-4" />
                 </div>
                 <div>
                   <h5 className="text-xs font-semibold text-[var(--text-primary)]">
-                    Safe Velocity Cap
+                    Safe Daily Limit
                   </h5>
                   <p className="text-[11px] text-[var(--text-secondary)] mt-0.5 leading-relaxed">
-                    Allocate up to {formatCurrency(runwayData.safeDailySpend)}/day over the remaining {runwayData.daysRemaining} days without risk.
+                    Allocate up to {formatCurrency(runwayData.safeDailySpend)}/day over the next {runwayData.daysRemaining} days safely.
                   </p>
                 </div>
               </div>
 
-              <div className="saas-card p-4 bg-[var(--bg-card-subtle)] border border-[var(--border-subtle)] flex items-start gap-3">
-                <div className="p-2 rounded-xl bg-violet-500/10 text-violet-500 shrink-0">
+              <div className="saas-glass-card p-4 flex items-start gap-3 shadow-framer-xs">
+                <div className="p-2 rounded-xl bg-violet-500/10 text-violet-600 dark:text-violet-400 shrink-0">
                   <TrendingUp className="w-4 h-4" />
                 </div>
                 <div>
                   <h5 className="text-xs font-semibold text-[var(--text-primary)]">
-                    Positive Net Inflow
+                    Positive Cash Velocity
                   </h5>
                   <p className="text-[11px] text-[var(--text-secondary)] mt-0.5 leading-relaxed">
                     +{formatCurrency(runwayData.totalIncome)} credited this cycle, boosting runway life hours to {runwayData.lifeHoursRemaining?.toFixed(1) || '0'}h.
@@ -180,7 +212,7 @@ export function Dashboard({ onCycleUpdate, activeView = 'dashboard', refreshTrig
             </div>
           </div>
 
-          {/* Activity Ledger */}
+          {/* Compact Recent Activity Stream (with link to dedicated ledger) */}
           <div>
             <TransactionLedger
               transactions={transactions}
@@ -188,35 +220,38 @@ export function Dashboard({ onCycleUpdate, activeView = 'dashboard', refreshTrig
               onDelete={handleDeleteTransaction}
               onNewTransaction={() => setIsDialogOpen(true)}
               deletingId={deletingId}
+              isCompact={true}
+              onViewAll={() => onViewChange && onViewChange('transactions')}
             />
           </div>
         </>
       )}
 
       {/* ========================================================================= */}
-      {/* VIEW 2: RUNWAY ANALYSIS */}
+      {/* VIEW 2: RUNWAY ANALYSIS & INTERACTIVE SCENARIO SIMULATOR */}
       {/* ========================================================================= */}
       {activeView === 'runway' && (
         <div className="space-y-6">
-          <div className="saas-card p-6 bg-[var(--bg-card)] border border-[var(--border-subtle)] flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          {/* Header */}
+          <div className="saas-glass-card p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-framer-md">
             <div>
               <div className="flex items-center gap-2 mb-1">
-                <span className="p-1.5 rounded-lg bg-indigo-500/10 text-indigo-500">
+                <span className="p-1.5 rounded-lg bg-indigo-500/10 text-indigo-600 dark:text-indigo-400">
                   <Sparkles className="w-4 h-4" />
                 </span>
                 <h2 className="text-lg font-semibold tracking-tight text-[var(--text-primary)]">
-                  Forward Cashflow &amp; Runway Model
+                  Forward Cashflow &amp; Runway Simulator
                 </h2>
               </div>
               <p className="text-xs text-[var(--text-secondary)]">
-                Burn trajectory ensuring safe daily discretionary spend protects all recurring commitments.
+                Simulate burn trajectories and stress-test daily discretionary budgets against cycle completion.
               </p>
             </div>
 
-            <div className="flex items-center gap-4 bg-[var(--bg-card-subtle)] px-4 py-2 rounded-xl border border-[var(--border-subtle)]">
+            <div className="flex items-center gap-4 bg-[var(--bg-card-subtle)] px-4 py-2 rounded-xl border border-[var(--border-subtle)] shadow-xs">
               <div>
-                <span className="block text-[10px] uppercase font-bold text-[var(--text-muted)]">Safe Daily Spend</span>
-                <span className="text-base font-bold font-display-num text-indigo-500 dark:text-indigo-400">
+                <span className="block text-[10px] uppercase font-bold text-[var(--text-muted)]">Target Velocity</span>
+                <span className="text-base font-bold font-display-num text-indigo-600 dark:text-indigo-400">
                   {formatCurrency(runwayData?.safeDailySpend || 0)}/day
                 </span>
               </div>
@@ -230,12 +265,122 @@ export function Dashboard({ onCycleUpdate, activeView = 'dashboard', refreshTrig
             </div>
           </div>
 
-          {/* Full-width Trajectory Chart */}
-          <RunwayChart runwayData={runwayData} />
+          {/* Interactive What-If Scenario Simulator Card */}
+          <div className="saas-glass-card p-6 shadow-framer-md border border-indigo-500/20">
+            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 pb-6 border-b border-[var(--border-subtle)]">
+              <div>
+                <div className="flex items-center gap-2">
+                  <Sliders className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
+                  <h3 className="text-sm font-semibold text-[var(--text-primary)]">
+                    Interactive Spend Scenario Engine
+                  </h3>
+                </div>
+                <p className="text-xs text-[var(--text-secondary)] mt-0.5">
+                  Adjust your simulated daily spend to see how your runway longevity dynamically changes.
+                </p>
+              </div>
+
+              {/* Preset Chips */}
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => setSimulatedSpend(1500)}
+                  className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
+                    simulatedSpend === 1500
+                      ? 'bg-indigo-600 text-white shadow-xs'
+                      : 'bg-[var(--bg-card-subtle)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] border border-[var(--border-subtle)]'
+                  }`}
+                >
+                  Lean (₹1,500/d)
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setSimulatedSpend(runwayData?.safeDailySpend || 2600)}
+                  className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
+                    simulatedSpend === (runwayData?.safeDailySpend || 2600)
+                      ? 'bg-indigo-600 text-white shadow-xs'
+                      : 'bg-[var(--bg-card-subtle)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] border border-[var(--border-subtle)]'
+                  }`}
+                >
+                  Balanced (₹{runwayData?.safeDailySpend || 2600}/d)
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setSimulatedSpend(3800)}
+                  className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
+                    simulatedSpend === 3800
+                      ? 'bg-indigo-600 text-white shadow-xs'
+                      : 'bg-[var(--bg-card-subtle)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] border border-[var(--border-subtle)]'
+                  }`}
+                >
+                  Stretch (₹3,800/d)
+                </button>
+              </div>
+            </div>
+
+            {/* Slider & Metrics */}
+            <div className="pt-6 grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
+              <div className="md:col-span-7 space-y-3">
+                <div className="flex items-center justify-between text-xs">
+                  <span className="text-[var(--text-muted)] font-medium">Simulated Daily Spend</span>
+                  <CurrencyDisplay
+                    amount={simulatedSpend}
+                    size="lg"
+                    className="text-indigo-600 dark:text-indigo-400 font-bold"
+                  />
+                </div>
+                <input
+                  type="range"
+                  min="500"
+                  max="6000"
+                  step="100"
+                  value={simulatedSpend}
+                  onChange={(e) => setSimulatedSpend(parseFloat(e.target.value))}
+                  className="w-full h-2 bg-zinc-200 dark:bg-zinc-800 rounded-lg appearance-none cursor-pointer accent-indigo-600"
+                />
+                <div className="flex justify-between text-[10px] text-[var(--text-muted)] font-display-num">
+                  <span>₹500/day</span>
+                  <span>₹2,600/day (Baseline)</span>
+                  <span>₹6,000/day</span>
+                </div>
+              </div>
+
+              <div className="md:col-span-5 p-4 rounded-xl bg-[var(--bg-card-subtle)] border border-[var(--border-subtle)] flex items-center justify-between">
+                <div>
+                  <span className="block text-[10px] uppercase font-bold text-[var(--text-muted)]">
+                    Simulated Runway
+                  </span>
+                  <span className="text-2xl font-bold font-display-num text-[var(--text-primary)]">
+                    {simResults?.simDays || 0} days
+                  </span>
+                  <p className="text-[11px] text-[var(--text-muted)] mt-0.5">
+                    {simResults?.deltaDays >= 0 ? (
+                      <span className="text-emerald-600 dark:text-emerald-400 font-medium">
+                        +{simResults.deltaDays}d buffer past cycle end
+                      </span>
+                    ) : (
+                      <span className="text-rose-500 font-medium">
+                        {simResults?.deltaDays}d short of cycle end
+                      </span>
+                    )}
+                  </p>
+                </div>
+                <div className="w-10 h-10 rounded-xl bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 flex items-center justify-center">
+                  <Clock className="w-5 h-5" />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Full-width Trajectory Chart with Simulated Burn Slope */}
+          <RunwayChart
+            runwayData={runwayData}
+            customSafeDailySpend={simulatedSpend}
+          />
 
           {/* Mathematical Decomposition */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="saas-card p-6 bg-[var(--bg-card)] border border-[var(--border-subtle)]">
+            <div className="saas-glass-card p-6 shadow-framer-xs">
               <span className="text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wider block mb-2">
                 1. Liquid Reserve Base
               </span>
@@ -247,7 +392,7 @@ export function Dashboard({ onCycleUpdate, activeView = 'dashboard', refreshTrig
               </p>
             </div>
 
-            <div className="saas-card p-6 bg-[var(--bg-card)] border border-[var(--border-subtle)]">
+            <div className="saas-glass-card p-6 shadow-framer-xs">
               <span className="text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wider block mb-2">
                 2. Committed Obligations
               </span>
@@ -259,11 +404,11 @@ export function Dashboard({ onCycleUpdate, activeView = 'dashboard', refreshTrig
               </p>
             </div>
 
-            <div className="saas-card p-6 bg-[var(--bg-card)] border border-[var(--border-subtle)]">
+            <div className="saas-glass-card p-6 shadow-framer-xs">
               <span className="text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wider block mb-2">
                 3. Daily Safe Velocity
               </span>
-              <p className="text-2xl font-bold font-display-num text-indigo-500 dark:text-indigo-400 mb-1">
+              <p className="text-2xl font-bold font-display-num text-indigo-600 dark:text-indigo-400 mb-1">
                 {formatCurrency(runwayData?.safeDailySpend || 0)}/day
               </p>
               <p className="text-xs text-[var(--text-secondary)]">
@@ -275,17 +420,17 @@ export function Dashboard({ onCycleUpdate, activeView = 'dashboard', refreshTrig
       )}
 
       {/* ========================================================================= */}
-      {/* VIEW 3: TRANSACTIONS LEDGER */}
+      {/* VIEW 3: DEDICATED TRANSACTIONS LEDGER & CATEGORIES */}
       {/* ========================================================================= */}
       {activeView === 'transactions' && (
         <div className="space-y-6">
-          <div className="saas-card p-6 bg-[var(--bg-card)] border border-[var(--border-subtle)] flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="saas-glass-card p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-framer-md">
             <div>
               <h2 className="text-lg font-semibold tracking-tight text-[var(--text-primary)]">
                 Financial Transactions Ledger
               </h2>
               <p className="text-xs text-[var(--text-secondary)] mt-0.5">
-                Complete historical record of income and expenditures with real-time runway impact.
+                Complete audit ledger of credits and debits with real-time category distribution and life-hour impacts.
               </p>
             </div>
             <button
@@ -298,54 +443,95 @@ export function Dashboard({ onCycleUpdate, activeView = 'dashboard', refreshTrig
             </button>
           </div>
 
+          {/* Full Pro Ledger with Category Totals */}
           <TransactionLedger
             transactions={transactions}
             loading={loading}
             onDelete={handleDeleteTransaction}
             onNewTransaction={() => setIsDialogOpen(true)}
             deletingId={deletingId}
+            isCompact={false}
           />
         </div>
       )}
 
       {/* ========================================================================= */}
-      {/* VIEW 4: COMMITTED OBLIGATIONS */}
+      {/* VIEW 4: COMMITTED OBLIGATIONS & OVERDRAFT SHIELD */}
       {/* ========================================================================= */}
       {activeView === 'committed' && (
         <div className="space-y-6">
-          <div className="saas-card p-6 bg-[var(--bg-card)] border border-[var(--border-subtle)] flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="saas-glass-card p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-framer-md">
             <div>
               <h2 className="text-lg font-semibold tracking-tight text-[var(--text-primary)]">
-                Committed Obligations &amp; Protection
+                Committed Obligations &amp; Shield Protocol
               </h2>
               <p className="text-xs text-[var(--text-secondary)] mt-0.5">
-                Mandatory bills and recurring commitments quarantined to safeguard your financial runway.
+                Mandatory recurring commitments quarantined in advance to safeguard 100% of your financial runway.
               </p>
+            </div>
+            <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 text-xs font-semibold">
+              <ShieldCheck className="w-4 h-4" />
+              <span>Overdraft Shield Active</span>
             </div>
           </div>
 
+          {/* Split: Upcoming Obligations Card & Protection Architecture */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <UpcomingObligationsCard runwayData={runwayData} />
-            <div className="saas-card p-6 bg-[var(--bg-card)] border border-[var(--border-subtle)] flex flex-col justify-between">
+
+            <div className="saas-glass-card p-6 flex flex-col justify-between shadow-framer-md">
               <div>
-                <h4 className="text-sm font-semibold text-[var(--text-primary)] mb-2">
-                  Solvence Protection Guarantee
+                <h4 className="text-sm font-semibold text-[var(--text-primary)] mb-2 flex items-center gap-2">
+                  <Shield className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
+                  <span>Solvence Protection Guarantee</span>
                 </h4>
                 <p className="text-xs text-[var(--text-secondary)] leading-relaxed">
-                  The Safe Runway engine automatically calculates:
+                  Unlike traditional budgeting apps that treat income as a single pool, Solvence quarantines committed obligations first:
                 </p>
-                <div className="mt-3 p-3 bg-[var(--bg-card-subtle)] rounded-xl border border-[var(--border-subtle)] text-xs font-mono text-[var(--text-primary)]">
+                <div className="mt-3 p-3.5 bg-[var(--bg-card-subtle)] rounded-xl border border-[var(--border-subtle)] text-xs font-mono text-[var(--text-primary)] leading-relaxed shadow-xs">
                   Safe Daily Spend = (Liquid Reserve − Committed Bills) ÷ Days Remaining
                 </div>
-                <p className="text-xs text-[var(--text-secondary)] mt-3 leading-relaxed">
-                  By strictly limiting daily spend to this number, your committed bills ({formatCurrency(runwayData?.committedBills || 0)}) will always be 100% covered when due.
-                </p>
+                <div className="mt-4 space-y-2 text-xs text-[var(--text-secondary)]">
+                  <div className="flex items-center gap-2">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
+                    <span>Upcoming bills are quarantined before discretionary spending is authorized.</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
+                    <span>Your unencumbered cash balance remains 100% protected through cycle end.</span>
+                  </div>
+                </div>
               </div>
 
-              <div className="pt-4 border-t border-[var(--border-subtle)] flex items-center gap-2 text-xs text-emerald-600 dark:text-emerald-400">
-                <ShieldCheck className="w-4 h-4" />
-                <span>Zero overdraft risk under current allocation.</span>
+              <div className="pt-4 border-t border-[var(--border-subtle)] flex items-center justify-between text-xs">
+                <span className="text-[var(--text-muted)]">Current Quarantine Ratio</span>
+                <strong className="text-[var(--text-primary)] font-display-num">
+                  {runwayData?.committedBills ? `${Math.round((runwayData.committedBills / runwayData.liquidReserve) * 100)}%` : '0% (Unencumbered)'}
+                </strong>
               </div>
+            </div>
+          </div>
+
+          {/* Recurring Schedule Table */}
+          <div className="saas-glass-card p-6 shadow-framer-md">
+            <div className="flex items-center justify-between pb-4 border-b border-[var(--border-subtle)] mb-4">
+              <div className="flex items-center gap-2">
+                <CalendarCheck className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
+                <h3 className="text-sm font-semibold text-[var(--text-primary)]">
+                  Obligations &amp; Subscriptions Cadence
+                </h3>
+              </div>
+              <span className="text-xs text-[var(--text-muted)]">
+                {runwayData?.committedBills > 0 ? 'Active Obligations' : 'No upcoming bills pending'}
+              </span>
+            </div>
+
+            <div className="p-8 text-center bg-[var(--bg-card-subtle)]/40 rounded-xl border border-dashed border-[var(--border-subtle)]">
+              <p className="text-xs text-[var(--text-secondary)] max-w-md mx-auto leading-relaxed">
+                {runwayData?.committedBills > 0
+                  ? `You have ${formatCurrency(runwayData.committedBills)} in recurring mandatory bills scheduled for deduction during this cycle.`
+                  : 'All recurring commitments for this cycle have been met or are unallocated. Your full reserve of ' + formatCurrency(runwayData?.liquidReserve || 0) + ' is discretionary.'}
+              </p>
             </div>
           </div>
         </div>

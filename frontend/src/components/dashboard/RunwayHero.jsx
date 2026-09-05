@@ -20,9 +20,9 @@ export function RunwayHero({ runwayData }) {
   const availablePct = Math.max(0, 100 - committedPct);
 
   return (
-    <div className="saas-card relative overflow-hidden p-6 sm:p-8 bg-[var(--bg-card)] border border-[var(--border-subtle)] shadow-framer-sm">
-      {/* Specular Ambient Glow (Copilot Style) */}
-      <div className="absolute top-0 right-1/4 w-96 h-32 bg-indigo-500/[0.04] dark:bg-indigo-500/[0.08] blur-3xl pointer-events-none -z-0" />
+    <div className="saas-glass-card relative overflow-hidden p-6 sm:p-8 shadow-framer-md">
+      {/* Specular Ambient Glow */}
+      <div className="absolute top-0 right-1/4 w-96 h-32 bg-indigo-500/[0.08] blur-3xl pointer-events-none -z-0" />
 
       <div className="relative z-10 flex flex-col gap-6">
         {/* Top Eyebrow & Status Row */}
@@ -36,9 +36,9 @@ export function RunwayHero({ runwayData }) {
 
           <div className="flex items-center gap-2">
             <span className="text-[11px] text-[var(--text-secondary)] font-medium">
-              Day 6 of 30 · {daysRemaining}d left
+              Day 6 of 30 · {daysRemaining}d remaining
             </span>
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 shadow-xs">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
               Optimal
             </span>
@@ -65,7 +65,7 @@ export function RunwayHero({ runwayData }) {
             </div>
 
             <p className="text-xs text-[var(--text-secondary)] leading-relaxed max-w-xl">
-              Calculated dynamically as <span className="font-semibold text-[var(--text-primary)]">(Liquid Reserve − Committed Bills) ÷ {daysRemaining} days</span>. You can spend up to this threshold daily without depleting committed obligations.
+              Calculated dynamically as <span className="font-semibold text-[var(--text-primary)]">(Liquid Reserve − Committed Bills) ÷ {daysRemaining} days</span>. You can safely spend up to this limit each day without risking any upcoming bills.
             </p>
           </div>
 
@@ -121,15 +121,15 @@ export function RunwayHero({ runwayData }) {
             </div>
           </div>
 
-          <div className="w-full h-2 rounded-full bg-zinc-200 dark:bg-zinc-800 overflow-hidden flex">
+          <div className="w-full h-2.5 rounded-full bg-zinc-200 dark:bg-zinc-800/80 overflow-hidden flex p-0.5 border border-[var(--border-subtle)]">
             <div
-              className="h-full bg-emerald-500 transition-all duration-500 ease-out"
+              className="h-full rounded-full bg-gradient-to-r from-emerald-500 to-teal-400 transition-all duration-500 ease-out"
               style={{ width: `${availablePct}%` }}
               title={`Available: ${formatCurrency(unencumberedCash)}`}
             />
             {committedPct > 0 && (
               <div
-                className="h-full bg-amber-500 transition-all duration-500 ease-out"
+                className="h-full rounded-full bg-amber-500 transition-all duration-500 ease-out"
                 style={{ width: `${committedPct}%` }}
                 title={`Committed: ${formatCurrency(committedBills)}`}
               />

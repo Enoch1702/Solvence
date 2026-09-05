@@ -27,7 +27,7 @@ export function AppShell({
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isDark, setIsDark] = useState(true);
 
-  // Initialize theme from document or localStorage
+  // Initialize theme from localStorage or document default
   useEffect(() => {
     const savedTheme = localStorage.getItem('solvence_theme');
     if (savedTheme === 'light') {
@@ -66,11 +66,11 @@ export function AppShell({
   const getBreadcrumbTitle = () => {
     switch (currentView) {
       case 'runway':
-        return 'Runway & Trajectory';
+        return 'Runway & Forward Simulator';
       case 'transactions':
-        return 'Activity Ledger';
+        return 'Activity Ledger & Categories';
       case 'committed':
-        return 'Committed Obligations';
+        return 'Committed Obligations & Shield';
       case 'dashboard':
       default:
         return 'Executive Overview';
@@ -78,11 +78,18 @@ export function AppShell({
   };
 
   return (
-    <div className="h-screen w-screen flex bg-[var(--bg-canvas)] text-[var(--text-primary)] overflow-hidden font-sans">
+    <div className="relative h-screen w-screen flex bg-[var(--bg-canvas)] text-[var(--text-primary)] overflow-hidden font-sans">
       {/* ========================================================================= */}
-      {/* 1. DESKTOP SAAS SIDEBAR (Linear / Copilot Standard) */}
+      {/* AMBIENT RADIAL MESH GLOW (Enables genuine frosted glass refraction) */}
       {/* ========================================================================= */}
-      <aside className="hidden lg:flex w-64 h-full bg-[var(--bg-card)] border-r border-[var(--border-subtle)] flex-col justify-between shrink-0 z-20">
+      <div className="fixed -top-40 -left-40 w-[550px] h-[550px] rounded-full bg-indigo-500/15 dark:bg-indigo-500/20 blur-[130px] pointer-events-none z-0" />
+      <div className="fixed top-1/3 -right-40 w-[600px] h-[600px] rounded-full bg-violet-500/10 dark:bg-violet-500/15 blur-[140px] pointer-events-none z-0" />
+      <div className="fixed -bottom-40 left-1/3 w-[520px] h-[520px] rounded-full bg-emerald-500/10 dark:bg-emerald-500/12 blur-[130px] pointer-events-none z-0" />
+
+      {/* ========================================================================= */}
+      {/* 1. DESKTOP SAAS SIDEBAR (Frosted Translucent Glass Layer) */}
+      {/* ========================================================================= */}
+      <aside className="hidden lg:flex w-64 h-full saas-glass-card rounded-none border-y-0 border-l-0 border-r border-[var(--border-subtle)] flex-col justify-between shrink-0 z-20">
         <div className="p-4 sm:p-5 flex flex-col flex-1 overflow-y-auto">
           {/* Workspace Switcher Header */}
           <div className="flex items-center gap-3 pb-4 border-b border-[var(--border-subtle)]">
@@ -94,7 +101,7 @@ export function AppShell({
                 <span className="font-semibold text-sm tracking-tight text-[var(--text-primary)] truncate">
                   Solvence
                 </span>
-                <span className="px-1.5 py-0.2 text-[9px] font-semibold tracking-wider uppercase bg-indigo-500/10 text-indigo-500 dark:text-indigo-400 rounded">
+                <span className="px-1.5 py-0.2 text-[9px] font-semibold tracking-wider uppercase bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 rounded">
                   OS
                 </span>
               </div>
@@ -109,7 +116,7 @@ export function AppShell({
             <button
               type="button"
               onClick={onNewTransaction}
-              className="w-full flex items-center justify-center gap-2 px-3.5 py-2 text-xs font-semibold text-white bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-700 dark:bg-white dark:text-black dark:hover:bg-zinc-200 rounded-xl shadow-framer-xs transition-all focus:ring-2 focus:ring-indigo-500/20 focus:outline-hidden cursor-pointer"
+              className="w-full flex items-center justify-center gap-2 px-3.5 py-2 text-xs font-semibold text-white bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-700 dark:bg-white dark:text-black dark:hover:bg-zinc-200 rounded-xl shadow-framer-xs transition-all cursor-pointer"
             >
               <Plus className="w-3.5 h-3.5 stroke-[2.5]" />
               <span>Record Transaction</span>
@@ -131,7 +138,7 @@ export function AppShell({
                   onClick={() => handleNavClick(item.id)}
                   className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-medium transition-all text-left cursor-pointer ${
                     isActive
-                      ? 'bg-indigo-500/10 dark:bg-white/[0.08] text-indigo-600 dark:text-white font-semibold'
+                      ? 'bg-indigo-500/10 dark:bg-white/[0.09] text-indigo-600 dark:text-white font-semibold shadow-xs'
                       : 'text-[var(--text-secondary)] hover:bg-[var(--bg-card-hover)] hover:text-[var(--text-primary)]'
                   }`}
                 >
@@ -158,7 +165,7 @@ export function AppShell({
                 <Calendar className="w-3.5 h-3.5" />
                 <span>Active Cycle</span>
               </span>
-              <span className="font-semibold text-indigo-500 dark:text-indigo-400">
+              <span className="font-semibold text-indigo-600 dark:text-indigo-400">
                 25d left
               </span>
             </div>
@@ -167,7 +174,7 @@ export function AppShell({
             </p>
           </div>
 
-          {/* User Account / Profile */}
+          {/* User Account / Engine Status */}
           <div className="flex items-center justify-between px-1">
             <div className="flex items-center gap-2 min-w-0">
               <div className="w-7 h-7 rounded-full bg-zinc-200 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 font-semibold text-xs flex items-center justify-center shrink-0">
@@ -177,7 +184,7 @@ export function AppShell({
                 <p className="text-xs font-medium text-[var(--text-primary)] truncate">
                   Personal Space
                 </p>
-                <p className="text-[10px] text-emerald-500 font-medium flex items-center gap-1">
+                <p className="text-[10px] text-emerald-600 dark:text-emerald-400 font-medium flex items-center gap-1">
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
                   Engine Live
                 </p>
@@ -190,9 +197,9 @@ export function AppShell({
       {/* ========================================================================= */}
       {/* 2. MAIN APP CONTENT CONTAINER */}
       {/* ========================================================================= */}
-      <div className="flex-1 flex flex-col h-full overflow-hidden">
-        {/* Sleek Global SaaS Top Header */}
-        <header className="h-14 border-b border-[var(--border-subtle)] bg-[var(--bg-card)]/80 backdrop-blur-md px-4 sm:px-6 flex items-center justify-between shrink-0 z-10">
+      <div className="flex-1 flex flex-col h-full overflow-hidden relative z-10">
+        {/* Sleek Global SaaS Top Header (Frosted Glass) */}
+        <header className="h-14 border-b border-[var(--border-subtle)] bg-[var(--bg-card)]/80 backdrop-blur-2xl px-4 sm:px-6 flex items-center justify-between shrink-0 z-10">
           {/* Left: Mobile Menu & Breadcrumbs */}
           <div className="flex items-center gap-3">
             <button
@@ -225,7 +232,7 @@ export function AppShell({
                 disabled
                 className="w-full pl-8 pr-12 py-1.5 text-xs bg-[var(--bg-card-subtle)] border border-[var(--border-subtle)] rounded-xl text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-hidden select-none cursor-default"
               />
-              <span className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[10px] font-mono px-1.5 py-0.5 rounded bg-[var(--bg-card)] text-[var(--text-muted)] border border-[var(--border-subtle)]">
+              <span className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[10px] font-mono px-1.5 py-0.5 rounded bg-[var(--bg-card-solid)] text-[var(--text-muted)] border border-[var(--border-subtle)]">
                 ⌘K
               </span>
             </div>
@@ -245,9 +252,9 @@ export function AppShell({
               type="button"
               onClick={toggleTheme}
               className="p-2 rounded-xl text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-card-hover)] border border-[var(--border-subtle)] transition-colors cursor-pointer"
-              title={isDark ? 'Switch to Framer Light Mode' : 'Switch to Copilot Dark Mode'}
+              title={isDark ? 'Switch to Framer Day Mode' : 'Switch to Copilot Night Mode'}
             >
-              {isDark ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-zinc-600" />}
+              {isDark ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-indigo-600" />}
             </button>
 
             {/* Manual Refresh */}
@@ -287,7 +294,7 @@ export function AppShell({
             className="fixed inset-0 bg-black/60 backdrop-blur-xs transition-opacity"
             onClick={() => setMobileMenuOpen(false)}
           />
-          <div className="relative flex-1 flex flex-col max-w-xs w-full bg-[var(--bg-card)] p-5 z-10 shadow-2xl border-r border-[var(--border-subtle)]">
+          <div className="relative flex-1 flex flex-col max-w-xs w-full saas-glass-card rounded-none p-5 z-10 shadow-2xl border-r border-[var(--border-subtle)]">
             <div className="flex items-center justify-between pb-4 border-b border-[var(--border-subtle)] mb-4">
               <div className="flex items-center gap-2">
                 <div className="w-7 h-7 rounded-lg bg-indigo-600 dark:bg-white text-white dark:text-black flex items-center justify-center">
@@ -315,7 +322,7 @@ export function AppShell({
                     onClick={() => handleNavClick(item.id)}
                     className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium text-left ${
                       isActive
-                        ? 'bg-indigo-500/10 text-indigo-500 dark:text-white font-semibold'
+                        ? 'bg-indigo-500/10 text-indigo-600 dark:text-white font-semibold'
                         : 'text-[var(--text-secondary)] hover:bg-[var(--bg-card-hover)]'
                     }`}
                   >

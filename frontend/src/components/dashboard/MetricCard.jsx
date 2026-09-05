@@ -19,7 +19,7 @@ export function MetricCard({
   };
 
   return (
-    <div className="saas-card saas-card-hover p-5 sm:p-6 flex flex-col justify-between group shadow-framer-xs">
+    <div className="saas-glass-card saas-glass-card-hover p-5 sm:p-6 flex flex-col justify-between group shadow-framer-sm">
       <div>
         {/* Top Card Bar */}
         <div className="flex items-center justify-between gap-2 mb-3">
@@ -27,7 +27,7 @@ export function MetricCard({
             {title}
           </span>
           {Icon && (
-            <div className="w-7 h-7 rounded-lg bg-[var(--bg-card-subtle)] border border-[var(--border-subtle)] flex items-center justify-center text-[var(--text-muted)] group-hover:text-[var(--text-primary)] transition-colors">
+            <div className="w-7 h-7 rounded-lg bg-[var(--bg-card-subtle)] border border-[var(--border-subtle)] flex items-center justify-center text-[var(--text-muted)] group-hover:text-[var(--text-primary)] transition-colors shadow-xs">
               <Icon className="w-3.5 h-3.5 stroke-[2]" />
             </div>
           )}

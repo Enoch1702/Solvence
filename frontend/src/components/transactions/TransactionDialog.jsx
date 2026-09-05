@@ -63,14 +63,14 @@ export function TransactionDialog({ isOpen, onClose, onSubmit, isSubmitting, err
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      {/* Frosted Backdrop */}
+      {/* Frosted Ambient Backdrop */}
       <div
-        className="fixed inset-0 bg-black/60 backdrop-blur-xs transition-opacity"
+        className="fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity"
         onClick={onClose}
       />
 
       {/* Modal Box */}
-      <div className="saas-card relative w-full max-w-md bg-[var(--bg-card)] border border-[var(--border-subtle)] shadow-2xl p-6 z-10 animate-fade-in-up">
+      <div className="saas-glass-card relative w-full max-w-md shadow-2xl p-6 z-10 animate-fade-in-up border border-[var(--border-subtle)]">
         {/* Header */}
         <div className="flex items-center justify-between pb-4 border-b border-[var(--border-subtle)]">
           <div>
@@ -185,7 +185,7 @@ export function TransactionDialog({ isOpen, onClose, onSubmit, isSubmitting, err
                 className="w-full px-3 py-2 bg-[var(--bg-card-subtle)] border border-[var(--border-subtle)] rounded-xl text-[var(--text-primary)] focus:outline-hidden focus:border-indigo-500 transition-colors cursor-pointer"
               >
                 {categories.map((cat) => (
-                  <option key={cat.id} value={cat.id} className="bg-[var(--bg-card)]">
+                  <option key={cat.id} value={cat.id} className="bg-[var(--bg-card-solid)] text-[var(--text-primary)]">
                     {cat.name}
                   </option>
                 ))}

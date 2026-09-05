@@ -25,6 +25,7 @@ export function App() {
     >
       <Dashboard
         activeView={currentView}
+        onViewChange={setCurrentView}
         refreshTrigger={refreshTrigger}
         onCycleUpdate={setCycleInfo}
       />
