@@ -120,7 +120,9 @@ export function Dashboard({
   // Simulation calculations
   const simResults = useMemo(() => {
     if (!runwayData) return null;
-    const available = (runwayData.liquidReserve || 0) - (runwayData.committedBills || 0);
+    const available =
+      runwayData.availableCash ??
+      ((runwayData.liquidReserve || 0) - (runwayData.committedBills || 0));
     const spend = Math.max(100, simulatedSpend);
     const simDays = Math.max(0, Math.floor(available / spend));
     const deltaDays = simDays - (runwayData.daysRemaining || 25);
@@ -195,7 +197,7 @@ export function Dashboard({
                     Positive Cash Velocity
                   </h5>
                   <p className="text-[11px] text-[var(--text-secondary)] mt-0.5 leading-relaxed">
-                    +{formatCurrency(runwayData.totalIncome)} credited this cycle, boosting runway life hours to {runwayData.lifeHoursRemaining?.toFixed(1) || '0'}h.
+                    +{formatCurrency(runwayData.totalIncome)} credited this cycle, boosting runway life hours to {(runwayData.lifeHoursRemaining ?? (runwayData.hourlyRate > 0 ? (runwayData.liquidReserve / runwayData.hourlyRate) : 0)).toFixed(1)}h.
                   </p>
                 </div>
               </div>

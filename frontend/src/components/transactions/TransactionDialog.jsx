@@ -27,6 +27,17 @@ export function TransactionDialog({ isOpen, onClose, onSubmit, isSubmitting, err
     }
   }, [isOpen, categoryId]);
 
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        onClose();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, onClose]);
+
   if (!isOpen) return null;
 
   const validate = () => {
@@ -70,11 +81,16 @@ export function TransactionDialog({ isOpen, onClose, onSubmit, isSubmitting, err
       />
 
       {/* Modal Box */}
-      <div className="saas-glass-card relative w-full max-w-md shadow-2xl p-6 z-10 animate-fade-in-up border border-[var(--border-subtle)]">
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="dialog-title"
+        className="saas-glass-card relative w-full max-w-md shadow-2xl p-6 z-10 animate-fade-in-up border border-[var(--border-subtle)]"
+      >
         {/* Header */}
         <div className="flex items-center justify-between pb-4 border-b border-[var(--border-subtle)]">
           <div>
-            <h3 className="text-base font-semibold text-[var(--text-primary)]">
+            <h3 id="dialog-title" className="text-base font-semibold text-[var(--text-primary)]">
               Record Financial Event
             </h3>
             <p className="text-xs text-[var(--text-secondary)] mt-0.5">

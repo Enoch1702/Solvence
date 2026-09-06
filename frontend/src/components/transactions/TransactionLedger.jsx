@@ -274,7 +274,7 @@ export function TransactionLedger({
 
                     {/* Life Hours Impact */}
                     <td className="py-3.5 px-4 text-right whitespace-nowrap font-display-num">
-                      {tx.lifeHoursImpact ? (
+                      {(tx.lifeHours !== null && tx.lifeHours !== undefined) || (tx.lifeHoursImpact !== null && tx.lifeHoursImpact !== undefined) ? (
                         <span
                           className={`text-xs font-semibold ${
                             isIncome
@@ -283,7 +283,7 @@ export function TransactionLedger({
                           }`}
                         >
                           {isIncome ? '+' : '-'}
-                          {formatLifeHours(tx.lifeHoursImpact)}
+                          {formatLifeHours(tx.lifeHours ?? tx.lifeHoursImpact)}
                         </span>
                       ) : (
                         <span className="text-[var(--text-muted)]">—</span>

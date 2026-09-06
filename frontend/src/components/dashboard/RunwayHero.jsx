@@ -10,10 +10,25 @@ export function RunwayHero({ runwayData }) {
     daysRemaining = 0,
     liquidReserve = 0,
     committedBills = 0,
-    unencumberedCash = 0,
     totalIncome = 0,
     totalExpenses = 0,
+    cycleStart,
+    cycleEnd,
   } = runwayData;
+
+  const unencumberedCash =
+    runwayData.availableCash ??
+    runwayData.unencumberedCash ??
+    Math.max(0, liquidReserve - committedBills);
+
+  // Dynamic cycle days computation matching backend CycleCalculator
+  let totalCycleDays = 30;
+  if (cycleStart && cycleEnd) {
+    const s = new Date(cycleStart);
+    const e = new Date(cycleEnd);
+    totalCycleDays = Math.round((e - s) / 86400000) + 1 || 30;
+  }
+  const currentDay = Math.max(1, totalCycleDays - daysRemaining + 1);
 
   const totalBuffer = liquidReserve > 0 ? liquidReserve : 1;
   const committedPct = Math.min(100, Math.max(0, Math.round((committedBills / totalBuffer) * 100)));
@@ -36,7 +51,7 @@ export function RunwayHero({ runwayData }) {
 
           <div className="flex items-center gap-2">
             <span className="text-[11px] text-[var(--text-secondary)] font-medium">
-              Day 6 of 30 · {daysRemaining}d remaining
+              Day {currentDay} of {totalCycleDays} · {daysRemaining}d remaining
             </span>
             <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 shadow-xs">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />

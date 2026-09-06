@@ -14,12 +14,13 @@ export function RunwayChart({ runwayData, customSafeDailySpend = null }) {
   const cycleStart = runwayData?.cycleStart ?? '2026-09-01';
   const cycleEnd = runwayData?.cycleEnd ?? '2026-09-30';
 
-  // Generate 30 daily projection points for the pay cycle
+  // Generate daily projection points for the pay cycle
   const { points, currentDay, totalDays } = useMemo(() => {
     const pts = [];
-    const numDays = 30;
-    const currDay = Math.max(1, numDays - daysRemaining + 1);
     const startDate = new Date(cycleStart);
+    const endDate = new Date(cycleEnd);
+    const numDays = Math.round((endDate - startDate) / 86400000) + 1 || 30;
+    const currDay = Math.max(1, numDays - daysRemaining + 1);
 
     for (let day = 1; day <= numDays; day++) {
       const pointDate = new Date(startDate);
@@ -50,7 +51,7 @@ export function RunwayChart({ runwayData, customSafeDailySpend = null }) {
     }
 
     return { points: pts, currentDay: currDay, totalDays: numDays };
-  }, [liquidReserve, committedBills, safeDailySpend, daysRemaining, cycleStart]);
+  }, [liquidReserve, committedBills, safeDailySpend, daysRemaining, cycleStart, cycleEnd]);
 
   const width = 800;
   const height = 300;
@@ -135,7 +136,7 @@ export function RunwayChart({ runwayData, customSafeDailySpend = null }) {
               Cashflow &amp; Runway Trajectory
             </h3>
             <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-500/20">
-              30-Day Model
+              {totalDays}-Day Model
             </span>
           </div>
           <p className="text-xs text-[var(--text-secondary)] mt-0.5">

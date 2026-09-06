@@ -18,17 +18,24 @@ export function FinancialSummaryGrid({ runwayData, loading }) {
   const {
     liquidReserve = 0,
     committedBills = 0,
-    unencumberedCash = 0,
-    lifeHoursRemaining = 0,
     hourlyRate = 300,
     openingBalance = 0,
     totalIncome = 0,
     totalExpenses = 0,
   } = runwayData;
 
+  const unencumberedCash =
+    runwayData.availableCash ??
+    runwayData.unencumberedCash ??
+    Math.max(0, liquidReserve - committedBills);
+
+  const effectiveLifeHours =
+    runwayData.lifeHoursRemaining ??
+    (hourlyRate > 0 ? liquidReserve / hourlyRate : 0);
+
   const hoursDisplay =
-    lifeHoursRemaining !== null && lifeHoursRemaining !== undefined
-      ? `${Number(lifeHoursRemaining).toFixed(1)}h`
+    effectiveLifeHours !== null && effectiveLifeHours !== undefined
+      ? `${Number(effectiveLifeHours).toFixed(1)}h`
       : '0.0h';
 
   return (
