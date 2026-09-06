@@ -53,6 +53,8 @@ apiClient.interceptors.response.use(
         message = 'Access forbidden: you do not have permission for this resource.';
       } else if (status === 404) {
         message = 'Requested resource was not found.';
+      } else if (status >= 500) {
+        message = 'Cannot connect to Solvence backend server. Please verify the backend is running on port 8080.';
       }
 
       // Only fire session expiry event on protected endpoints, never on login/register failures
