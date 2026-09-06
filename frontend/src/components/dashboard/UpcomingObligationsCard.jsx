@@ -14,7 +14,7 @@ export function UpcomingObligationsCard({ runwayData }) {
   const hasCommittedBills = committedBills > 0;
 
   return (
-    <div className="saas-glass-card p-5 sm:p-6 flex flex-col justify-between h-full shadow-framer-md">
+    <div className="saas-glass-card saas-glass-card-hover p-5 sm:p-6 flex flex-col justify-between h-full shadow-framer-md">
       <div>
         <div className="flex items-center justify-between gap-2 mb-4">
           <div className="flex items-center gap-2.5">

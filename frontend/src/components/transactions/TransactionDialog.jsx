@@ -76,7 +76,7 @@ export function TransactionDialog({ isOpen, onClose, onSubmit, isSubmitting, err
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       {/* Frosted Ambient Backdrop */}
       <div
-        className="fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity"
+        className="fixed inset-0 bg-black/60 backdrop-blur-sm animate-modal-backdrop"
         onClick={onClose}
       />
 
@@ -85,7 +85,7 @@ export function TransactionDialog({ isOpen, onClose, onSubmit, isSubmitting, err
         role="dialog"
         aria-modal="true"
         aria-labelledby="dialog-title"
-        className="saas-glass-card relative w-full max-w-md shadow-2xl p-6 z-10 animate-fade-in-up border border-[var(--border-subtle)]"
+        className="saas-glass-card relative w-full max-w-md shadow-2xl p-6 z-10 animate-modal-glide border border-[var(--border-subtle)]"
       >
         {/* Header */}
         <div className="flex items-center justify-between pb-4 border-b border-[var(--border-subtle)]">
@@ -100,7 +100,7 @@ export function TransactionDialog({ isOpen, onClose, onSubmit, isSubmitting, err
           <button
             type="button"
             onClick={onClose}
-            className="p-1 rounded-lg text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-card-hover)] cursor-pointer"
+            className="p-1.5 rounded-lg text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-card-hover)] active:scale-90 transition-all duration-200 ease-[cubic-bezier(0.16,1,0.3,1)] cursor-pointer"
           >
             <X className="w-5 h-5" />
           </button>
@@ -247,14 +247,14 @@ export function TransactionDialog({ isOpen, onClose, onSubmit, isSubmitting, err
             <button
               type="button"
               onClick={onClose}
-              className="px-3.5 py-2 rounded-xl text-[var(--text-secondary)] hover:bg-[var(--bg-card-hover)] font-medium cursor-pointer"
+              className="px-3.5 py-2 rounded-xl text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-card-hover)] active:scale-95 transition-all duration-200 ease-[cubic-bezier(0.16,1,0.3,1)] font-medium cursor-pointer"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={isSubmitting}
-              className="flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-500 dark:bg-white dark:text-black dark:hover:bg-zinc-200 text-white font-semibold rounded-xl shadow-framer-xs transition-all disabled:opacity-50 cursor-pointer"
+              className="flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-500 active:scale-[0.98] dark:bg-white dark:text-black dark:hover:bg-zinc-200 text-white font-semibold rounded-xl shadow-framer-xs hover:shadow-framer-md transition-all duration-200 ease-[cubic-bezier(0.16,1,0.3,1)] disabled:opacity-50 cursor-pointer"
             >
               {isSubmitting ? (
                 <>

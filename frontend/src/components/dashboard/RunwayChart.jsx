@@ -127,7 +127,7 @@ export function RunwayChart({ runwayData, customSafeDailySpend = null }) {
   ];
 
   return (
-    <div className="saas-glass-card p-5 sm:p-6 shadow-framer-md">
+    <div className="saas-glass-card saas-glass-card-hover p-5 sm:p-6 shadow-framer-md">
       {/* Chart Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[var(--border-subtle)]">
         <div>

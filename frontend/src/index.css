@@ -75,17 +75,32 @@ body {
   border: 1px solid var(--border-subtle);
   border-radius: 1rem;
   box-shadow: inset 0 1px 0 0 var(--specular-edge), 0 8px 32px 0 rgba(0, 0, 0, 0.04);
-  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+              background-color 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .dark .saas-glass-card {
   box-shadow: inset 0 1px 0 0 var(--specular-edge), 0 12px 36px 0 rgba(0, 0, 0, 0.45);
 }
 
+.saas-glass-card-hover {
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+              background-color 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
 .saas-glass-card-hover:hover {
   background-color: var(--bg-card-hover);
   border-color: var(--border-elevated);
-  transform: translateY(-1px);
+  transform: translateY(-2px);
+  box-shadow: inset 0 1px 0 0 var(--specular-edge), 0 16px 36px -8px rgba(0, 0, 0, 0.08);
+}
+
+.dark .saas-glass-card-hover:hover {
+  box-shadow: inset 0 1px 0 0 var(--specular-edge), 0 20px 48px -10px rgba(0, 0, 0, 0.60), 0 0 20px 0 var(--glow-indigo);
 }
 
 /* Legacy class alias for safety */
@@ -96,17 +111,32 @@ body {
   border: 1px solid var(--border-subtle);
   border-radius: 1rem;
   box-shadow: inset 0 1px 0 0 var(--specular-edge), 0 8px 32px 0 rgba(0, 0, 0, 0.04);
-  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+              background-color 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .dark .saas-card {
   box-shadow: inset 0 1px 0 0 var(--specular-edge), 0 12px 36px 0 rgba(0, 0, 0, 0.45);
 }
 
+.saas-card-hover {
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+              background-color 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
 .saas-card-hover:hover {
   background-color: var(--bg-card-hover);
   border-color: var(--border-elevated);
-  transform: translateY(-1px);
+  transform: translateY(-2px);
+  box-shadow: inset 0 1px 0 0 var(--specular-edge), 0 16px 36px -8px rgba(0, 0, 0, 0.08);
+}
+
+.dark .saas-card-hover:hover {
+  box-shadow: inset 0 1px 0 0 var(--specular-edge), 0 20px 48px -10px rgba(0, 0, 0, 0.60), 0 0 20px 0 var(--glow-indigo);
 }
 
 /* Framer-inspired whisper-soft ambient shadows */
@@ -140,6 +170,51 @@ body {
   background: linear-gradient(90deg, rgba(140,140,160,0.06) 25%, rgba(140,140,160,0.14) 50%, rgba(140,140,160,0.06) 75%);
   background-size: 200% 100%;
   animation: shimmer 1.8s ease-in-out infinite;
+}
+
+/* GitHub/Apple-style fluid view glide */
+@keyframes viewGlide {
+  0% {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-view-glide {
+  animation: viewGlide 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* GitHub-style modal scale and entrance */
+@keyframes modalGlide {
+  0% {
+    opacity: 0;
+    transform: scale(0.96) translateY(12px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.animate-modal-glide {
+  animation: modalGlide 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes modalBackdropFade {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.animate-modal-backdrop {
+  animation: modalBackdropFade 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 /* Subtle entrance animation */

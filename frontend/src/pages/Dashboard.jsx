@@ -133,7 +133,7 @@ export function Dashboard({
     <div className="space-y-6 sm:space-y-8 animate-fade-in-up pb-12">
       {/* Toast Notification */}
       {toastMessage && (
-        <div className="fixed top-20 right-6 z-50 flex items-center gap-2 px-4 py-2.5 bg-emerald-600 text-white text-xs font-semibold rounded-2xl shadow-framer-lg animate-fade-in-up">
+        <div className="fixed top-20 right-6 z-50 flex items-center gap-2 px-4 py-2.5 bg-emerald-600 text-white text-xs font-semibold rounded-2xl shadow-framer-lg animate-modal-glide">
           <CheckCircle2 className="w-4 h-4" />
           <span>{toastMessage}</span>
         </div>
@@ -160,7 +160,7 @@ export function Dashboard({
           {/* Copilot-Style Smart Financial Intelligence Feed */}
           {runwayData && (
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="saas-glass-card p-4 flex items-start gap-3 shadow-framer-xs">
+              <div className="saas-glass-card saas-glass-card-hover p-4 flex items-start gap-3 shadow-framer-xs">
                 <div className="p-2 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 shrink-0">
                   <ShieldCheck className="w-4 h-4" />
                 </div>
@@ -174,7 +174,7 @@ export function Dashboard({
                 </div>
               </div>
 
-              <div className="saas-glass-card p-4 flex items-start gap-3 shadow-framer-xs">
+              <div className="saas-glass-card saas-glass-card-hover p-4 flex items-start gap-3 shadow-framer-xs">
                 <div className="p-2 rounded-xl bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 shrink-0">
                   <Sparkles className="w-4 h-4" />
                 </div>
@@ -188,7 +188,7 @@ export function Dashboard({
                 </div>
               </div>
 
-              <div className="saas-glass-card p-4 flex items-start gap-3 shadow-framer-xs">
+              <div className="saas-glass-card saas-glass-card-hover p-4 flex items-start gap-3 shadow-framer-xs">
                 <div className="p-2 rounded-xl bg-violet-500/10 text-violet-600 dark:text-violet-400 shrink-0">
                   <TrendingUp className="w-4 h-4" />
                 </div>
@@ -235,7 +235,7 @@ export function Dashboard({
       {activeView === 'runway' && (
         <div className="space-y-6">
           {/* Header */}
-          <div className="saas-glass-card p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-framer-md">
+          <div className="saas-glass-card saas-glass-card-hover p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-framer-md">
             <div>
               <div className="flex items-center gap-2 mb-1">
                 <span className="p-1.5 rounded-lg bg-indigo-500/10 text-indigo-600 dark:text-indigo-400">
@@ -268,7 +268,7 @@ export function Dashboard({
           </div>
 
           {/* Interactive What-If Scenario Simulator Card */}
-          <div className="saas-glass-card p-6 shadow-framer-md border border-indigo-500/20">
+          <div className="saas-glass-card saas-glass-card-hover p-6 shadow-framer-md border border-indigo-500/20">
             <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 pb-6 border-b border-[var(--border-subtle)]">
               <div>
                 <div className="flex items-center gap-2">
@@ -287,7 +287,7 @@ export function Dashboard({
                 <button
                   type="button"
                   onClick={() => setSimulatedSpend(1500)}
-                  className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
+                  className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] active:scale-95 cursor-pointer ${
                     simulatedSpend === 1500
                       ? 'bg-indigo-600 text-white shadow-xs'
                       : 'bg-[var(--bg-card-subtle)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] border border-[var(--border-subtle)]'
@@ -298,7 +298,7 @@ export function Dashboard({
                 <button
                   type="button"
                   onClick={() => setSimulatedSpend(runwayData?.safeDailySpend || 2600)}
-                  className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
+                  className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] active:scale-95 cursor-pointer ${
                     simulatedSpend === (runwayData?.safeDailySpend || 2600)
                       ? 'bg-indigo-600 text-white shadow-xs'
                       : 'bg-[var(--bg-card-subtle)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] border border-[var(--border-subtle)]'
@@ -309,7 +309,7 @@ export function Dashboard({
                 <button
                   type="button"
                   onClick={() => setSimulatedSpend(3800)}
-                  className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
+                  className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] active:scale-95 cursor-pointer ${
                     simulatedSpend === 3800
                       ? 'bg-indigo-600 text-white shadow-xs'
                       : 'bg-[var(--bg-card-subtle)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] border border-[var(--border-subtle)]'
@@ -382,7 +382,7 @@ export function Dashboard({
 
           {/* Mathematical Decomposition */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="saas-glass-card p-6 shadow-framer-xs">
+            <div className="saas-glass-card saas-glass-card-hover p-6 shadow-framer-xs">
               <span className="text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wider block mb-2">
                 1. Liquid Reserve Base
               </span>
@@ -394,7 +394,7 @@ export function Dashboard({
               </p>
             </div>
 
-            <div className="saas-glass-card p-6 shadow-framer-xs">
+            <div className="saas-glass-card saas-glass-card-hover p-6 shadow-framer-xs">
               <span className="text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wider block mb-2">
                 2. Committed Obligations
               </span>
@@ -406,7 +406,7 @@ export function Dashboard({
               </p>
             </div>
 
-            <div className="saas-glass-card p-6 shadow-framer-xs">
+            <div className="saas-glass-card saas-glass-card-hover p-6 shadow-framer-xs">
               <span className="text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wider block mb-2">
                 3. Daily Safe Velocity
               </span>
@@ -426,7 +426,7 @@ export function Dashboard({
       {/* ========================================================================= */}
       {activeView === 'transactions' && (
         <div className="space-y-6">
-          <div className="saas-glass-card p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-framer-md">
+          <div className="saas-glass-card saas-glass-card-hover p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-framer-md">
             <div>
               <h2 className="text-lg font-semibold tracking-tight text-[var(--text-primary)]">
                 Financial Transactions Ledger
@@ -462,7 +462,7 @@ export function Dashboard({
       {/* ========================================================================= */}
       {activeView === 'committed' && (
         <div className="space-y-6">
-          <div className="saas-glass-card p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-framer-md">
+          <div className="saas-glass-card saas-glass-card-hover p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-framer-md">
             <div>
               <h2 className="text-lg font-semibold tracking-tight text-[var(--text-primary)]">
                 Committed Obligations &amp; Shield Protocol
@@ -481,7 +481,7 @@ export function Dashboard({
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <UpcomingObligationsCard runwayData={runwayData} />
 
-            <div className="saas-glass-card p-6 flex flex-col justify-between shadow-framer-md">
+            <div className="saas-glass-card saas-glass-card-hover p-6 flex flex-col justify-between shadow-framer-md">
               <div>
                 <h4 className="text-sm font-semibold text-[var(--text-primary)] mb-2 flex items-center gap-2">
                   <Shield className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />

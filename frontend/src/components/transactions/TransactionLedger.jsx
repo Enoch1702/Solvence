@@ -84,7 +84,7 @@ export function TransactionLedger({
   const displayList = isCompact ? filtered.slice(0, 5) : filtered;
 
   return (
-    <div className="saas-glass-card shadow-framer-md overflow-hidden">
+    <div className="saas-glass-card saas-glass-card-hover shadow-framer-md overflow-hidden">
       {/* Category Spending Bar (Only in Full Pro Ledger Mode) */}
       {!isCompact && Object.keys(categoryTotals).length > 0 && (
         <div className="p-4 sm:p-5 border-b border-[var(--border-subtle)] bg-[var(--bg-card-subtle)]/40">
@@ -145,7 +145,7 @@ export function TransactionLedger({
             <button
               type="button"
               onClick={() => setFilterType('ALL')}
-              className={`px-3 py-1 rounded-lg transition-all cursor-pointer ${
+              className={`px-3 py-1 rounded-lg transition-all duration-250 ease-[cubic-bezier(0.16,1,0.3,1)] cursor-pointer ${
                 filterType === 'ALL'
                   ? 'bg-[var(--bg-card)] text-[var(--text-primary)] font-semibold shadow-xs'
                   : 'text-[var(--text-muted)] hover:text-[var(--text-primary)]'
@@ -156,7 +156,7 @@ export function TransactionLedger({
             <button
               type="button"
               onClick={() => setFilterType('INCOME')}
-              className={`px-3 py-1 rounded-lg transition-all cursor-pointer ${
+              className={`px-3 py-1 rounded-lg transition-all duration-250 ease-[cubic-bezier(0.16,1,0.3,1)] cursor-pointer ${
                 filterType === 'INCOME'
                   ? 'bg-[var(--bg-card)] text-emerald-600 dark:text-emerald-400 font-semibold shadow-xs'
                   : 'text-[var(--text-muted)] hover:text-[var(--text-primary)]'
@@ -167,7 +167,7 @@ export function TransactionLedger({
             <button
               type="button"
               onClick={() => setFilterType('EXPENSE')}
-              className={`px-3 py-1 rounded-lg transition-all cursor-pointer ${
+              className={`px-3 py-1 rounded-lg transition-all duration-250 ease-[cubic-bezier(0.16,1,0.3,1)] cursor-pointer ${
                 filterType === 'EXPENSE'
                   ? 'bg-[var(--bg-card)] text-[var(--text-primary)] font-semibold shadow-xs'
                   : 'text-[var(--text-muted)] hover:text-[var(--text-primary)]'
@@ -226,7 +226,7 @@ export function TransactionLedger({
                 return (
                   <tr
                     key={tx.id}
-                    className="hover:bg-[var(--bg-card-hover)] transition-colors group"
+                    className="hover:bg-[var(--bg-card-hover)] transition-all duration-200 ease-[cubic-bezier(0.16,1,0.3,1)] group"
                   >
                     {/* Description & Type Icon */}
                     <td className="py-3.5 px-4 sm:px-6">
