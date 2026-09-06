@@ -141,7 +141,7 @@ class TransactionServiceTest {
                 TransactionType.EXPENSE, "Snacks", LocalDate.now()
         );
 
-        when(transactionRepository.findById(50L)).thenReturn(Optional.of(transaction));
+        when(transactionRepository.findByIdAndUserId(50L, 1L)).thenReturn(Optional.of(transaction));
 
         transactionService.deleteTransaction(50L);
 
@@ -149,16 +149,10 @@ class TransactionServiceTest {
     }
 
     @Test
-    void testDeleteTransactionOwnedByOtherUserThrowsForbidden() {
-        Category category = new Category(10L, null, "Food", TransactionType.EXPENSE, true, "food");
-        Transaction otherTransaction = new Transaction(
-                60L, otherUser, category, new BigDecimal("200.00"),
-                TransactionType.EXPENSE, "Other User Snacks", LocalDate.now()
-        );
+    void testDeleteTransactionOwnedByOtherUserThrowsNotFound() {
+        when(transactionRepository.findByIdAndUserId(60L, 1L)).thenReturn(Optional.empty());
 
-        when(transactionRepository.findById(60L)).thenReturn(Optional.of(otherTransaction));
-
-        assertThrows(ForbiddenException.class, () -> transactionService.deleteTransaction(60L));
+        assertThrows(ResourceNotFoundException.class, () -> transactionService.deleteTransaction(60L));
         verify(transactionRepository, never()).delete(any());
     }
 

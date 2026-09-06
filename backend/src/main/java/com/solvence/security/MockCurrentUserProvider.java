@@ -1,13 +1,14 @@
 package com.solvence.security;
 
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 /**
  * Phase 1 Mock implementation of CurrentUserProvider.
- * Always returns user ID 1L.
- * Will be replaced with real JWT-backed security in Phase 2.
+ * Strictly restricted to "test-mock" profile and never active in production.
  */
 @Component
+@Profile("test-mock")
 public class MockCurrentUserProvider implements CurrentUserProvider {
 
     private static final Long MOCK_USER_ID = 1L;

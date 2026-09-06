@@ -11,15 +11,31 @@ const apiClient = axios.create({
   },
 });
 
+// Request interceptor: attach JWT Bearer token if available
+apiClient.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('solvence_token');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
+
 // Centralized error handling
 apiClient.interceptors.response.use(
   (response) => response,
   (error) => {
     let message = 'An unexpected error occurred. Please try again.';
+    const isAuthEndpoint =
+      error.config?.url?.includes('/auth/login') ||
+      error.config?.url?.includes('/auth/register');
 
     if (error.response) {
-      // RFC 7807 ProblemDetail or Spring error format
       const data = error.response.data;
+      const status = error.response.status;
+
       if (data && data.detail) {
         message = data.detail;
       } else if (data && data.message) {
@@ -29,10 +45,19 @@ apiClient.interceptors.response.use(
           .map(([field, err]) => `${field}: ${err}`)
           .join(', ');
         message = `Validation errors: ${fields}`;
-      } else if (error.response.status === 403) {
+      } else if (status === 401) {
+        message = isAuthEndpoint
+          ? 'Invalid email or password. Please try again.'
+          : 'Your session has expired or you are unauthorized. Please sign in again.';
+      } else if (status === 403) {
         message = 'Access forbidden: you do not have permission for this resource.';
-      } else if (error.response.status === 404) {
+      } else if (status === 404) {
         message = 'Requested resource was not found.';
+      }
+
+      // Only fire session expiry event on protected endpoints, never on login/register failures
+      if (status === 401 && !isAuthEndpoint) {
+        window.dispatchEvent(new CustomEvent('solvence:unauthorized'));
       }
     } else if (error.request) {
       message = 'Cannot connect to Solvence backend server. Please verify the backend is running.';
@@ -41,11 +66,28 @@ apiClient.interceptors.response.use(
     const enhancedError = new Error(message);
     enhancedError.status = error.response?.status;
     enhancedError.original = error;
+    enhancedError.problemDetail = error.response?.data;
     return Promise.reject(enhancedError);
   }
 );
 
 export const api = {
+  // Auth endpoints
+  register: async (credentials) => {
+    const res = await apiClient.post('/auth/register', credentials);
+    return res.data;
+  },
+
+  login: async (credentials) => {
+    const res = await apiClient.post('/auth/login', credentials);
+    return res.data;
+  },
+
+  getCurrentUser: async () => {
+    const res = await apiClient.get('/auth/me');
+    return res.data;
+  },
+
   getHealth: async () => {
     const res = await apiClient.get('/health');
     return res.data;
@@ -77,3 +119,4 @@ export const api = {
 };
 
 export default api;
+

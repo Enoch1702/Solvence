@@ -87,13 +87,8 @@ public class TransactionService {
     public void deleteTransaction(Long id) {
         Long currentUserId = currentUserProvider.getCurrentUserId();
 
-        Transaction transaction = transactionRepository.findById(id)
+        Transaction transaction = transactionRepository.findByIdAndUserId(id, currentUserId)
                 .orElseThrow(() -> new ResourceNotFoundException("Transaction not found with ID: " + id));
-
-        // Security Boundary: Validate Transaction Ownership
-        if (!transaction.getUser().getId().equals(currentUserId)) {
-            throw new ForbiddenException("Cannot delete transaction belonging to another user");
-        }
 
         transactionRepository.delete(transaction);
     }

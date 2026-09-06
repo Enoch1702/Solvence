@@ -6,9 +6,11 @@ import com.solvence.repository.RecurringObligationRepository;
 import com.solvence.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,37 +25,55 @@ public class DataInitializer implements ApplicationRunner {
     private final CategoryRepository categoryRepository;
     private final RecurringObligationRepository recurringObligationRepository;
     private final JdbcTemplate jdbcTemplate;
+    private final PasswordEncoder passwordEncoder;
+    private final boolean devUserSeedEnabled;
+    private final String devUserPassword;
 
     public DataInitializer(UserRepository userRepository,
                            CategoryRepository categoryRepository,
                            RecurringObligationRepository recurringObligationRepository,
-                           JdbcTemplate jdbcTemplate) {
+                           JdbcTemplate jdbcTemplate,
+                           PasswordEncoder passwordEncoder,
+                           @Value("${solvence.seed.dev-user.enabled:false}") boolean devUserSeedEnabled,
+                           @Value("${solvence.seed.dev-user.password:}") String devUserPassword) {
         this.userRepository = userRepository;
         this.categoryRepository = categoryRepository;
         this.recurringObligationRepository = recurringObligationRepository;
         this.jdbcTemplate = jdbcTemplate;
+        this.passwordEncoder = passwordEncoder;
+        this.devUserSeedEnabled = devUserSeedEnabled;
+        this.devUserPassword = devUserPassword;
     }
 
     @Override
     @Transactional
     public void run(ApplicationArguments args) {
-        log.info("Checking and seeding Phase 1 deterministic data...");
-        seedDefaultUser();
+        log.info("Checking and seeding system categories...");
         seedSystemCategories();
-        seedDefaultRecurringObligation();
-        log.info("Phase 1 data initialization complete.");
+
+        if (devUserSeedEnabled) {
+            log.info("Development user seeding is ENABLED. Initializing dev user...");
+            seedDefaultUser();
+            seedDefaultRecurringObligation();
+        } else {
+            log.info("Development user seeding is DISABLED (production default).");
+        }
     }
 
     private void seedDefaultUser() {
         if (userRepository.findById(1L).isEmpty()) {
-            log.info("Seeding deterministic User with ID 1...");
+            log.info("Seeding deterministic development User with ID 1...");
+            String passwordHash = (devUserPassword != null && !devUserPassword.trim().isEmpty())
+                    ? passwordEncoder.encode(devUserPassword)
+                    : null;
+
             try {
                 // Explicit insertion to guarantee ID 1
                 jdbcTemplate.update("""
-                    INSERT INTO users (id, name, email, currency, opening_balance, hourly_rate, cycle_start_day, created_at)
-                    VALUES (1, 'Solvence User', 'user@solvence.local', 'INR', 25000.00, 300.00, 1, NOW())
+                    INSERT INTO users (id, name, email, password_hash, currency, opening_balance, hourly_rate, cycle_start_day, created_at)
+                    VALUES (1, 'Solvence Dev User', 'user@solvence.local', ?, 'INR', 25000.00, 300.00, 1, NOW())
                     ON CONFLICT (id) DO NOTHING
-                """);
+                """, passwordHash);
 
                 // Synchronize sequence for PostgreSQL
                 try {
@@ -63,7 +83,7 @@ public class DataInitializer implements ApplicationRunner {
                 }
             } catch (Exception e) {
                 log.warn("Direct SQL insert failed, falling back to JPA save: {}", e.getMessage());
-                User fallback = new User(1L, "Solvence User", "user@solvence.local", null, "INR",
+                User fallback = new User(1L, "Solvence Dev User", "user@solvence.local", passwordHash, "INR",
                         new BigDecimal("25000.00"), new BigDecimal("300.00"), 1);
                 userRepository.save(fallback);
             }

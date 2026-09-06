@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: solvence-backend-test
+
+solvence:
+  jwt:
+    secret: "solvence-test-only-deterministic-jwt-secret-for-unit-testing-32bytes-min"
+    expiration-ms: 86400000
+  seed:
+    dev-user:
+      enabled: false

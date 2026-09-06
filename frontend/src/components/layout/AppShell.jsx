@@ -13,8 +13,10 @@ import {
   Search,
   Sun,
   Moon,
-  Database
+  Database,
+  LogOut
 } from 'lucide-react';
+import { useAuth } from '../../context/AuthContext';
 
 export function AppShell({
   children,
@@ -26,6 +28,17 @@ export function AppShell({
 }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isDark, setIsDark] = useState(true);
+  const { user, logout } = useAuth();
+
+  const userInitials = user?.name
+    ? user.name
+        .split(' ')
+        .filter(Boolean)
+        .map((n) => n[0])
+        .join('')
+        .substring(0, 2)
+        .toUpperCase()
+    : (user?.email?.substring(0, 2).toUpperCase() || 'SO');
 
   // Initialize theme from localStorage or document default
   useEffect(() => {
@@ -174,19 +187,26 @@ export function AppShell({
           {/* User Account / Engine Status */}
           <div className="flex items-center justify-between px-1">
             <div className="flex items-center gap-2 min-w-0">
-              <div className="w-7 h-7 rounded-full bg-zinc-200 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 font-semibold text-xs flex items-center justify-center shrink-0">
-                EN
+              <div className="w-7 h-7 rounded-full bg-indigo-100 dark:bg-indigo-950/60 border border-indigo-200 dark:border-indigo-800 text-indigo-700 dark:text-indigo-300 font-semibold text-xs flex items-center justify-center shrink-0">
+                {userInitials}
               </div>
               <div className="truncate">
                 <p className="text-xs font-medium text-[var(--text-primary)] truncate">
-                  Personal Space
+                  {user?.name || 'Personal Space'}
                 </p>
-                <p className="text-[10px] text-emerald-600 dark:text-emerald-400 font-medium flex items-center gap-1">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                  Engine Live
+                <p className="text-[10px] text-[var(--text-muted)] font-medium truncate">
+                  {user?.email || 'Engine Live'}
                 </p>
               </div>
             </div>
+            <button
+              type="button"
+              onClick={logout}
+              className="p-1.5 rounded-lg text-[var(--text-muted)] hover:text-red-500 hover:bg-red-500/10 transition-colors cursor-pointer shrink-0"
+              title="Sign Out"
+            >
+              <LogOut className="w-4 h-4" />
+            </button>
           </div>
         </div>
       </aside>
@@ -332,7 +352,7 @@ export function AppShell({
               })}
             </div>
 
-            <div className="pt-4 border-t border-[var(--border-subtle)]">
+            <div className="pt-4 border-t border-[var(--border-subtle)] space-y-2.5">
               <button
                 type="button"
                 onClick={() => {
@@ -344,6 +364,33 @@ export function AppShell({
                 <Plus className="w-4 h-4" />
                 <span>Record Transaction</span>
               </button>
+
+              <div className="flex items-center justify-between p-2 rounded-xl bg-[var(--bg-card-subtle)] border border-[var(--border-subtle)]">
+                <div className="flex items-center gap-2 min-w-0">
+                  <div className="w-7 h-7 rounded-full bg-indigo-100 dark:bg-indigo-950/60 border border-indigo-200 dark:border-indigo-800 text-indigo-700 dark:text-indigo-300 font-semibold text-xs flex items-center justify-center shrink-0">
+                    {userInitials}
+                  </div>
+                  <div className="truncate text-left">
+                    <p className="text-xs font-medium text-[var(--text-primary)] truncate">
+                      {user?.name || 'Personal Space'}
+                    </p>
+                    <p className="text-[10px] text-[var(--text-muted)] truncate">
+                      {user?.email}
+                    </p>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    logout();
+                  }}
+                  className="p-1.5 rounded-lg text-red-500 hover:bg-red-500/10 cursor-pointer shrink-0"
+                  title="Sign Out"
+                >
+                  <LogOut className="w-4 h-4" />
+                </button>
+              </div>
             </div>
           </div>
         </div>
