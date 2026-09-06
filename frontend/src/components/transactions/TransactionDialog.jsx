@@ -73,11 +73,14 @@ export function TransactionDialog({ isOpen, onClose, onSubmit, isSubmitting, err
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-4"
+      onClick={onClose}
+    >
       {/* Frosted Ambient Backdrop */}
       <div
         className="fixed inset-0 bg-black/60 backdrop-blur-sm animate-modal-backdrop"
-        onClick={onClose}
+        aria-hidden="true"
       />
 
       {/* Modal Box */}
@@ -85,6 +88,7 @@ export function TransactionDialog({ isOpen, onClose, onSubmit, isSubmitting, err
         role="dialog"
         aria-modal="true"
         aria-labelledby="dialog-title"
+        onClick={(e) => e.stopPropagation()}
         className="saas-glass-card relative w-full max-w-md shadow-2xl p-6 z-10 animate-modal-glide border border-[var(--border-subtle)]"
       >
         {/* Header */}
