@@ -27,7 +27,7 @@ export function FinancialSummaryGrid({ runwayData, loading }) {
   const unencumberedCash =
     runwayData.availableCash ??
     runwayData.unencumberedCash ??
-    Math.max(0, liquidReserve - committedBills);
+    (liquidReserve - committedBills);
 
   const effectiveLifeHours =
     runwayData.lifeHoursRemaining ??
@@ -40,47 +40,48 @@ export function FinancialSummaryGrid({ runwayData, loading }) {
 
   return (
     <div className="space-y-4 sm:space-y-5">
-      {/* 4 Executive Metric Cards */}
+      {/* 4 Core Metric Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
         <MetricCard
-          title="Liquid Reserve"
+          title="Current Balance"
           amount={liquidReserve}
           icon={Wallet}
           badgeText={totalIncome > 0 ? `+${formatCurrency(totalIncome)} in` : 'Steady'}
           badgeVariant="emerald"
-          subtitle="Cash across liquid accounts"
+          subtitle="Based on your opening balance, income, and expenses"
         />
 
         <MetricCard
-          title="Committed Bills"
+          title="Upcoming Bills"
           amount={committedBills}
           icon={CalendarCheck}
-          badgeText={committedBills > 0 ? 'Active' : '0 obligations'}
+          badgeText={committedBills > 0 ? 'Active' : 'No bills due'}
           badgeVariant={committedBills > 0 ? 'amber' : 'neutral'}
-          subtitle="Obligations due this cycle"
+          subtitle="Amount needed for upcoming bills"
         />
 
         <MetricCard
-          title="Available Cash"
+          title="Available to Spend"
           amount={unencumberedCash}
           icon={Shield}
-          badgeText="100% Protected"
-          badgeVariant="indigo"
-          subtitle="Unencumbered reserve buffer"
+          badgeText={unencumberedCash > 0 ? 'Available' : 'Zero Buffer'}
+          badgeVariant={unencumberedCash > 0 ? 'indigo' : 'amber'}
+          subtitle="Money available after upcoming bills"
         />
 
         <MetricCard
-          title="Life Hours"
+          title="Work Hours Represented"
           amount={hoursDisplay}
           isCurrency={false}
           icon={Clock}
           badgeText={`₹${hourlyRate}/hr`}
           badgeVariant="neutral"
-          subtitle={`Reserve at ₹${hourlyRate}/hr rate`}
+          subtitle="Equivalent work hours at your configured hourly rate"
+          helperText={`Equivalent work hours at ₹${hourlyRate}/hr rate`}
         />
       </div>
 
-      {/* Cashflow Flow Reconciliation Strip (Glass Panel) */}
+      {/* Reconciliation Strip (Glass Panel) */}
       <div className="saas-glass-card p-4 shadow-framer-xs">
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 divide-y sm:divide-y-0 sm:divide-x divide-[var(--border-subtle)] text-center sm:text-left">
           <div className="sm:pr-4">
@@ -94,7 +95,7 @@ export function FinancialSummaryGrid({ runwayData, loading }) {
 
           <div className="pt-3 sm:pt-0 sm:px-4">
             <span className="block text-[10px] font-semibold text-[var(--text-muted)] uppercase tracking-wider">
-              Total Inflows
+              Total Income
             </span>
             <span className="text-sm font-semibold font-display-num text-emerald-600 dark:text-emerald-400">
               +{formatCurrency(totalIncome)}
@@ -103,7 +104,7 @@ export function FinancialSummaryGrid({ runwayData, loading }) {
 
           <div className="pt-3 sm:pt-0 sm:px-4">
             <span className="block text-[10px] font-semibold text-[var(--text-muted)] uppercase tracking-wider">
-              Total Outflows
+              Total Expenses
             </span>
             <span className="text-sm font-semibold font-display-num text-[var(--text-primary)]">
               -{formatCurrency(totalExpenses)}
@@ -112,7 +113,7 @@ export function FinancialSummaryGrid({ runwayData, loading }) {
 
           <div className="pt-3 sm:pt-0 sm:pl-4">
             <span className="block text-[10px] font-semibold text-[var(--text-muted)] uppercase tracking-wider">
-              Hourly Baseline
+              Hourly Rate
             </span>
             <span className="text-sm font-semibold font-display-num text-[var(--text-primary)]">
               ₹{hourlyRate}.00/hr

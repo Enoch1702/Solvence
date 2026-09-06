@@ -7,7 +7,6 @@ export function TransactionDialog({ isOpen, onClose, onSubmit, isSubmitting, err
   const [amount, setAmount] = useState('');
   const [description, setDescription] = useState('');
   const [categoryId, setCategoryId] = useState('');
-  const [isRecurring, setIsRecurring] = useState(false);
   const [transactionDate, setTransactionDate] = useState(
     new Date().toISOString().split('T')[0]
   );
@@ -43,10 +42,7 @@ export function TransactionDialog({ isOpen, onClose, onSubmit, isSubmitting, err
   const validate = () => {
     const errs = {};
     if (!amount || isNaN(amount) || parseFloat(amount) <= 0) {
-      errs.amount = 'Amount must be greater than zero.';
-    }
-    if (!description.trim()) {
-      errs.description = 'Description is required.';
+      errs.amount = 'Please enter a valid amount greater than zero.';
     }
     if (!categoryId) {
       errs.categoryId = 'Please select a category.';
@@ -67,7 +63,6 @@ export function TransactionDialog({ isOpen, onClose, onSubmit, isSubmitting, err
       amount: parseFloat(amount),
       description: description.trim(),
       categoryId: parseInt(categoryId, 10),
-      isRecurring,
       transactionDate,
     });
   };
@@ -95,10 +90,10 @@ export function TransactionDialog({ isOpen, onClose, onSubmit, isSubmitting, err
         <div className="flex items-center justify-between pb-4 border-b border-[var(--border-subtle)]">
           <div>
             <h3 id="dialog-title" className="text-base font-semibold text-[var(--text-primary)]">
-              Record Financial Event
+              Record Transaction
             </h3>
             <p className="text-xs text-[var(--text-secondary)] mt-0.5">
-              Live calculation into liquid reserve &amp; safe runway.
+              Updates your current balance and daily safe spending limit.
             </p>
           </div>
           <button
@@ -122,7 +117,7 @@ export function TransactionDialog({ isOpen, onClose, onSubmit, isSubmitting, err
           {/* Type Switcher */}
           <div>
             <label className="block text-[10px] font-semibold uppercase tracking-wider text-[var(--text-muted)] mb-1.5">
-              Flow Direction
+              Transaction Type
             </label>
             <div className="grid grid-cols-2 gap-2 p-1 bg-[var(--bg-card-subtle)] border border-[var(--border-subtle)] rounded-xl">
               <button
@@ -135,7 +130,7 @@ export function TransactionDialog({ isOpen, onClose, onSubmit, isSubmitting, err
                 }`}
               >
                 <ArrowDownRight className="w-3.5 h-3.5" />
-                <span>Outflow / Expense</span>
+                <span>Expense</span>
               </button>
               <button
                 type="button"
@@ -147,7 +142,7 @@ export function TransactionDialog({ isOpen, onClose, onSubmit, isSubmitting, err
                 }`}
               >
                 <ArrowUpRight className="w-3.5 h-3.5" />
-                <span>Inflow / Income</span>
+                <span>Income</span>
               </button>
             </div>
           </div>
@@ -229,21 +224,6 @@ export function TransactionDialog({ isOpen, onClose, onSubmit, isSubmitting, err
                 <p className="text-rose-500 text-[11px] mt-1">{validationErrors.transactionDate}</p>
               )}
             </div>
-          </div>
-
-          {/* Recurring Checkbox */}
-          <div className="pt-1">
-            <label className="flex items-center gap-2 cursor-pointer select-none">
-              <input
-                type="checkbox"
-                checked={isRecurring}
-                onChange={(e) => setIsRecurring(e.target.checked)}
-                className="w-4 h-4 rounded border-[var(--border-subtle)] text-indigo-600 focus:ring-indigo-500"
-              />
-              <span className="text-[11px] text-[var(--text-secondary)]">
-                Mark as Recurring Mandatory Obligation (quarantined from daily spend)
-              </span>
-            </label>
           </div>
 
           {/* Action Buttons */}

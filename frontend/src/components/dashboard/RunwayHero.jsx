@@ -1,4 +1,4 @@
-import { ShieldCheck, ArrowUpRight } from 'lucide-react';
+import { AlertTriangle, CheckCircle2, ArrowUpRight } from 'lucide-react';
 import { CurrencyDisplay } from '../common/CurrencyDisplay';
 import { formatCurrency } from '../../utils/currency';
 
@@ -19,7 +19,9 @@ export function RunwayHero({ runwayData }) {
   const unencumberedCash =
     runwayData.availableCash ??
     runwayData.unencumberedCash ??
-    Math.max(0, liquidReserve - committedBills);
+    (liquidReserve - committedBills);
+
+  const isNegativeOrZeroCapacity = unencumberedCash <= 0;
 
   // Dynamic cycle days computation matching backend CycleCalculator
   let totalCycleDays = 30;
@@ -45,7 +47,7 @@ export function RunwayHero({ runwayData }) {
           <div className="flex items-center gap-2">
             <span className="w-2 h-2 rounded-full bg-indigo-500 animate-pulse" />
             <span className="text-[11px] font-semibold tracking-wider uppercase text-[var(--text-muted)]">
-              Safe Runway Engine · Real-Time Pacing
+              Daily Spending Guide
             </span>
           </div>
 
@@ -53,26 +55,43 @@ export function RunwayHero({ runwayData }) {
             <span className="text-[11px] text-[var(--text-secondary)] font-medium">
               Day {currentDay} of {totalCycleDays} · {daysRemaining}d remaining
             </span>
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 shadow-xs">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-              Optimal
-            </span>
+            {isNegativeOrZeroCapacity ? (
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 shadow-xs">
+                <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
+                Bills Exceed Balance
+              </span>
+            ) : (
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 shadow-xs">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                On Track
+              </span>
+            )}
           </div>
         </div>
+
+        {/* Zero/Negative Spending Alert Banner if applicable */}
+        {isNegativeOrZeroCapacity && (
+          <div className="p-3 bg-amber-500/10 border border-amber-500/20 rounded-xl flex items-center gap-2 text-xs text-amber-600 dark:text-amber-400">
+            <AlertTriangle className="w-4 h-4 shrink-0" />
+            <span>
+              Your upcoming bills ({formatCurrency(committedBills)}) are higher than or equal to your current balance ({formatCurrency(liquidReserve)}). You do not have positive spending capacity until more income is recorded.
+            </span>
+          </div>
+        )}
 
         {/* Centerpiece Hero Figures */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
           {/* Main Hero Number */}
           <div className="lg:col-span-7 space-y-2">
             <span className="block text-[11px] font-semibold tracking-widest text-[var(--text-muted)] uppercase">
-              Safe Daily Spend
+              Safe to Spend Today
             </span>
 
             <div className="flex items-baseline gap-3">
               <CurrencyDisplay
                 amount={safeDailySpend}
                 size="hero"
-                className="text-[var(--text-primary)]"
+                className={isNegativeOrZeroCapacity ? "text-amber-500" : "text-[var(--text-primary)]"}
               />
               <span className="text-xs font-semibold px-2 py-0.5 rounded-md bg-[var(--bg-card-elevated)] text-[var(--text-muted)] border border-[var(--border-subtle)]">
                 per day
@@ -80,7 +99,7 @@ export function RunwayHero({ runwayData }) {
             </div>
 
             <p className="text-xs text-[var(--text-secondary)] leading-relaxed max-w-xl">
-              Calculated dynamically as <span className="font-semibold text-[var(--text-primary)]">(Liquid Reserve − Committed Bills) ÷ {daysRemaining} days</span>. You can safely spend up to this limit each day without risking any upcoming bills.
+              Based on your recorded balance, expenses, income, and upcoming bills, this is the amount you can spend each day while keeping those recorded bills covered across the remaining <span className="font-semibold text-[var(--text-primary)]">{daysRemaining} days</span> of this pay cycle.
             </p>
           </div>
 
@@ -88,7 +107,7 @@ export function RunwayHero({ runwayData }) {
           <div className="lg:col-span-5 grid grid-cols-2 gap-4 p-4 rounded-xl bg-[var(--bg-card-subtle)] border border-[var(--border-subtle)]">
             <div>
               <span className="block text-[10px] font-semibold tracking-wider text-[var(--text-muted)] uppercase mb-1">
-                Liquid Reserve
+                Current Balance
               </span>
               <CurrencyDisplay
                 amount={liquidReserve}
@@ -96,13 +115,13 @@ export function RunwayHero({ runwayData }) {
                 className="text-[var(--text-primary)]"
               />
               <span className="block text-[10px] text-[var(--text-muted)] mt-0.5">
-                Total liquid cash
+                Total recorded balance
               </span>
             </div>
 
             <div>
               <span className="block text-[10px] font-semibold tracking-wider text-[var(--text-muted)] uppercase mb-1">
-                Committed Bills
+                Upcoming Bills
               </span>
               <CurrencyDisplay
                 amount={committedBills}
@@ -110,17 +129,17 @@ export function RunwayHero({ runwayData }) {
                 className={committedBills > 0 ? 'text-amber-500' : 'text-[var(--text-primary)]'}
               />
               <span className="block text-[10px] text-[var(--text-muted)] mt-0.5">
-                {committedBills > 0 ? 'Quarantined this cycle' : 'Zero bills due'}
+                {committedBills > 0 ? 'Due this pay cycle' : 'No bills due'}
               </span>
             </div>
           </div>
         </div>
 
-        {/* Minimalist Segmented Runway Track */}
+        {/* Segmented Track */}
         <div className="space-y-2 pt-2">
           <div className="flex items-center justify-between text-[11px]">
             <span className="text-[var(--text-muted)] font-medium">
-              Reserve Allocation · <span className="text-[var(--text-primary)] font-semibold">{availablePct}% available</span>
+              Balance Breakdown · <span className="text-[var(--text-primary)] font-semibold">{availablePct}% available to spend</span>
             </span>
             <div className="flex items-center gap-4">
               <span className="flex items-center gap-1.5 text-[var(--text-secondary)]">
@@ -130,7 +149,7 @@ export function RunwayHero({ runwayData }) {
               {committedBills > 0 && (
                 <span className="flex items-center gap-1.5 text-[var(--text-secondary)]">
                   <span className="w-2 h-2 rounded-full bg-amber-500" />
-                  Committed ({formatCurrency(committedBills)})
+                  Upcoming Bills ({formatCurrency(committedBills)})
                 </span>
               )}
             </div>
@@ -146,7 +165,7 @@ export function RunwayHero({ runwayData }) {
               <div
                 className="h-full rounded-full bg-amber-500 transition-all duration-500 ease-out"
                 style={{ width: `${committedPct}%` }}
-                title={`Committed: ${formatCurrency(committedBills)}`}
+                title={`Upcoming Bills: ${formatCurrency(committedBills)}`}
               />
             )}
           </div>
@@ -155,19 +174,19 @@ export function RunwayHero({ runwayData }) {
         {/* Bottom Pacing Strip */}
         <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-[var(--border-subtle)] text-xs text-[var(--text-muted)]">
           <div className="flex items-center gap-1.5">
-            <ShieldCheck className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
+            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
             <span>
-              Net Protected Cash: <strong className="text-[var(--text-primary)] font-display-num">{formatCurrency(unencumberedCash)}</strong>
+              Available to Spend: <strong className="text-[var(--text-primary)] font-display-num">{formatCurrency(unencumberedCash)}</strong>
             </span>
           </div>
 
           <div className="flex items-center gap-4">
             <span className="flex items-center gap-1 text-emerald-600 dark:text-emerald-400 font-medium font-display-num">
               <ArrowUpRight className="w-3.5 h-3.5" />
-              Inflows: +{formatCurrency(totalIncome)}
+              Total Income: +{formatCurrency(totalIncome)}
             </span>
             <span className="font-display-num text-[var(--text-muted)]">
-              Outflows: -{formatCurrency(totalExpenses)}
+              Total Expenses: -{formatCurrency(totalExpenses)}
             </span>
           </div>
         </div>

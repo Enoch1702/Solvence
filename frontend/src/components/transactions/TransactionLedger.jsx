@@ -125,7 +125,7 @@ export function TransactionLedger({
         <div>
           <div className="flex items-center gap-2">
             <h3 className="text-sm font-semibold text-[var(--text-primary)]">
-              {isCompact ? 'Recent Financial Activity' : 'Financial Activity Ledger'}
+              {isCompact ? 'Recent Transactions' : 'Transactions'}
             </h3>
             <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-[var(--bg-card-elevated)] text-[var(--text-muted)] border border-[var(--border-subtle)]">
               {isCompact ? `Showing ${displayList.length} of ${transactions.length}` : `${transactions.length} records`}
@@ -133,8 +133,8 @@ export function TransactionLedger({
           </div>
           <p className="text-xs text-[var(--text-secondary)] mt-0.5">
             {isCompact
-              ? 'Latest cash movements impacting your liquid reserve.'
-              : 'Complete transaction audit trail with categorical impact and life-hours accounting.'}
+              ? 'Latest transactions affecting your current balance.'
+              : 'Complete transaction history with categories and work hours represented.'}
           </p>
         </div>
 
@@ -162,7 +162,7 @@ export function TransactionLedger({
                   : 'text-[var(--text-muted)] hover:text-[var(--text-primary)]'
               }`}
             >
-              Inflows
+              Income
             </button>
             <button
               type="button"
@@ -173,7 +173,7 @@ export function TransactionLedger({
                   : 'text-[var(--text-muted)] hover:text-[var(--text-primary)]'
               }`}
             >
-              Outflows
+              Expenses
             </button>
           </div>
 
@@ -199,7 +199,7 @@ export function TransactionLedger({
               <th className="py-3 px-4 sm:px-6">Description</th>
               <th className="py-3 px-4">Category</th>
               <th className="py-3 px-4">Date</th>
-              <th className="py-3 px-4 text-right">Life Hours</th>
+              <th className="py-3 px-4 text-right" title="Hours of work represented at your configured hourly rate">Work Hours</th>
               <th className="py-3 px-4 sm:px-6 text-right">Amount</th>
               <th className="py-3 px-4 text-center w-16">Action</th>
             </tr>
@@ -346,7 +346,7 @@ export function TransactionLedger({
             onClick={onViewAll}
             className="flex items-center gap-1.5 text-xs font-semibold text-indigo-600 dark:text-indigo-400 hover:underline cursor-pointer"
           >
-            <span>View All {transactions.length} Transactions in Full Ledger</span>
+            <span>View All {transactions.length} Transactions</span>
             <ExternalLink className="w-3 h-3" />
           </button>
         </div>

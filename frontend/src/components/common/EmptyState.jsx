@@ -7,10 +7,10 @@ export function EmptyState({ onAction }) {
         <ReceiptText className="w-6 h-6 stroke-[1.8]" />
       </div>
       <h3 className="text-sm font-semibold text-[var(--text-primary)] mb-1.5">
-        No financial events recorded
+        No transactions recorded
       </h3>
       <p className="text-xs text-[var(--text-secondary)] max-w-sm mx-auto mb-6 leading-relaxed">
-        Record your first income or expense to activate real-time forward runway pacing and unencumbered reserve calculations.
+        Record your first income or expense to calculate your current balance and daily safe spending guide.
       </p>
       {onAction && (
         <button

@@ -133,14 +133,14 @@ export function RunwayChart({ runwayData, customSafeDailySpend = null }) {
         <div>
           <div className="flex items-center gap-2">
             <h3 className="text-sm font-semibold text-[var(--text-primary)]">
-              Cashflow &amp; Runway Trajectory
+              Pay Cycle Balance Projection
             </h3>
             <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-500/20">
-              {totalDays}-Day Model
+              {totalDays}-Day Pay Cycle
             </span>
           </div>
           <p className="text-xs text-[var(--text-secondary)] mt-0.5">
-            Dynamic forward burn path maintaining committed reserve until cycle completion.
+            Projected daily balance through the end of your current pay cycle based on your spending rate.
           </p>
         </div>
 
@@ -160,7 +160,7 @@ export function RunwayChart({ runwayData, customSafeDailySpend = null }) {
             <div className="w-px h-6 bg-[var(--border-subtle)]" />
             <div>
               <span className="block text-[10px] uppercase font-semibold text-[var(--text-muted)]">
-                Spend Velocity
+                Daily Spend Rate
               </span>
               <span className="text-xs font-semibold font-display-num text-indigo-600 dark:text-indigo-400">
                 {formatCurrency(safeDailySpend)}/d
@@ -291,7 +291,7 @@ export function RunwayChart({ runwayData, customSafeDailySpend = null }) {
 
           {/* X Axis Labels */}
           {points
-            .filter((p) => p.day === 1 || p.day === 10 || p.day === 20 || p.day === 30)
+            .filter((p) => p.day === 1 || p.day === Math.round(totalDays / 3) || p.day === Math.round((2 * totalDays) / 3) || p.day === totalDays)
             .map((p) => (
               <text
                 key={p.day}
@@ -311,7 +311,7 @@ export function RunwayChart({ runwayData, customSafeDailySpend = null }) {
         <div className="flex items-center gap-4">
           <span className="flex items-center gap-1.5">
             <span className="w-2.5 h-0.5 bg-indigo-500 rounded" />
-            Projected Cash Trajectory
+            Projected Balance
           </span>
           <span className="flex items-center gap-1.5">
             <span className="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-pulse" />
@@ -320,7 +320,7 @@ export function RunwayChart({ runwayData, customSafeDailySpend = null }) {
         </div>
 
         <span className="text-[var(--text-secondary)] font-medium">
-          Cycle: {formatDate(cycleStart)} – {formatDate(cycleEnd)}
+          Pay Cycle: {formatDate(cycleStart)} – {formatDate(cycleEnd)}
         </span>
       </div>
     </div>

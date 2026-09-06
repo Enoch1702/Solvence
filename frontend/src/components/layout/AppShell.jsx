@@ -53,9 +53,9 @@ export function AppShell({
 
   const navItems = [
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
-    { id: 'runway', label: 'Runway Trajectory', icon: TrendingUp },
-    { id: 'transactions', label: 'Transactions Ledger', icon: ReceiptText },
-    { id: 'committed', label: 'Committed Obligations', icon: CalendarClock },
+    { id: 'runway', label: 'Pay Cycle Planner', icon: TrendingUp },
+    { id: 'transactions', label: 'Transactions', icon: ReceiptText },
+    { id: 'committed', label: 'Bills & Subscriptions', icon: CalendarClock },
   ];
 
   const handleNavClick = (id) => {
@@ -66,14 +66,14 @@ export function AppShell({
   const getBreadcrumbTitle = () => {
     switch (currentView) {
       case 'runway':
-        return 'Runway & Forward Simulator';
+        return 'Pay Cycle Planner';
       case 'transactions':
-        return 'Activity Ledger & Categories';
+        return 'Transactions';
       case 'committed':
-        return 'Committed Obligations & Shield';
+        return 'Bills & Subscriptions';
       case 'dashboard':
       default:
-        return 'Executive Overview';
+        return 'Overview';
     }
   };
 
@@ -100,9 +100,6 @@ export function AppShell({
               <div className="flex items-center gap-1.5">
                 <span className="font-semibold text-sm tracking-tight text-[var(--text-primary)] truncate">
                   Solvence
-                </span>
-                <span className="px-1.5 py-0.2 text-[9px] font-semibold tracking-wider uppercase bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 rounded">
-                  OS
                 </span>
               </div>
               <p className="text-[11px] text-[var(--text-muted)] truncate">
@@ -262,7 +259,7 @@ export function AppShell({
               type="button"
               onClick={onRefresh}
               className="p-2 rounded-xl text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-card-hover)] border border-[var(--border-subtle)] active:scale-90 transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] cursor-pointer group"
-              title="Refresh runway & ledger"
+              title="Refresh data"
             >
               <RefreshCw className="w-4 h-4 stroke-[1.8] group-hover:rotate-180 transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]" />
             </button>
@@ -274,7 +271,7 @@ export function AppShell({
               className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-white bg-indigo-600 hover:bg-indigo-500 active:scale-[0.98] dark:bg-white dark:text-black dark:hover:bg-zinc-200 rounded-xl shadow-framer-xs hover:shadow-framer-md transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] cursor-pointer"
             >
               <Plus className="w-3.5 h-3.5 stroke-[2.5]" />
-              <span className="hidden sm:inline">Record Activity</span>
+              <span className="hidden sm:inline">Record Transaction</span>
             </button>
           </div>
         </header>
@@ -302,7 +299,7 @@ export function AppShell({
                 <div className="w-7 h-7 rounded-lg bg-indigo-600 dark:bg-white text-white dark:text-black flex items-center justify-center">
                   <Compass className="w-4 h-4" />
                 </div>
-                <span className="font-bold text-sm">Solvence OS</span>
+                <span className="font-bold text-sm">Solvence</span>
               </div>
               <button
                 type="button"
