@@ -127,7 +127,7 @@ export function RunwayChart({ runwayData, customSafeDailySpend = null }) {
   ];
 
   return (
-    <div className="saas-glass-card saas-glass-card-hover p-5 sm:p-6 shadow-framer-md">
+    <div className="saas-card-violet p-5 sm:p-6 shadow-framer-md">
       {/* Chart Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[var(--border-subtle)]">
         <div>
@@ -135,7 +135,7 @@ export function RunwayChart({ runwayData, customSafeDailySpend = null }) {
             <h3 className="text-sm font-semibold text-[var(--text-primary)]">
               Pay Cycle Balance Projection
             </h3>
-            <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-500/20">
+            <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-violet-500/10 text-violet-600 dark:text-violet-400 border border-violet-500/20">
               {totalDays}-Day Pay Cycle
             </span>
           </div>
@@ -154,7 +154,7 @@ export function RunwayChart({ runwayData, customSafeDailySpend = null }) {
               <CurrencyDisplay
                 amount={activePoint.projectedBalance}
                 size="sm"
-                className="text-[var(--text-primary)]"
+                className="text-[var(--text-primary)] font-bold"
               />
             </div>
             <div className="w-px h-6 bg-[var(--border-subtle)]" />
@@ -162,7 +162,7 @@ export function RunwayChart({ runwayData, customSafeDailySpend = null }) {
               <span className="block text-[10px] uppercase font-semibold text-[var(--text-muted)]">
                 Daily Spend Rate
               </span>
-              <span className="text-xs font-semibold font-display-num text-indigo-600 dark:text-indigo-400">
+              <span className="text-xs font-semibold font-display-num text-violet-600 dark:text-violet-400">
                 {formatCurrency(safeDailySpend)}/d
               </span>
             </div>
@@ -182,9 +182,9 @@ export function RunwayChart({ runwayData, customSafeDailySpend = null }) {
           <defs>
             {/* Smooth ethereal area gradient */}
             <linearGradient id="copilotAreaGrad" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#6366f1" stopOpacity="0.25" />
-              <stop offset="60%" stopColor="#6366f1" stopOpacity="0.05" />
-              <stop offset="100%" stopColor="#6366f1" stopOpacity="0.0" />
+              <stop offset="0%" stopColor="#7c3aed" stopOpacity="0.22" />
+              <stop offset="60%" stopColor="#7c3aed" stopOpacity="0.04" />
+              <stop offset="100%" stopColor="#7c3aed" stopOpacity="0.0" />
             </linearGradient>
 
             {/* Glowing line filter */}
@@ -231,13 +231,13 @@ export function RunwayChart({ runwayData, customSafeDailySpend = null }) {
           <path
             d={pathD}
             fill="none"
-            stroke="#6366f1"
+            stroke="#7c3aed"
             strokeWidth="2.5"
             strokeLinecap="round"
             filter="url(#glow)"
           />
 
-          {/* Today Indicator (Day 6) */}
+          {/* Today Indicator */}
           {currentDay && (
             <g>
               <line
@@ -245,7 +245,7 @@ export function RunwayChart({ runwayData, customSafeDailySpend = null }) {
                 y1={padding.top}
                 x2={getX(currentDay - 1)}
                 y2={height - padding.bottom}
-                stroke="#6366f1"
+                stroke="#7c3aed"
                 strokeWidth="1"
                 strokeDasharray="2 2"
                 opacity="0.7"
@@ -254,13 +254,13 @@ export function RunwayChart({ runwayData, customSafeDailySpend = null }) {
                 cx={getX(currentDay - 1)}
                 cy={getY(points[currentDay - 1]?.projectedBalance || liquidReserve)}
                 r="4"
-                fill="#6366f1"
+                fill="#7c3aed"
               />
               <circle
                 cx={getX(currentDay - 1)}
                 cy={getY(points[currentDay - 1]?.projectedBalance || liquidReserve)}
                 r="8"
-                fill="#6366f1"
+                fill="#7c3aed"
                 opacity="0.3"
                 className="animate-ping"
               />
@@ -310,11 +310,11 @@ export function RunwayChart({ runwayData, customSafeDailySpend = null }) {
       <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-[var(--border-subtle)] text-[11px] text-[var(--text-muted)]">
         <div className="flex items-center gap-4">
           <span className="flex items-center gap-1.5">
-            <span className="w-2.5 h-0.5 bg-indigo-500 rounded" />
+            <span className="w-2.5 h-0.5 bg-violet-500 rounded" />
             Projected Balance
           </span>
           <span className="flex items-center gap-1.5">
-            <span className="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-pulse" />
+            <span className="w-1.5 h-1.5 rounded-full bg-violet-500 animate-pulse" />
             Today (Day {currentDay})
           </span>
         </div>

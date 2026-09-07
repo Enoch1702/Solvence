@@ -19,14 +19,14 @@ import { EmptyState } from '../common/EmptyState';
 import { formatLifeHours } from '../../utils/currency';
 import { formatDate } from '../../utils/date';
 
-// Category color dot and styling map (Copilot jewel tones)
+// Category color dot and styling map (Consistent jewel tones)
 const categoryConfig = {
-  food: { icon: Utensils, dot: 'bg-amber-500', pill: 'bg-amber-500/10 text-amber-700 dark:text-amber-400' },
-  transport: { icon: Car, dot: 'bg-sky-500', pill: 'bg-sky-500/10 text-sky-700 dark:text-sky-400' },
-  rent: { icon: Home, dot: 'bg-violet-500', pill: 'bg-violet-500/10 text-violet-700 dark:text-violet-400' },
-  salary: { icon: Briefcase, dot: 'bg-emerald-500', pill: 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-400' },
-  entertainment: { icon: Tv, dot: 'bg-pink-500', pill: 'bg-pink-500/10 text-pink-700 dark:text-pink-400' },
-  utilities: { icon: Zap, dot: 'bg-indigo-500', pill: 'bg-indigo-500/10 text-indigo-700 dark:text-indigo-400' },
+  food: { icon: Utensils, dot: 'bg-amber-500', pill: 'bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-500/20' },
+  transport: { icon: Car, dot: 'bg-sky-500', pill: 'bg-sky-500/10 text-sky-700 dark:text-sky-400 border border-sky-500/20' },
+  rent: { icon: Home, dot: 'bg-violet-500', pill: 'bg-violet-500/10 text-violet-700 dark:text-violet-400 border border-violet-500/20' },
+  salary: { icon: Briefcase, dot: 'bg-emerald-500', pill: 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20' },
+  entertainment: { icon: Tv, dot: 'bg-pink-500', pill: 'bg-pink-500/10 text-pink-700 dark:text-pink-400 border border-pink-500/20' },
+  utilities: { icon: Zap, dot: 'bg-indigo-500', pill: 'bg-indigo-500/10 text-indigo-700 dark:text-indigo-400 border border-indigo-500/20' },
 };
 
 export function TransactionLedger({
@@ -97,7 +97,7 @@ export function TransactionLedger({
               const catInfo = categoryConfig[catLower] || {
                 icon: Tag,
                 dot: 'bg-zinc-400',
-                pill: 'bg-zinc-500/10 text-zinc-700 dark:text-zinc-300',
+                pill: 'bg-zinc-500/10 text-zinc-700 dark:text-zinc-300 border border-zinc-500/20',
               };
               const CatIcon = catInfo.icon;
               return (
@@ -111,7 +111,7 @@ export function TransactionLedger({
                   <CurrencyDisplay
                     amount={Math.abs(data.sum)}
                     size="xs"
-                    className={data.sum >= 0 ? 'text-emerald-600 dark:text-emerald-400 font-semibold' : 'text-[var(--text-primary)] font-semibold'}
+                    className={data.sum >= 0 ? 'text-emerald-600 dark:text-emerald-400 font-bold' : 'text-[var(--text-primary)] font-bold'}
                   />
                 </div>
               );
@@ -158,7 +158,7 @@ export function TransactionLedger({
               onClick={() => setFilterType('INCOME')}
               className={`px-3 py-1 rounded-lg transition-all duration-250 ease-[cubic-bezier(0.16,1,0.3,1)] cursor-pointer ${
                 filterType === 'INCOME'
-                  ? 'bg-[var(--bg-card)] text-emerald-600 dark:text-emerald-400 font-semibold shadow-xs'
+                  ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-semibold shadow-xs border border-emerald-500/20'
                   : 'text-[var(--text-muted)] hover:text-[var(--text-primary)]'
               }`}
             >
@@ -169,7 +169,7 @@ export function TransactionLedger({
               onClick={() => setFilterType('EXPENSE')}
               className={`px-3 py-1 rounded-lg transition-all duration-250 ease-[cubic-bezier(0.16,1,0.3,1)] cursor-pointer ${
                 filterType === 'EXPENSE'
-                  ? 'bg-[var(--bg-card)] text-[var(--text-primary)] font-semibold shadow-xs'
+                  ? 'bg-rose-500/10 text-rose-600 dark:text-rose-400 font-semibold shadow-xs border border-rose-500/20'
                   : 'text-[var(--text-muted)] hover:text-[var(--text-primary)]'
               }`}
             >
@@ -218,7 +218,7 @@ export function TransactionLedger({
                 const catInfo = categoryConfig[catLower] || {
                   icon: Tag,
                   dot: 'bg-zinc-400',
-                  pill: 'bg-zinc-500/10 text-zinc-700 dark:text-zinc-300',
+                  pill: 'bg-zinc-500/10 text-zinc-700 dark:text-zinc-300 border border-zinc-500/20',
                 };
                 const CatIcon = catInfo.icon;
                 const isDeleting = deletingId === tx.id;
@@ -232,10 +232,10 @@ export function TransactionLedger({
                     <td className="py-3.5 px-4 sm:px-6">
                       <div className="flex items-center gap-3">
                         <div
-                          className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 shadow-xs ${
+                          className={`w-7 h-7 rounded-lg border flex items-center justify-center shrink-0 shadow-xs ${
                             isIncome
-                              ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400'
-                              : 'bg-[var(--bg-card-subtle)] text-[var(--text-muted)]'
+                              ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/25'
+                              : 'bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/25'
                           }`}
                         >
                           {isIncome ? (
@@ -272,14 +272,14 @@ export function TransactionLedger({
                       {formatDate(tx.transactionDate)}
                     </td>
 
-                    {/* Life Hours Impact */}
+                    {/* Work Hours Impact */}
                     <td className="py-3.5 px-4 text-right whitespace-nowrap font-display-num">
                       {(tx.lifeHours !== null && tx.lifeHours !== undefined) || (tx.lifeHoursImpact !== null && tx.lifeHoursImpact !== undefined) ? (
                         <span
                           className={`text-xs font-semibold ${
                             isIncome
                               ? 'text-emerald-600 dark:text-emerald-400'
-                              : 'text-[var(--text-muted)]'
+                              : 'text-orange-600 dark:text-orange-400'
                           }`}
                         >
                           {isIncome ? '+' : '-'}
@@ -294,7 +294,7 @@ export function TransactionLedger({
                     <td className="py-3.5 px-4 sm:px-6 text-right whitespace-nowrap">
                       <div className="inline-flex items-baseline font-display-num">
                         <span
-                          className={`text-xs font-semibold mr-0.5 ${
+                          className={`text-xs font-bold mr-0.5 ${
                             isIncome
                               ? 'text-emerald-600 dark:text-emerald-400'
                               : 'text-[var(--text-primary)]'
@@ -307,8 +307,8 @@ export function TransactionLedger({
                           size="sm"
                           className={
                             isIncome
-                              ? 'text-emerald-600 dark:text-emerald-400'
-                              : 'text-[var(--text-primary)]'
+                              ? 'text-emerald-600 dark:text-emerald-400 font-bold'
+                              : 'text-[var(--text-primary)] font-bold'
                           }
                         />
                       </div>

@@ -65,10 +65,38 @@ export function AppShell({
   };
 
   const navItems = [
-    { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
-    { id: 'runway', label: 'Pay Cycle Planner', icon: TrendingUp },
-    { id: 'transactions', label: 'Transactions', icon: ReceiptText },
-    { id: 'committed', label: 'Bills & Subscriptions', icon: CalendarClock },
+    {
+      id: 'dashboard',
+      label: 'Dashboard',
+      icon: LayoutDashboard,
+      activeColor: 'text-indigo-600 dark:text-indigo-400',
+      activeBg: 'bg-indigo-500/10 dark:bg-indigo-500/15',
+      activeIndicator: 'bg-indigo-500',
+    },
+    {
+      id: 'runway',
+      label: 'Pay Cycle Planner',
+      icon: TrendingUp,
+      activeColor: 'text-violet-600 dark:text-violet-400',
+      activeBg: 'bg-violet-500/10 dark:bg-violet-500/15',
+      activeIndicator: 'bg-violet-500',
+    },
+    {
+      id: 'transactions',
+      label: 'Transactions',
+      icon: ReceiptText,
+      activeColor: 'text-blue-600 dark:text-blue-400',
+      activeBg: 'bg-blue-500/10 dark:bg-blue-500/15',
+      activeIndicator: 'bg-blue-500',
+    },
+    {
+      id: 'committed',
+      label: 'Bills & Subscriptions',
+      icon: CalendarClock,
+      activeColor: 'text-amber-600 dark:text-amber-400',
+      activeBg: 'bg-amber-500/10 dark:bg-amber-500/15',
+      activeIndicator: 'bg-amber-500',
+    },
   ];
 
   const handleNavClick = (id) => {
@@ -93,11 +121,11 @@ export function AppShell({
   return (
     <div className="relative h-screen w-screen flex bg-[var(--bg-canvas)] text-[var(--text-primary)] overflow-hidden font-sans">
       {/* ========================================================================= */}
-      {/* AMBIENT RADIAL MESH GLOW (Enables genuine frosted glass refraction) */}
+      {/* CONTROLLED AMBIENT RADIAL MESH GLOW (Calm, neutral foundation) */}
       {/* ========================================================================= */}
-      <div className="fixed -top-40 -left-40 w-[550px] h-[550px] rounded-full bg-indigo-500/15 dark:bg-indigo-500/20 blur-[130px] pointer-events-none z-0" />
-      <div className="fixed top-1/3 -right-40 w-[600px] h-[600px] rounded-full bg-violet-500/10 dark:bg-violet-500/15 blur-[140px] pointer-events-none z-0" />
-      <div className="fixed -bottom-40 left-1/3 w-[520px] h-[520px] rounded-full bg-emerald-500/10 dark:bg-emerald-500/12 blur-[130px] pointer-events-none z-0" />
+      <div className="fixed -top-40 -left-40 w-[550px] h-[550px] rounded-full bg-indigo-500/[0.04] dark:bg-indigo-500/[0.09] blur-[140px] pointer-events-none z-0" />
+      <div className="fixed top-1/3 -right-40 w-[600px] h-[600px] rounded-full bg-blue-500/[0.03] dark:bg-blue-500/[0.06] blur-[150px] pointer-events-none z-0" />
+      <div className="fixed -bottom-40 left-1/3 w-[520px] h-[520px] rounded-full bg-emerald-500/[0.025] dark:bg-emerald-500/[0.05] blur-[140px] pointer-events-none z-0" />
 
       {/* ========================================================================= */}
       {/* 1. DESKTOP SAAS SIDEBAR (Frosted Translucent Glass Layer) */}
@@ -106,7 +134,7 @@ export function AppShell({
         <div className="p-4 sm:p-5 flex flex-col flex-1 overflow-y-auto">
           {/* Workspace Switcher Header */}
           <div className="flex items-center gap-3 pb-4 border-b border-[var(--border-subtle)]">
-            <div className="w-8 h-8 rounded-xl bg-indigo-600 dark:bg-white text-white dark:text-black flex items-center justify-center shadow-xs shrink-0">
+            <div className="w-8 h-8 rounded-xl bg-indigo-600 text-white flex items-center justify-center shadow-xs shrink-0">
               <Compass className="w-4 h-4 stroke-[2.2]" />
             </div>
             <div className="min-w-0 flex-1">
@@ -121,19 +149,19 @@ export function AppShell({
             </div>
           </div>
 
-          {/* Primary Quick Action */}
+          {/* Primary Quick Action CTA */}
           <div className="my-4">
             <button
               type="button"
               onClick={onNewTransaction}
-              className="w-full flex items-center justify-center gap-2 px-3.5 py-2 text-xs font-semibold text-white bg-indigo-600 hover:bg-indigo-500 active:scale-[0.98] dark:bg-white dark:text-black dark:hover:bg-zinc-200 rounded-xl shadow-framer-xs hover:shadow-framer-md transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] cursor-pointer"
+              className="w-full flex items-center justify-center gap-2 px-3.5 py-2 text-xs font-semibold text-white bg-indigo-600 hover:bg-indigo-500 active:scale-[0.98] rounded-xl shadow-framer-xs hover:shadow-framer-md transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] cursor-pointer"
             >
               <Plus className="w-3.5 h-3.5 stroke-[2.5]" />
               <span>Record Transaction</span>
             </button>
           </div>
 
-          {/* Navigation Links */}
+          {/* Navigation Links with Semantic SaaS Personas */}
           <div className="space-y-1">
             <span className="block px-2 text-[10px] font-semibold tracking-wider text-[var(--text-muted)] uppercase mb-2">
               Navigation
@@ -146,17 +174,20 @@ export function AppShell({
                   key={item.id}
                   type="button"
                   onClick={() => handleNavClick(item.id)}
-                  className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-medium transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] text-left cursor-pointer ${
+                  className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-medium transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] text-left cursor-pointer group ${
                     isActive
-                      ? 'bg-indigo-500/10 dark:bg-white/[0.09] text-indigo-600 dark:text-white font-semibold shadow-xs'
-                      : 'text-[var(--text-secondary)] hover:bg-[var(--bg-card-hover)] hover:text-[var(--text-primary)] hover:translate-x-1'
+                      ? `${item.activeBg} ${item.activeColor} font-semibold shadow-2xs`
+                      : 'text-[var(--text-secondary)] hover:bg-[var(--bg-card-hover)] hover:text-[var(--text-primary)] hover:translate-x-0.5'
                   }`}
                 >
+                  {isActive && (
+                    <span className={`w-1 h-3.5 rounded-full shrink-0 ${item.activeIndicator}`} />
+                  )}
                   <Icon
                     className={`w-4 h-4 shrink-0 stroke-[2] transition-colors duration-200 ${
                       isActive
-                        ? 'text-indigo-600 dark:text-white'
-                        : 'text-[var(--text-muted)]'
+                        ? item.activeColor
+                        : 'text-[var(--text-muted)] group-hover:text-[var(--text-primary)]'
                     }`}
                   />
                   <span className="truncate">{item.label}</span>
@@ -247,7 +278,7 @@ export function AppShell({
                 type="text"
                 placeholder="Search transactions, bills, or actions..."
                 disabled
-                className="w-full pl-8 pr-12 py-1.5 text-xs bg-[var(--bg-card-subtle)] border border-[var(--border-subtle)] rounded-xl text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-hidden select-none cursor-default"
+                className="w-full pl-8 pr-12 py-1.5 text-xs bg-[var(--bg-card-subtle)] border border-[var(--border-subtle)] rounded-xl text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-hidden select-none cursor-default transition-colors shadow-2xs"
               />
               <span className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[10px] font-mono px-1.5 py-0.5 rounded bg-[var(--bg-card-solid)] text-[var(--text-muted)] border border-[var(--border-subtle)]">
                 ⌘K
@@ -257,11 +288,11 @@ export function AppShell({
 
           {/* Right Utilities */}
           <div className="flex items-center gap-2 sm:gap-3">
-            {/* Live Database Heartbeat */}
-            <div className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-[11px] font-medium text-emerald-600 dark:text-emerald-400">
-              <Database className="w-3 h-3" />
+            {/* Discreet PostgreSQL Status Pill (Secondary Development Indicator) */}
+            <div className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[var(--bg-card-subtle)] border border-[var(--border-subtle)] text-[11px] font-medium text-[var(--text-muted)]">
+              <Database className="w-3 h-3 text-[var(--text-muted)]" />
               <span>PostgreSQL 18</span>
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
             </div>
 
             {/* Dark / Light Mode Switcher */}
@@ -269,7 +300,7 @@ export function AppShell({
               type="button"
               onClick={toggleTheme}
               className="p-2 rounded-xl text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-card-hover)] border border-[var(--border-subtle)] active:scale-90 transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] cursor-pointer"
-              title={isDark ? 'Switch to Framer Day Mode' : 'Switch to Copilot Night Mode'}
+              title={isDark ? 'Switch to Day Mode' : 'Switch to Night Mode'}
             >
               {isDark ? <Sun className="w-4 h-4 text-amber-400 transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] hover:rotate-45" /> : <Moon className="w-4 h-4 text-indigo-600 transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-rotate-12" />}
             </button>
@@ -284,11 +315,11 @@ export function AppShell({
               <RefreshCw className="w-4 h-4 stroke-[1.8] group-hover:rotate-180 transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]" />
             </button>
 
-            {/* Header CTA Button */}
+            {/* Header CTA Button (Solvence Primary Brand Button) */}
             <button
               type="button"
               onClick={onNewTransaction}
-              className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-white bg-indigo-600 hover:bg-indigo-500 active:scale-[0.98] dark:bg-white dark:text-black dark:hover:bg-zinc-200 rounded-xl shadow-framer-xs hover:shadow-framer-md transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] cursor-pointer"
+              className="flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-semibold text-white bg-indigo-600 hover:bg-indigo-500 active:scale-[0.98] rounded-xl shadow-framer-xs hover:shadow-framer-md transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] cursor-pointer"
             >
               <Plus className="w-3.5 h-3.5 stroke-[2.5]" />
               <span className="hidden sm:inline">Record Transaction</span>
@@ -316,7 +347,7 @@ export function AppShell({
           <div className="relative flex-1 flex flex-col max-w-xs w-full saas-glass-card rounded-none p-5 z-10 shadow-2xl border-r border-[var(--border-subtle)]">
             <div className="flex items-center justify-between pb-4 border-b border-[var(--border-subtle)] mb-4">
               <div className="flex items-center gap-2">
-                <div className="w-7 h-7 rounded-lg bg-indigo-600 dark:bg-white text-white dark:text-black flex items-center justify-center">
+                <div className="w-7 h-7 rounded-lg bg-indigo-600 text-white flex items-center justify-center">
                   <Compass className="w-4 h-4" />
                 </div>
                 <span className="font-bold text-sm">Solvence</span>
@@ -341,10 +372,13 @@ export function AppShell({
                     onClick={() => handleNavClick(item.id)}
                     className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium text-left ${
                       isActive
-                        ? 'bg-indigo-500/10 text-indigo-600 dark:text-white font-semibold'
+                        ? `${item.activeBg} ${item.activeColor} font-semibold`
                         : 'text-[var(--text-secondary)] hover:bg-[var(--bg-card-hover)]'
                     }`}
                   >
+                    {isActive && (
+                      <span className={`w-1 h-3.5 rounded-full shrink-0 ${item.activeIndicator}`} />
+                    )}
                     <Icon className="w-4 h-4" />
                     <span>{item.label}</span>
                   </button>

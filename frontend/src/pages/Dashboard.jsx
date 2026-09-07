@@ -158,10 +158,10 @@ export function Dashboard({
           {/* 4 Core Financial Summary Cards & Reconciliation Strip */}
           <FinancialSummaryGrid runwayData={runwayData} loading={loading} />
 
-          {/* 2 Non-Interactive Preview Panels linking to dedicated views */}
+          {/* 2 Non-Interactive Preview Panels with Semantic Identities */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* Recent Activity Preview */}
-            <div className="saas-glass-card saas-glass-card-hover p-5 sm:p-6 flex flex-col justify-between shadow-framer-md">
+            {/* Recent Activity Preview (Blue Identity) */}
+            <div className="saas-card-blue p-5 sm:p-6 flex flex-col justify-between shadow-framer-md">
               <div>
                 <div className="flex items-center justify-between pb-3 border-b border-[var(--border-subtle)]">
                   <div>
@@ -175,7 +175,7 @@ export function Dashboard({
                   <button
                     type="button"
                     onClick={() => onViewChange && onViewChange('transactions')}
-                    className="flex items-center gap-1 text-xs font-semibold text-indigo-600 dark:text-indigo-400 hover:underline cursor-pointer"
+                    className="flex items-center gap-1 text-xs font-semibold text-blue-600 dark:text-blue-400 hover:underline cursor-pointer"
                   >
                     <span>View all</span>
                     <ArrowRight className="w-3.5 h-3.5" />
@@ -228,8 +228,8 @@ export function Dashboard({
               </div>
             </div>
 
-            {/* Upcoming Bills Preview */}
-            <div className="saas-glass-card saas-glass-card-hover p-5 sm:p-6 flex flex-col justify-between shadow-framer-md">
+            {/* Upcoming Bills Preview (Amber Identity) */}
+            <div className="saas-card-amber p-5 sm:p-6 flex flex-col justify-between shadow-framer-md">
               <div>
                 <div className="flex items-center justify-between pb-3 border-b border-[var(--border-subtle)]">
                   <div>
@@ -243,7 +243,7 @@ export function Dashboard({
                   <button
                     type="button"
                     onClick={() => onViewChange && onViewChange('committed')}
-                    className="flex items-center gap-1 text-xs font-semibold text-indigo-600 dark:text-indigo-400 hover:underline cursor-pointer"
+                    className="flex items-center gap-1 text-xs font-semibold text-amber-600 dark:text-amber-400 hover:underline cursor-pointer"
                   >
                     <span>View schedule</span>
                     <ArrowRight className="w-3.5 h-3.5" />
@@ -256,7 +256,7 @@ export function Dashboard({
                     <CurrencyDisplay
                       amount={runwayData?.committedBills || 0}
                       size="xl"
-                      className={runwayData?.committedBills > 0 ? "text-amber-500" : "text-[var(--text-primary)]"}
+                      className={runwayData?.committedBills > 0 ? "text-amber-600 dark:text-amber-400 font-bold" : "text-[var(--text-primary)] font-bold"}
                     />
                   </div>
                   <div className="p-3 bg-[var(--bg-card-subtle)] rounded-xl border border-[var(--border-subtle)] text-xs text-[var(--text-secondary)] leading-relaxed">
@@ -273,7 +273,7 @@ export function Dashboard({
                   onClick={() => onViewChange && onViewChange('committed')}
                   className="w-full py-2 px-3 rounded-xl bg-[var(--bg-card-subtle)] hover:bg-[var(--bg-card-hover)] border border-[var(--border-subtle)] text-xs font-semibold text-[var(--text-primary)] flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
                 >
-                  <CalendarCheck className="w-3.5 h-3.5" />
+                  <CalendarCheck className="w-3.5 h-3.5 text-amber-500" />
                   <span>Manage Bills &amp; Subscriptions</span>
                 </button>
               </div>
@@ -289,10 +289,10 @@ export function Dashboard({
       {activeView === 'runway' && (
         <div className="space-y-6">
           {/* Header */}
-          <div className="saas-glass-card saas-glass-card-hover p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-framer-md">
+          <div className="saas-card-violet p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-framer-md">
             <div>
               <div className="flex items-center gap-2 mb-1">
-                <span className="p-1.5 rounded-lg bg-indigo-500/10 text-indigo-600 dark:text-indigo-400">
+                <span className="p-1.5 rounded-lg bg-violet-500/10 text-violet-600 dark:text-violet-400">
                   <Sparkles className="w-4 h-4" />
                 </span>
                 <h2 className="text-lg font-semibold tracking-tight text-[var(--text-primary)]">
@@ -307,7 +307,7 @@ export function Dashboard({
             <div className="flex items-center gap-4 bg-[var(--bg-card-subtle)] px-4 py-2 rounded-xl border border-[var(--border-subtle)] shadow-xs">
               <div>
                 <span className="block text-[10px] uppercase font-bold text-[var(--text-muted)]">Safe to Spend Today</span>
-                <span className="text-base font-bold font-display-num text-indigo-600 dark:text-indigo-400">
+                <span className="text-base font-bold font-display-num text-violet-600 dark:text-violet-400">
                   {formatCurrency(runwayData?.safeDailySpend || 0)}/day
                 </span>
               </div>
@@ -322,11 +322,11 @@ export function Dashboard({
           </div>
 
           {/* Interactive What-If Scenario Simulator Card */}
-          <div className="saas-glass-card saas-glass-card-hover p-6 shadow-framer-md border border-indigo-500/20">
+          <div className="saas-card-violet p-6 shadow-framer-md border border-violet-500/20">
             <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 pb-6 border-b border-[var(--border-subtle)]">
               <div>
                 <div className="flex items-center gap-2">
-                  <Sliders className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
+                  <Sliders className="w-4 h-4 text-violet-600 dark:text-violet-400" />
                   <h3 className="text-sm font-semibold text-[var(--text-primary)]">
                     What-If Daily Spending Simulator
                   </h3>
@@ -343,7 +343,7 @@ export function Dashboard({
                   onClick={() => setSimulatedSpend(1500)}
                   className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] active:scale-95 cursor-pointer ${
                     simulatedSpend === 1500
-                      ? 'bg-indigo-600 text-white shadow-xs'
+                      ? 'bg-violet-600 text-white shadow-xs'
                       : 'bg-[var(--bg-card-subtle)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] border border-[var(--border-subtle)]'
                   }`}
                 >
@@ -354,7 +354,7 @@ export function Dashboard({
                   onClick={() => setSimulatedSpend(runwayData?.safeDailySpend || 2600)}
                   className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] active:scale-95 cursor-pointer ${
                     simulatedSpend === (runwayData?.safeDailySpend || 2600)
-                      ? 'bg-indigo-600 text-white shadow-xs'
+                      ? 'bg-violet-600 text-white shadow-xs'
                       : 'bg-[var(--bg-card-subtle)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] border border-[var(--border-subtle)]'
                   }`}
                 >
@@ -365,7 +365,7 @@ export function Dashboard({
                   onClick={() => setSimulatedSpend(3800)}
                   className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] active:scale-95 cursor-pointer ${
                     simulatedSpend === 3800
-                      ? 'bg-indigo-600 text-white shadow-xs'
+                      ? 'bg-violet-600 text-white shadow-xs'
                       : 'bg-[var(--bg-card-subtle)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] border border-[var(--border-subtle)]'
                   }`}
                 >
@@ -382,7 +382,7 @@ export function Dashboard({
                   <CurrencyDisplay
                     amount={simulatedSpend}
                     size="lg"
-                    className="text-indigo-600 dark:text-indigo-400 font-bold"
+                    className="text-violet-600 dark:text-violet-400 font-bold"
                   />
                 </div>
                 <input
@@ -392,7 +392,7 @@ export function Dashboard({
                   step="100"
                   value={simulatedSpend}
                   onChange={(e) => setSimulatedSpend(parseFloat(e.target.value))}
-                  className="w-full h-2 bg-zinc-200 dark:bg-zinc-800 rounded-lg appearance-none cursor-pointer accent-indigo-600"
+                  className="w-full h-2 bg-zinc-200 dark:bg-zinc-800 rounded-lg appearance-none cursor-pointer accent-violet-600"
                 />
                 <div className="flex justify-between text-[10px] text-[var(--text-muted)] font-display-num">
                   <span>₹500/day</span>
@@ -421,7 +421,7 @@ export function Dashboard({
                     )}
                   </p>
                 </div>
-                <div className="w-10 h-10 rounded-xl bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 flex items-center justify-center">
+                <div className="w-10 h-10 rounded-xl bg-violet-500/10 text-violet-600 dark:text-violet-400 flex items-center justify-center">
                   <Clock className="w-5 h-5" />
                 </div>
               </div>
@@ -434,13 +434,13 @@ export function Dashboard({
             customSafeDailySpend={simulatedSpend}
           />
 
-          {/* How This Is Calculated */}
+          {/* How This Is Calculated with Semantic Personas */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="saas-glass-card saas-glass-card-hover p-6 shadow-framer-xs">
-              <span className="text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wider block mb-2">
+            <div className="saas-card-blue p-6 shadow-framer-xs">
+              <span className="text-xs font-semibold text-blue-600 dark:text-blue-400 uppercase tracking-wider block mb-2">
                 1. Current Balance
               </span>
-              <p className="text-2xl font-bold font-display-num text-emerald-600 dark:text-emerald-400 mb-1">
+              <p className="text-2xl font-bold font-display-num text-blue-600 dark:text-blue-400 mb-1">
                 {formatCurrency(runwayData?.liquidReserve || 0)}
               </p>
               <p className="text-xs text-[var(--text-secondary)]">
@@ -448,11 +448,11 @@ export function Dashboard({
               </p>
             </div>
 
-            <div className="saas-glass-card saas-glass-card-hover p-6 shadow-framer-xs">
-              <span className="text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wider block mb-2">
+            <div className="saas-card-amber p-6 shadow-framer-xs">
+              <span className="text-xs font-semibold text-amber-600 dark:text-amber-400 uppercase tracking-wider block mb-2">
                 2. Upcoming Bills
               </span>
-              <p className="text-2xl font-bold font-display-num text-amber-500 mb-1">
+              <p className="text-2xl font-bold font-display-num text-amber-600 dark:text-amber-400 mb-1">
                 {formatCurrency(runwayData?.committedBills || 0)}
               </p>
               <p className="text-xs text-[var(--text-secondary)]">
@@ -460,11 +460,11 @@ export function Dashboard({
               </p>
             </div>
 
-            <div className="saas-glass-card saas-glass-card-hover p-6 shadow-framer-xs">
-              <span className="text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wider block mb-2">
+            <div className="saas-card-violet p-6 shadow-framer-xs">
+              <span className="text-xs font-semibold text-violet-600 dark:text-violet-400 uppercase tracking-wider block mb-2">
                 3. Safe to Spend Today
               </span>
-              <p className="text-2xl font-bold font-display-num text-indigo-600 dark:text-indigo-400 mb-1">
+              <p className="text-2xl font-bold font-display-num text-violet-600 dark:text-violet-400 mb-1">
                 {formatCurrency(runwayData?.safeDailySpend || 0)}/day
               </p>
               <p className="text-xs text-[var(--text-secondary)]">
@@ -481,7 +481,7 @@ export function Dashboard({
       {/* ========================================================================= */}
       {activeView === 'transactions' && (
         <div className="space-y-6">
-          <div className="saas-glass-card saas-glass-card-hover p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-framer-md">
+          <div className="saas-card-blue p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-framer-md">
             <div>
               <h2 className="text-lg font-semibold tracking-tight text-[var(--text-primary)]">
                 Transactions
@@ -493,7 +493,7 @@ export function Dashboard({
             <button
               type="button"
               onClick={() => setIsDialogOpen(true)}
-              className="flex items-center gap-2 px-4 py-2 text-xs font-semibold text-white bg-indigo-600 hover:bg-indigo-500 dark:bg-white dark:text-black rounded-xl shadow-framer-xs cursor-pointer"
+              className="flex items-center gap-2 px-4 py-2 text-xs font-semibold text-white bg-indigo-600 hover:bg-indigo-500 rounded-xl shadow-framer-xs cursor-pointer"
             >
               <Plus className="w-4 h-4" />
               <span>Record Transaction</span>
@@ -518,7 +518,7 @@ export function Dashboard({
       {/* ========================================================================= */}
       {activeView === 'committed' && (
         <div className="space-y-6">
-          <div className="saas-glass-card saas-glass-card-hover p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-framer-md">
+          <div className="saas-card-amber p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-framer-md">
             <div>
               <h2 className="text-lg font-semibold tracking-tight text-[var(--text-primary)]">
                 Bills &amp; Subscriptions
@@ -537,10 +537,10 @@ export function Dashboard({
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <UpcomingObligationsCard runwayData={runwayData} />
 
-            <div className="saas-glass-card saas-glass-card-hover p-6 flex flex-col justify-between shadow-framer-md">
+            <div className="saas-card-amber p-6 flex flex-col justify-between shadow-framer-md">
               <div>
                 <h4 className="text-sm font-semibold text-[var(--text-primary)] mb-2 flex items-center gap-2">
-                  <Shield className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
+                  <Shield className="w-4 h-4 text-amber-600 dark:text-amber-400" />
                   <span>Bill Protection</span>
                 </h4>
                 <p className="text-xs text-[var(--text-secondary)] leading-relaxed">
@@ -571,10 +571,10 @@ export function Dashboard({
           </div>
 
           {/* Recurring Schedule Table */}
-          <div className="saas-glass-card p-6 shadow-framer-md">
+          <div className="saas-card-amber p-6 shadow-framer-md">
             <div className="flex items-center justify-between pb-4 border-b border-[var(--border-subtle)] mb-4">
               <div className="flex items-center gap-2">
-                <CalendarCheck className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
+                <CalendarCheck className="w-4 h-4 text-amber-600 dark:text-amber-400" />
                 <h3 className="text-sm font-semibold text-[var(--text-primary)]">
                   Scheduled Recurring Bills
                 </h3>

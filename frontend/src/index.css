@@ -8,38 +8,122 @@
 
 :root {
   --bg-canvas: #f8f9fa;
-  --bg-card: rgba(255, 255, 255, 0.78);
+  --bg-card: rgba(255, 255, 255, 0.88);
   --bg-card-solid: #ffffff;
-  --bg-card-subtle: rgba(243, 244, 246, 0.7);
-  --bg-card-elevated: rgba(235, 237, 240, 0.8);
-  --bg-card-hover: rgba(255, 255, 255, 0.95);
+  --bg-card-subtle: rgba(243, 244, 246, 0.75);
+  --bg-card-elevated: rgba(235, 237, 240, 0.85);
+  --bg-card-hover: rgba(255, 255, 255, 0.98);
   --border-subtle: rgba(0, 0, 0, 0.08);
   --border-elevated: rgba(0, 0, 0, 0.14);
-  --specular-edge: rgba(255, 255, 255, 0.9);
+  --specular-edge: rgba(255, 255, 255, 0.95);
   --text-primary: #0f172a;
   --text-secondary: #475569;
   --text-muted: #64748b;
-  --glow-indigo: rgba(99, 102, 241, 0.12);
-  --glow-violet: rgba(168, 85, 247, 0.10);
-  --glow-emerald: rgba(16, 185, 129, 0.10);
+  --glow-indigo: rgba(99, 102, 241, 0.10);
+  --glow-violet: rgba(139, 92, 246, 0.08);
+  --glow-emerald: rgba(16, 185, 129, 0.08);
+
+  /* Semantic Brand / Current Balance (Blue/Cyan) */
+  --card-blue-bg: rgba(240, 247, 255, 0.85);
+  --card-blue-bg-hover: rgba(235, 244, 255, 0.95);
+  --card-blue-border: rgba(59, 130, 246, 0.18);
+  --card-blue-border-hover: rgba(59, 130, 246, 0.35);
+  --card-blue-icon-bg: rgba(219, 234, 254, 0.9);
+  --card-blue-icon: #2563eb;
+  --card-blue-glow: rgba(59, 130, 246, 0.08);
+
+  /* Semantic Upcoming Bills (Amber/Gold) */
+  --card-amber-bg: rgba(255, 251, 235, 0.85);
+  --card-amber-bg-hover: rgba(254, 249, 225, 0.95);
+  --card-amber-border: rgba(245, 158, 11, 0.20);
+  --card-amber-border-hover: rgba(245, 158, 11, 0.38);
+  --card-amber-icon-bg: rgba(254, 243, 199, 0.9);
+  --card-amber-icon: #d97706;
+  --card-amber-glow: rgba(245, 158, 11, 0.08);
+
+  /* Semantic Available to Spend / Runway (Violet/Indigo) */
+  --card-violet-bg: rgba(248, 245, 255, 0.85);
+  --card-violet-bg-hover: rgba(243, 239, 255, 0.95);
+  --card-violet-border: rgba(139, 92, 246, 0.18);
+  --card-violet-border-hover: rgba(139, 92, 246, 0.35);
+  --card-violet-icon-bg: rgba(237, 233, 254, 0.9);
+  --card-violet-icon: #7c3aed;
+  --card-violet-glow: rgba(139, 92, 246, 0.08);
+
+  /* Semantic Work Hours (Orange/Coral) */
+  --card-orange-bg: rgba(255, 248, 241, 0.85);
+  --card-orange-bg-hover: rgba(255, 243, 232, 0.95);
+  --card-orange-border: rgba(249, 115, 22, 0.18);
+  --card-orange-border-hover: rgba(249, 115, 22, 0.35);
+  --card-orange-icon-bg: rgba(255, 237, 213, 0.9);
+  --card-orange-icon: #ea580c;
+  --card-orange-glow: rgba(249, 115, 22, 0.08);
+
+  /* Semantic Cashflow Health (Emerald & Rose) */
+  --card-emerald-bg: rgba(240, 253, 244, 0.85);
+  --card-emerald-border: rgba(16, 185, 129, 0.18);
+  --card-rose-bg: rgba(255, 241, 242, 0.85);
+  --card-rose-border: rgba(244, 63, 94, 0.18);
 }
 
 .dark {
-  --bg-canvas: #09090b;
-  --bg-card: rgba(18, 18, 22, 0.65);
-  --bg-card-solid: #121216;
-  --bg-card-subtle: rgba(24, 24, 30, 0.5);
-  --bg-card-elevated: rgba(30, 30, 38, 0.7);
-  --bg-card-hover: rgba(35, 35, 45, 0.8);
-  --border-subtle: rgba(255, 255, 255, 0.09);
-  --border-elevated: rgba(255, 255, 255, 0.16);
-  --specular-edge: rgba(255, 255, 255, 0.12);
+  --bg-canvas: #090a0f;
+  --bg-card: rgba(16, 19, 28, 0.72);
+  --bg-card-solid: #11141f;
+  --bg-card-subtle: rgba(22, 27, 39, 0.55);
+  --bg-card-elevated: rgba(28, 34, 50, 0.7);
+  --bg-card-hover: rgba(32, 39, 58, 0.8);
+  --border-subtle: rgba(255, 255, 255, 0.08);
+  --border-elevated: rgba(255, 255, 255, 0.15);
+  --specular-edge: rgba(255, 255, 255, 0.08);
   --text-primary: #f8fafc;
   --text-secondary: #94a3b8;
   --text-muted: #64748b;
-  --glow-indigo: rgba(99, 102, 241, 0.18);
-  --glow-violet: rgba(168, 85, 247, 0.14);
-  --glow-emerald: rgba(16, 185, 129, 0.14);
+  --glow-indigo: rgba(99, 102, 241, 0.14);
+  --glow-violet: rgba(139, 92, 246, 0.12);
+  --glow-emerald: rgba(16, 185, 129, 0.12);
+
+  /* Semantic Brand / Current Balance (Blue/Cyan) - Dark */
+  --card-blue-bg: rgba(14, 25, 45, 0.65);
+  --card-blue-bg-hover: rgba(18, 32, 58, 0.8);
+  --card-blue-border: rgba(59, 130, 246, 0.22);
+  --card-blue-border-hover: rgba(59, 130, 246, 0.45);
+  --card-blue-icon-bg: rgba(30, 58, 138, 0.4);
+  --card-blue-icon: #60a5fa;
+  --card-blue-glow: rgba(59, 130, 246, 0.16);
+
+  /* Semantic Upcoming Bills (Amber/Gold) - Dark */
+  --card-amber-bg: rgba(35, 26, 12, 0.65);
+  --card-amber-bg-hover: rgba(46, 34, 16, 0.8);
+  --card-amber-border: rgba(245, 158, 11, 0.22);
+  --card-amber-border-hover: rgba(245, 158, 11, 0.45);
+  --card-amber-icon-bg: rgba(120, 53, 15, 0.4);
+  --card-amber-icon: #fbbf24;
+  --card-amber-glow: rgba(245, 158, 11, 0.16);
+
+  /* Semantic Available to Spend / Runway (Violet/Indigo) - Dark */
+  --card-violet-bg: rgba(26, 18, 46, 0.65);
+  --card-violet-bg-hover: rgba(35, 24, 62, 0.8);
+  --card-violet-border: rgba(139, 92, 246, 0.22);
+  --card-violet-border-hover: rgba(139, 92, 246, 0.45);
+  --card-violet-icon-bg: rgba(76, 29, 149, 0.4);
+  --card-violet-icon: #a78bfa;
+  --card-violet-glow: rgba(139, 92, 246, 0.16);
+
+  /* Semantic Work Hours (Orange/Coral) - Dark */
+  --card-orange-bg: rgba(36, 20, 14, 0.65);
+  --card-orange-bg-hover: rgba(48, 27, 18, 0.8);
+  --card-orange-border: rgba(249, 115, 22, 0.22);
+  --card-orange-border-hover: rgba(249, 115, 22, 0.45);
+  --card-orange-icon-bg: rgba(124, 45, 18, 0.4);
+  --card-orange-icon: #fb923c;
+  --card-orange-glow: rgba(249, 115, 22, 0.16);
+
+  /* Semantic Cashflow Health (Emerald & Rose) - Dark */
+  --card-emerald-bg: rgba(10, 32, 24, 0.65);
+  --card-emerald-border: rgba(16, 185, 129, 0.22);
+  --card-rose-bg: rgba(36, 16, 22, 0.65);
+  --card-rose-border: rgba(244, 63, 94, 0.22);
 }
 
 body {
@@ -101,6 +185,122 @@ body {
 
 .dark .saas-glass-card-hover:hover {
   box-shadow: inset 0 1px 0 0 var(--specular-edge), 0 20px 48px -10px rgba(0, 0, 0, 0.60), 0 0 20px 0 var(--glow-indigo);
+}
+
+/* ========================================================================= */
+/* SEMANTIC MULTICOLOR SAAS CARD VARIANTS (90% Neutral + 10% Semantic Tint) */
+/* ========================================================================= */
+
+.saas-card-blue {
+  background-color: var(--card-blue-bg);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid var(--card-blue-border);
+  border-radius: 1rem;
+  box-shadow: inset 0 1px 0 0 var(--specular-edge), 0 8px 32px 0 rgba(0, 0, 0, 0.04);
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+              background-color 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.dark .saas-card-blue {
+  box-shadow: inset 0 1px 0 0 var(--specular-edge), 0 12px 36px 0 rgba(0, 0, 0, 0.45);
+}
+
+.saas-card-blue:hover {
+  background-color: var(--card-blue-bg-hover);
+  border-color: var(--card-blue-border-hover);
+  transform: translateY(-2px);
+  box-shadow: inset 0 1px 0 0 var(--specular-edge), 0 16px 36px -8px rgba(0, 0, 0, 0.08), 0 0 24px 0 var(--card-blue-glow);
+}
+
+.dark .saas-card-blue:hover {
+  box-shadow: inset 0 1px 0 0 var(--specular-edge), 0 20px 48px -10px rgba(0, 0, 0, 0.60), 0 0 24px 0 var(--card-blue-glow);
+}
+
+.saas-card-amber {
+  background-color: var(--card-amber-bg);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid var(--card-amber-border);
+  border-radius: 1rem;
+  box-shadow: inset 0 1px 0 0 var(--specular-edge), 0 8px 32px 0 rgba(0, 0, 0, 0.04);
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+              background-color 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.dark .saas-card-amber {
+  box-shadow: inset 0 1px 0 0 var(--specular-edge), 0 12px 36px 0 rgba(0, 0, 0, 0.45);
+}
+
+.saas-card-amber:hover {
+  background-color: var(--card-amber-bg-hover);
+  border-color: var(--card-amber-border-hover);
+  transform: translateY(-2px);
+  box-shadow: inset 0 1px 0 0 var(--specular-edge), 0 16px 36px -8px rgba(0, 0, 0, 0.08), 0 0 24px 0 var(--card-amber-glow);
+}
+
+.dark .saas-card-amber:hover {
+  box-shadow: inset 0 1px 0 0 var(--specular-edge), 0 20px 48px -10px rgba(0, 0, 0, 0.60), 0 0 24px 0 var(--card-amber-glow);
+}
+
+.saas-card-violet {
+  background-color: var(--card-violet-bg);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid var(--card-violet-border);
+  border-radius: 1rem;
+  box-shadow: inset 0 1px 0 0 var(--specular-edge), 0 8px 32px 0 rgba(0, 0, 0, 0.04);
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+              background-color 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.dark .saas-card-violet {
+  box-shadow: inset 0 1px 0 0 var(--specular-edge), 0 12px 36px 0 rgba(0, 0, 0, 0.45);
+}
+
+.saas-card-violet:hover {
+  background-color: var(--card-violet-bg-hover);
+  border-color: var(--card-violet-border-hover);
+  transform: translateY(-2px);
+  box-shadow: inset 0 1px 0 0 var(--specular-edge), 0 16px 36px -8px rgba(0, 0, 0, 0.08), 0 0 24px 0 var(--card-violet-glow);
+}
+
+.dark .saas-card-violet:hover {
+  box-shadow: inset 0 1px 0 0 var(--specular-edge), 0 20px 48px -10px rgba(0, 0, 0, 0.60), 0 0 24px 0 var(--card-violet-glow);
+}
+
+.saas-card-orange {
+  background-color: var(--card-orange-bg);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid var(--card-orange-border);
+  border-radius: 1rem;
+  box-shadow: inset 0 1px 0 0 var(--specular-edge), 0 8px 32px 0 rgba(0, 0, 0, 0.04);
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+              background-color 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.dark .saas-card-orange {
+  box-shadow: inset 0 1px 0 0 var(--specular-edge), 0 12px 36px 0 rgba(0, 0, 0, 0.45);
+}
+
+.saas-card-orange:hover {
+  background-color: var(--card-orange-bg-hover);
+  border-color: var(--card-orange-border-hover);
+  transform: translateY(-2px);
+  box-shadow: inset 0 1px 0 0 var(--specular-edge), 0 16px 36px -8px rgba(0, 0, 0, 0.08), 0 0 24px 0 var(--card-orange-glow);
+}
+
+.dark .saas-card-orange:hover {
+  box-shadow: inset 0 1px 0 0 var(--specular-edge), 0 20px 48px -10px rgba(0, 0, 0, 0.60), 0 0 24px 0 var(--card-orange-glow);
 }
 
 /* Legacy class alias for safety */

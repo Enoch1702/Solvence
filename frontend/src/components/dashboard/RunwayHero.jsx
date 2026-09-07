@@ -1,4 +1,4 @@
-import { AlertTriangle, CheckCircle2, ArrowUpRight } from 'lucide-react';
+import { AlertTriangle, CheckCircle2, ArrowUpRight, Wallet, CalendarCheck } from 'lucide-react';
 import { CurrencyDisplay } from '../common/CurrencyDisplay';
 import { formatCurrency } from '../../utils/currency';
 
@@ -38,8 +38,9 @@ export function RunwayHero({ runwayData }) {
 
   return (
     <div className="saas-glass-card relative overflow-hidden p-6 sm:p-8 shadow-framer-md">
-      {/* Specular Ambient Glow */}
-      <div className="absolute top-0 right-1/4 w-96 h-32 bg-indigo-500/[0.08] blur-3xl pointer-events-none -z-0" />
+      {/* Specular Ambient Glow (Indigo & Emerald accents) */}
+      <div className="absolute top-0 right-1/4 w-96 h-36 bg-indigo-500/[0.07] dark:bg-indigo-500/[0.12] blur-3xl pointer-events-none -z-0" />
+      <div className="absolute -bottom-10 left-10 w-72 h-32 bg-emerald-500/[0.04] dark:bg-emerald-500/[0.07] blur-3xl pointer-events-none -z-0" />
 
       <div className="relative z-10 flex flex-col gap-6">
         {/* Top Eyebrow & Status Row */}
@@ -91,7 +92,7 @@ export function RunwayHero({ runwayData }) {
               <CurrencyDisplay
                 amount={safeDailySpend}
                 size="hero"
-                className={isNegativeOrZeroCapacity ? "text-amber-500" : "text-[var(--text-primary)]"}
+                className={isNegativeOrZeroCapacity ? "text-amber-500" : "text-[var(--text-primary)] font-bold"}
               />
               <span className="text-xs font-semibold px-2 py-0.5 rounded-md bg-[var(--bg-card-elevated)] text-[var(--text-muted)] border border-[var(--border-subtle)]">
                 per day
@@ -103,32 +104,44 @@ export function RunwayHero({ runwayData }) {
             </p>
           </div>
 
-          {/* Right Secondary Metrics Pillar */}
-          <div className="lg:col-span-5 grid grid-cols-2 gap-4 p-4 rounded-xl bg-[var(--bg-card-subtle)] border border-[var(--border-subtle)]">
-            <div>
-              <span className="block text-[10px] font-semibold tracking-wider text-[var(--text-muted)] uppercase mb-1">
-                Current Balance
-              </span>
+          {/* Right Secondary Metrics Pillar with Semantic Identities */}
+          <div className="lg:col-span-5 grid grid-cols-2 gap-3.5">
+            {/* Current Balance Mini-Panel (Blue Identity) */}
+            <div className="p-3.5 rounded-xl bg-blue-500/[0.04] dark:bg-blue-950/25 border border-blue-500/20 shadow-xs flex flex-col justify-between">
+              <div className="flex items-center justify-between mb-1">
+                <span className="text-[10px] font-semibold tracking-wider text-blue-600 dark:text-blue-400 uppercase">
+                  Current Balance
+                </span>
+                <div className="w-5 h-5 rounded-md bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20 flex items-center justify-center">
+                  <Wallet className="w-3 h-3 stroke-[2]" />
+                </div>
+              </div>
               <CurrencyDisplay
                 amount={liquidReserve}
                 size="xl"
-                className="text-[var(--text-primary)]"
+                className="text-[var(--text-primary)] font-bold"
               />
-              <span className="block text-[10px] text-[var(--text-muted)] mt-0.5">
+              <span className="block text-[10px] text-[var(--text-muted)] mt-1">
                 Total recorded balance
               </span>
             </div>
 
-            <div>
-              <span className="block text-[10px] font-semibold tracking-wider text-[var(--text-muted)] uppercase mb-1">
-                Upcoming Bills
-              </span>
+            {/* Upcoming Bills Mini-Panel (Amber Identity) */}
+            <div className="p-3.5 rounded-xl bg-amber-500/[0.04] dark:bg-amber-950/25 border border-amber-500/20 shadow-xs flex flex-col justify-between">
+              <div className="flex items-center justify-between mb-1">
+                <span className="text-[10px] font-semibold tracking-wider text-amber-600 dark:text-amber-400 uppercase">
+                  Upcoming Bills
+                </span>
+                <div className="w-5 h-5 rounded-md bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 flex items-center justify-center">
+                  <CalendarCheck className="w-3 h-3 stroke-[2]" />
+                </div>
+              </div>
               <CurrencyDisplay
                 amount={committedBills}
                 size="xl"
-                className={committedBills > 0 ? 'text-amber-500' : 'text-[var(--text-primary)]'}
+                className={committedBills > 0 ? 'text-amber-600 dark:text-amber-400 font-bold' : 'text-[var(--text-primary)] font-bold'}
               />
-              <span className="block text-[10px] text-[var(--text-muted)] mt-0.5">
+              <span className="block text-[10px] text-[var(--text-muted)] mt-1">
                 {committedBills > 0 ? 'Due this pay cycle' : 'No bills due'}
               </span>
             </div>
@@ -181,11 +194,11 @@ export function RunwayHero({ runwayData }) {
           </div>
 
           <div className="flex items-center gap-4">
-            <span className="flex items-center gap-1 text-emerald-600 dark:text-emerald-400 font-medium font-display-num">
+            <span className="flex items-center gap-1 text-emerald-600 dark:text-emerald-400 font-semibold font-display-num">
               <ArrowUpRight className="w-3.5 h-3.5" />
               Total Income: +{formatCurrency(totalIncome)}
             </span>
-            <span className="font-display-num text-[var(--text-muted)]">
+            <span className="font-display-num text-rose-600 dark:text-rose-400 font-semibold">
               Total Expenses: -{formatCurrency(totalExpenses)}
             </span>
           </div>
