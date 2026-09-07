@@ -15,6 +15,9 @@ import { RunwayHero } from '../components/dashboard/RunwayHero';
 import { FinancialSummaryGrid } from '../components/dashboard/FinancialSummaryGrid';
 import { RunwayChart } from '../components/dashboard/RunwayChart';
 import { UpcomingObligationsCard } from '../components/dashboard/UpcomingObligationsCard';
+import { BurnTrajectoryChart } from '../components/analytics/BurnTrajectoryChart';
+import { CategoryBreakdownCard } from '../components/analytics/CategoryBreakdownCard';
+import { CashflowSummaryCard } from '../components/analytics/CashflowSummaryCard';
 import { TransactionLedger } from '../components/transactions/TransactionLedger';
 import { TransactionDialog } from '../components/transactions/TransactionDialog';
 import { ErrorBanner } from '../components/common/ErrorBanner';
@@ -34,6 +37,13 @@ export function Dashboard({
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  // Analytics state
+  const [burnTrajectory, setBurnTrajectory] = useState(null);
+  const [categoryBreakdown, setCategoryBreakdown] = useState([]);
+  const [cashflowSummary, setCashflowSummary] = useState(null);
+  const [analyticsLoading, setAnalyticsLoading] = useState(true);
+  const [analyticsError, setAnalyticsError] = useState(null);
+
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [dialogError, setDialogError] = useState('');
@@ -46,13 +56,23 @@ export function Dashboard({
   const loadAllData = useCallback(async () => {
     try {
       setError(null);
-      const [runwayRes, txRes] = await Promise.all([
+      setAnalyticsError(null);
+      setAnalyticsLoading(true);
+
+      const [runwayRes, txRes, burnRes, catRes, cashflowRes] = await Promise.all([
         api.getRunwaySummary(),
         api.getTransactions(),
+        api.getBurnTrajectory(),
+        api.getCategoryBreakdown(),
+        api.getCashflowSummary(),
       ]);
 
       setRunwayData(runwayRes);
       setTransactions(txRes);
+      setBurnTrajectory(burnRes);
+      setCategoryBreakdown(catRes);
+      setCashflowSummary(cashflowRes);
+
       if (runwayRes.safeDailySpend) {
         setSimulatedSpend(runwayRes.safeDailySpend);
       }
@@ -62,8 +82,10 @@ export function Dashboard({
       }
     } catch (err) {
       setError(err.message || 'Failed to connect to Solvence backend server.');
+      setAnalyticsError(err.message || 'Failed to load financial analytics.');
     } finally {
       setLoading(false);
+      setAnalyticsLoading(false);
     }
   }, [onCycleUpdate]);
 
@@ -157,6 +179,43 @@ export function Dashboard({
 
           {/* 4 Core Financial Summary Cards & Reconciliation Strip */}
           <FinancialSummaryGrid runwayData={runwayData} loading={loading} />
+
+          {/* ========================================================================= */}
+          {/* ANALYTICS SECTION: SPENDING TRAJECTORY & CASHFLOW INTELLIGENCE */}
+          {/* ========================================================================= */}
+          {analyticsError && !error && (
+            <div className="p-4 rounded-xl bg-rose-500/10 border border-rose-500/20 text-xs text-rose-600 dark:text-rose-400 flex items-center justify-between">
+              <span>Analytics could not be loaded: {analyticsError}</span>
+              <button
+                type="button"
+                onClick={loadAllData}
+                className="font-semibold underline hover:no-underline cursor-pointer ml-4 shrink-0"
+              >
+                Retry
+              </button>
+            </div>
+          )}
+
+          {/* Analytics Grid: Trajectory & Category Breakdown */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Spending Trajectory Chart */}
+            <BurnTrajectoryChart
+              burnData={burnTrajectory}
+              loading={analyticsLoading || loading}
+            />
+
+            {/* Category Breakdown */}
+            <CategoryBreakdownCard
+              categories={categoryBreakdown}
+              loading={analyticsLoading || loading}
+            />
+          </div>
+
+          {/* Cashflow Summary Intelligence */}
+          <CashflowSummaryCard
+            cashflowData={cashflowSummary}
+            loading={analyticsLoading || loading}
+          />
 
           {/* 2 Non-Interactive Preview Panels with Semantic Identities */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

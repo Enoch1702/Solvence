@@ -118,6 +118,22 @@ export const api = {
     const res = await apiClient.get('/runway/summary');
     return res.data;
   },
+
+  // Analytics endpoints
+  getBurnTrajectory: async () => {
+    const res = await apiClient.get('/analytics/burn-trajectory');
+    return res.data;
+  },
+
+  getCategoryBreakdown: async () => {
+    const res = await apiClient.get('/analytics/category-breakdown');
+    return res.data;
+  },
+
+  getCashflowSummary: async () => {
+    const res = await apiClient.get('/analytics/cashflow-summary');
+    return res.data;
+  },
 };
 
 export default api;
