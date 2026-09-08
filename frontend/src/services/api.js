@@ -134,6 +134,12 @@ export const api = {
     const res = await apiClient.get('/analytics/cashflow-summary');
     return res.data;
   },
+
+  // Quick Capture
+  quickCapture: async (input) => {
+    const res = await apiClient.post('/transactions/quick-capture', { input });
+    return res.data;
+  },
 };
 
 export default api;

@@ -52,6 +52,18 @@ export function AppShell({
     }
   }, []);
 
+  // Global Ctrl+K / Cmd+K Quick Capture trigger
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if ((e.ctrlKey || e.metaKey) && (e.key === 'k' || e.key === 'K')) {
+        e.preventDefault();
+        window.dispatchEvent(new CustomEvent('solvence:open-quick-capture'));
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
   const toggleTheme = () => {
     if (isDark) {
       document.documentElement.classList.remove('dark');
@@ -272,22 +284,31 @@ export function AppShell({
 
           {/* Center: Command Search Bar (Desktop) */}
           <div className="hidden md:flex items-center w-72 lg:w-96">
-            <div className="relative w-full">
-              <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)]" />
-              <input
-                type="text"
-                placeholder="Search transactions, bills, or actions..."
-                disabled
-                className="w-full pl-8 pr-12 py-1.5 text-xs bg-[var(--bg-card-subtle)] border border-[var(--border-subtle)] rounded-xl text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-hidden select-none cursor-default transition-colors shadow-2xs"
-              />
-              <span className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[10px] font-mono px-1.5 py-0.5 rounded bg-[var(--bg-card-solid)] text-[var(--text-muted)] border border-[var(--border-subtle)]">
+            <button
+              type="button"
+              onClick={() => window.dispatchEvent(new CustomEvent('solvence:open-quick-capture'))}
+              className="relative w-full flex items-center pl-8 pr-12 py-1.5 text-xs bg-[var(--bg-card-subtle)] hover:bg-[var(--bg-card-hover)] border border-[var(--border-subtle)] rounded-xl text-[var(--text-muted)] hover:text-[var(--text-secondary)] transition-colors shadow-2xs cursor-pointer text-left group"
+              title="Quick Capture (Ctrl+K / Cmd+K)"
+            >
+              <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)] group-hover:text-[var(--text-primary)] transition-colors" />
+              <span className="truncate">Quick capture e.g. 450 lunch food...</span>
+              <span className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[10px] font-mono px-1.5 py-0.5 rounded bg-[var(--bg-card-solid)] text-[var(--text-muted)] border border-[var(--border-subtle)] group-hover:text-[var(--text-primary)]">
                 ⌘K
               </span>
-            </div>
+            </button>
           </div>
 
           {/* Right Utilities */}
           <div className="flex items-center gap-2 sm:gap-3">
+            {/* Mobile Quick Capture Trigger */}
+            <button
+              type="button"
+              onClick={() => window.dispatchEvent(new CustomEvent('solvence:open-quick-capture'))}
+              className="md:hidden p-2 rounded-xl text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-card-hover)] border border-[var(--border-subtle)] transition-colors cursor-pointer"
+              title="Quick Capture"
+            >
+              <Search className="w-4 h-4 text-indigo-500" />
+            </button>
             {/* Discreet PostgreSQL Status Pill (Secondary Development Indicator) */}
             <div className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[var(--bg-card-subtle)] border border-[var(--border-subtle)] text-[11px] font-medium text-[var(--text-muted)]">
               <Database className="w-3 h-3 text-[var(--text-muted)]" />

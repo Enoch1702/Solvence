@@ -1,7 +1,9 @@
 package com.solvence.controller;
 
 import com.solvence.dto.CreateTransactionRequest;
+import com.solvence.dto.QuickCaptureRequest;
 import com.solvence.dto.TransactionResponse;
+import com.solvence.service.QuickCaptureParserService;
 import com.solvence.service.TransactionService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -15,14 +17,23 @@ import java.util.List;
 public class TransactionController {
 
     private final TransactionService transactionService;
+    private final QuickCaptureParserService quickCaptureParserService;
 
-    public TransactionController(TransactionService transactionService) {
+    public TransactionController(TransactionService transactionService,
+                                 QuickCaptureParserService quickCaptureParserService) {
         this.transactionService = transactionService;
+        this.quickCaptureParserService = quickCaptureParserService;
     }
 
     @PostMapping
     public ResponseEntity<TransactionResponse> createTransaction(@Valid @RequestBody CreateTransactionRequest request) {
         TransactionResponse response = transactionService.createTransaction(request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    @PostMapping("/quick-capture")
+    public ResponseEntity<TransactionResponse> quickCapture(@Valid @RequestBody QuickCaptureRequest request) {
+        TransactionResponse response = quickCaptureParserService.parseAndCreate(request.input());
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 

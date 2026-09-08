@@ -18,6 +18,7 @@ import { UpcomingObligationsCard } from '../components/dashboard/UpcomingObligat
 import { BurnTrajectoryChart } from '../components/analytics/BurnTrajectoryChart';
 import { CategoryBreakdownCard } from '../components/analytics/CategoryBreakdownCard';
 import { CashflowSummaryCard } from '../components/analytics/CashflowSummaryCard';
+import { QuickCaptureCommandBar } from '../components/quickcapture/QuickCaptureCommandBar';
 import { TransactionLedger } from '../components/transactions/TransactionLedger';
 import { TransactionDialog } from '../components/transactions/TransactionDialog';
 import { ErrorBanner } from '../components/common/ErrorBanner';
@@ -44,6 +45,8 @@ export function Dashboard({
   const [analyticsLoading, setAnalyticsLoading] = useState(true);
   const [analyticsError, setAnalyticsError] = useState(null);
 
+  // Quick Capture & Manual Dialog state
+  const [isQuickCaptureOpen, setIsQuickCaptureOpen] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [dialogError, setDialogError] = useState('');
@@ -93,11 +96,16 @@ export function Dashboard({
     loadAllData();
   }, [loadAllData, refreshTrigger]);
 
-  // Global quick action event listener
+  // Global quick action and command bar event listeners
   useEffect(() => {
     const handleOpenTx = () => setIsDialogOpen(true);
+    const handleOpenQuickCapture = () => setIsQuickCaptureOpen(true);
     window.addEventListener('solvence:open-tx', handleOpenTx);
-    return () => window.removeEventListener('solvence:open-tx', handleOpenTx);
+    window.addEventListener('solvence:open-quick-capture', handleOpenQuickCapture);
+    return () => {
+      window.removeEventListener('solvence:open-tx', handleOpenTx);
+      window.removeEventListener('solvence:open-quick-capture', handleOpenQuickCapture);
+    };
   }, []);
 
   const triggerToast = (msg) => {
@@ -106,6 +114,13 @@ export function Dashboard({
       setToastMessage(null);
     }, 4000);
   };
+
+  async function handleQuickCaptureSuccess(created) {
+    await loadAllData();
+    triggerToast(
+      `Quick Capture: Recorded ${formatCurrency(created.amount)} for ${created.categoryName || 'General'}!`
+    );
+  }
 
   async function handleCreateTransaction(formData) {
     setIsSubmitting(true);
@@ -661,6 +676,13 @@ export function Dashboard({
         onSubmit={handleCreateTransaction}
         isSubmitting={isSubmitting}
         error={dialogError}
+      />
+
+      {/* Quick Capture Command Bar (Ctrl+K / Cmd+K) */}
+      <QuickCaptureCommandBar
+        isOpen={isQuickCaptureOpen}
+        onClose={() => setIsQuickCaptureOpen(false)}
+        onSuccess={handleQuickCaptureSuccess}
       />
     </div>
   );
