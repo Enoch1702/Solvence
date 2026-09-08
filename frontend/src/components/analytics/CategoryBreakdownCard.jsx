@@ -33,7 +33,7 @@ const KNOWN_CATEGORY_COLORS = {
 
 // Deterministic fallback jewel palette for custom categories
 const FALLBACK_PALETTE = [
-  { bg: 'bg-indigo-500', bar: '#6366f1', badge: 'bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border-indigo-500/20' },
+  { bg: 'bg-teal-500', bar: '#14b8a6', badge: 'bg-teal-500/10 text-teal-600 dark:text-teal-400 border-teal-500/20' },
   { bg: 'bg-emerald-500', bar: '#10b981', badge: 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20' },
   { bg: 'bg-orange-500', bar: '#f97316', badge: 'bg-orange-500/10 text-orange-600 dark:text-orange-400 border-orange-500/20' },
   { bg: 'bg-fuchsia-500', bar: '#d946ef', badge: 'bg-fuchsia-500/10 text-fuchsia-600 dark:text-fuchsia-400 border-fuchsia-500/20' },

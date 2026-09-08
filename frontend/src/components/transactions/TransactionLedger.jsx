@@ -26,7 +26,7 @@ const categoryConfig = {
   rent: { icon: Home, dot: 'bg-violet-500', pill: 'bg-violet-500/10 text-violet-700 dark:text-violet-400 border border-violet-500/20' },
   salary: { icon: Briefcase, dot: 'bg-emerald-500', pill: 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20' },
   entertainment: { icon: Tv, dot: 'bg-pink-500', pill: 'bg-pink-500/10 text-pink-700 dark:text-pink-400 border border-pink-500/20' },
-  utilities: { icon: Zap, dot: 'bg-indigo-500', pill: 'bg-indigo-500/10 text-indigo-700 dark:text-indigo-400 border border-indigo-500/20' },
+  utilities: { icon: Zap, dot: 'bg-teal-500', pill: 'bg-teal-500/10 text-teal-700 dark:text-teal-400 border border-teal-500/20' },
 };
 
 export function TransactionLedger({
@@ -185,7 +185,7 @@ export function TransactionLedger({
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               placeholder="Search..."
-              className="pl-8 pr-3 py-1.5 text-xs bg-[var(--bg-card-subtle)] border border-[var(--border-subtle)] rounded-xl text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-hidden focus:border-indigo-500 w-32 sm:w-44 transition-all"
+              className="pl-8 pr-3 py-1.5 text-xs bg-[var(--bg-card-subtle)] border border-[var(--border-subtle)] rounded-xl text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-hidden focus:border-teal-500 w-32 sm:w-44 transition-all"
             />
           </div>
         </div>
@@ -344,7 +344,7 @@ export function TransactionLedger({
           <button
             type="button"
             onClick={onViewAll}
-            className="flex items-center gap-1.5 text-xs font-semibold text-indigo-600 dark:text-indigo-400 hover:underline cursor-pointer"
+            className="flex items-center gap-1.5 text-xs font-semibold text-teal-600 dark:text-teal-400 hover:underline cursor-pointer"
           >
             <span>View All {transactions.length} Transactions</span>
             <ExternalLink className="w-3 h-3" />

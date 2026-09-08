@@ -163,7 +163,7 @@ export function TransactionDialog({ isOpen, onClose, onSubmit, isSubmitting, err
                 placeholder="0.00"
                 value={amount}
                 onChange={(e) => setAmount(e.target.value)}
-                className="w-full pl-7 pr-3 py-2 text-sm font-display-num bg-[var(--bg-card-subtle)] border border-[var(--border-subtle)] rounded-xl text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-hidden focus:border-indigo-500 transition-colors"
+                className="w-full pl-7 pr-3 py-2 text-sm font-display-num bg-[var(--bg-card-subtle)] border border-[var(--border-subtle)] rounded-xl text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-hidden focus:border-teal-500 transition-colors"
               />
             </div>
             {validationErrors.amount && (
@@ -181,7 +181,7 @@ export function TransactionDialog({ isOpen, onClose, onSubmit, isSubmitting, err
               placeholder="e.g. Server hosting, Groceries, Client invoice"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              className="w-full px-3 py-2 bg-[var(--bg-card-subtle)] border border-[var(--border-subtle)] rounded-xl text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-hidden focus:border-indigo-500 transition-colors"
+              className="w-full px-3 py-2 bg-[var(--bg-card-subtle)] border border-[var(--border-subtle)] rounded-xl text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-hidden focus:border-teal-500 transition-colors"
             />
             {validationErrors.description && (
               <p className="text-rose-500 text-[11px] mt-1">{validationErrors.description}</p>
@@ -197,7 +197,7 @@ export function TransactionDialog({ isOpen, onClose, onSubmit, isSubmitting, err
               <select
                 value={categoryId}
                 onChange={(e) => setCategoryId(e.target.value)}
-                className="w-full px-3 py-2 bg-[var(--bg-card-subtle)] border border-[var(--border-subtle)] rounded-xl text-[var(--text-primary)] focus:outline-hidden focus:border-indigo-500 transition-colors cursor-pointer"
+                className="w-full px-3 py-2 bg-[var(--bg-card-subtle)] border border-[var(--border-subtle)] rounded-xl text-[var(--text-primary)] focus:outline-hidden focus:border-teal-500 transition-colors cursor-pointer"
               >
                 {categories.map((cat) => (
                   <option key={cat.id} value={cat.id} className="bg-[var(--bg-card-solid)] text-[var(--text-primary)]">
@@ -218,7 +218,7 @@ export function TransactionDialog({ isOpen, onClose, onSubmit, isSubmitting, err
                 type="date"
                 value={transactionDate}
                 onChange={(e) => setTransactionDate(e.target.value)}
-                className="w-full px-3 py-2 bg-[var(--bg-card-subtle)] border border-[var(--border-subtle)] rounded-xl text-[var(--text-primary)] focus:outline-hidden focus:border-indigo-500 transition-colors"
+                className="w-full px-3 py-2 bg-[var(--bg-card-subtle)] border border-[var(--border-subtle)] rounded-xl text-[var(--text-primary)] focus:outline-hidden focus:border-teal-500 transition-colors"
               />
               {validationErrors.transactionDate && (
                 <p className="text-rose-500 text-[11px] mt-1">{validationErrors.transactionDate}</p>
@@ -238,7 +238,7 @@ export function TransactionDialog({ isOpen, onClose, onSubmit, isSubmitting, err
             <button
               type="submit"
               disabled={isSubmitting}
-              className="flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-500 active:scale-[0.98] dark:bg-white dark:text-black dark:hover:bg-zinc-200 text-white font-semibold rounded-xl shadow-framer-xs hover:shadow-framer-md transition-all duration-200 ease-[cubic-bezier(0.16,1,0.3,1)] disabled:opacity-50 cursor-pointer"
+              className="flex items-center gap-2 px-4 py-2 bg-teal-600 hover:bg-teal-500 active:scale-[0.98] dark:bg-white dark:text-black dark:hover:bg-zinc-200 text-white font-semibold rounded-xl shadow-framer-xs hover:shadow-framer-md transition-all duration-200 ease-[cubic-bezier(0.16,1,0.3,1)] disabled:opacity-50 cursor-pointer"
             >
               {isSubmitting ? (
                 <>

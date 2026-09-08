@@ -107,7 +107,7 @@ export function QuickCaptureCommandBar({ isOpen, onClose, onSuccess }) {
       <div className="w-full max-w-xl bg-[var(--bg-card)] border border-[var(--border-subtle)] rounded-2xl shadow-framer-xl overflow-hidden animate-modal-glide flex flex-col">
         {/* Command Input Header */}
         <form onSubmit={handleSubmit} className="relative flex items-center px-4 py-3.5 border-b border-[var(--border-subtle)]">
-          <div className="p-1.5 rounded-lg bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 mr-2.5 shrink-0">
+          <div className="p-1.5 rounded-lg bg-teal-500/10 text-teal-600 dark:text-teal-400 mr-2.5 shrink-0">
             <Sparkles className="w-4 h-4" />
           </div>
 
@@ -205,7 +205,7 @@ export function QuickCaptureCommandBar({ isOpen, onClose, onSuccess }) {
               </span>
               <p className="font-semibold truncate">
                 {preview.category ? (
-                  <span className="text-indigo-600 dark:text-indigo-400">
+                  <span className="text-teal-600 dark:text-teal-400">
                     {preview.category.name}
                   </span>
                 ) : (
@@ -299,7 +299,7 @@ export function QuickCaptureCommandBar({ isOpen, onClose, onSuccess }) {
               disabled={!input.trim() || isSubmitting}
               className={`flex items-center gap-1.5 px-4 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
                 preview.isReady && !isSubmitting
-                  ? 'bg-indigo-600 hover:bg-indigo-500 text-white shadow-framer-xs'
+                  ? 'bg-teal-600 hover:bg-teal-500 text-white shadow-framer-xs'
                   : 'bg-[var(--bg-card-subtle)] text-[var(--text-muted)] border border-[var(--border-subtle)] cursor-not-allowed'
               }`}
             >

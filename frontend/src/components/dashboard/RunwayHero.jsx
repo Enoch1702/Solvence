@@ -39,14 +39,14 @@ export function RunwayHero({ runwayData }) {
   return (
     <div className="saas-glass-card relative overflow-hidden p-6 sm:p-8 shadow-framer-md">
       {/* Specular Ambient Glow (Indigo & Emerald accents) */}
-      <div className="absolute top-0 right-1/4 w-96 h-36 bg-indigo-500/[0.07] dark:bg-indigo-500/[0.12] blur-3xl pointer-events-none -z-0" />
+      <div className="absolute top-0 right-1/4 w-96 h-36 bg-teal-500/[0.07] dark:bg-teal-500/[0.12] blur-3xl pointer-events-none -z-0" />
       <div className="absolute -bottom-10 left-10 w-72 h-32 bg-emerald-500/[0.04] dark:bg-emerald-500/[0.07] blur-3xl pointer-events-none -z-0" />
 
       <div className="relative z-10 flex flex-col gap-6">
         {/* Top Eyebrow & Status Row */}
         <div className="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-[var(--border-subtle)]">
           <div className="flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-indigo-500 animate-pulse" />
+            <span className="w-2 h-2 rounded-full bg-teal-500 animate-pulse" />
             <span className="text-[11px] font-semibold tracking-wider uppercase text-[var(--text-muted)]">
               Daily Spending Guide
             </span>

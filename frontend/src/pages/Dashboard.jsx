@@ -567,7 +567,7 @@ export function Dashboard({
             <button
               type="button"
               onClick={() => setIsDialogOpen(true)}
-              className="flex items-center gap-2 px-4 py-2 text-xs font-semibold text-white bg-indigo-600 hover:bg-indigo-500 rounded-xl shadow-framer-xs cursor-pointer"
+              className="flex items-center gap-2 px-4 py-2 text-xs font-semibold text-white bg-teal-600 hover:bg-teal-500 rounded-xl shadow-framer-xs cursor-pointer"
             >
               <Plus className="w-4 h-4" />
               <span>Record Transaction</span>

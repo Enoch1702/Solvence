@@ -32,14 +32,14 @@ export function LoginPage({ onSwitchToRegister, initialEmail = '' }) {
   return (
     <div className="min-h-screen w-full flex items-center justify-center bg-[var(--bg-canvas)] text-[var(--text-primary)] p-4 relative overflow-hidden font-sans">
       {/* Ambient background glow */}
-      <div className="fixed -top-40 -left-40 w-[550px] h-[550px] rounded-full bg-indigo-500/15 dark:bg-indigo-500/20 blur-[130px] pointer-events-none" />
+      <div className="fixed -top-40 -left-40 w-[550px] h-[550px] rounded-full bg-teal-500/15 dark:bg-teal-500/20 blur-[130px] pointer-events-none" />
       <div className="fixed top-1/3 -right-40 w-[600px] h-[600px] rounded-full bg-violet-500/10 dark:bg-violet-500/15 blur-[140px] pointer-events-none" />
       <div className="fixed -bottom-40 left-1/3 w-[520px] h-[520px] rounded-full bg-emerald-500/10 dark:bg-emerald-500/12 blur-[130px] pointer-events-none" />
 
       <div className="w-full max-w-md relative z-10">
         {/* Brand Header */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-indigo-600 dark:bg-white text-white dark:text-black shadow-lg mb-4">
+          <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-teal-600 dark:bg-white text-white dark:text-black shadow-lg mb-4">
             <Compass className="w-6 h-6 stroke-[2.2]" />
           </div>
           <h1 className="text-2xl font-bold tracking-tight text-[var(--text-primary)]">
@@ -63,7 +63,7 @@ export function LoginPage({ onSwitchToRegister, initialEmail = '' }) {
                     <button
                       type="button"
                       onClick={() => onSwitchToRegister && onSwitchToRegister(email)}
-                      className="text-indigo-600 dark:text-indigo-400 font-semibold underline hover:opacity-80 cursor-pointer ml-0.5"
+                className="text-teal-600 dark:text-teal-400 font-semibold underline hover:opacity-80 cursor-pointer ml-0.5"
                     >
                       Create an account
                     </button>
@@ -88,7 +88,7 @@ export function LoginPage({ onSwitchToRegister, initialEmail = '' }) {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="name@example.com"
-                  className="w-full pl-9 pr-3 py-2 text-xs bg-[var(--bg-card-subtle)] border border-[var(--border-subtle)] rounded-xl text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-hidden focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all"
+                  className="w-full pl-9 pr-3 py-2 text-xs bg-[var(--bg-card-subtle)] border border-[var(--border-subtle)] rounded-xl text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-hidden focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-all"
                 />
               </div>
             </div>
@@ -107,7 +107,7 @@ export function LoginPage({ onSwitchToRegister, initialEmail = '' }) {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="w-full pl-9 pr-10 py-2 text-xs bg-[var(--bg-card-subtle)] border border-[var(--border-subtle)] rounded-xl text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-hidden focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all"
+                  className="w-full pl-9 pr-10 py-2 text-xs bg-[var(--bg-card-subtle)] border border-[var(--border-subtle)] rounded-xl text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-hidden focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-all"
                 />
                 <button
                   type="button"
@@ -124,7 +124,7 @@ export function LoginPage({ onSwitchToRegister, initialEmail = '' }) {
             <button
               type="submit"
               disabled={loading}
-              className="w-full mt-2 flex items-center justify-center gap-2 py-2.5 px-4 text-xs font-semibold text-white bg-indigo-600 hover:bg-indigo-500 active:scale-[0.98] dark:bg-white dark:text-black dark:hover:bg-zinc-200 rounded-xl shadow-framer-xs hover:shadow-framer-md transition-all duration-200 cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
+              className="w-full mt-2 flex items-center justify-center gap-2 py-2.5 px-4 text-xs font-semibold text-white bg-teal-600 hover:bg-teal-500 active:scale-[0.98] dark:bg-white dark:text-black dark:hover:bg-zinc-200 rounded-xl shadow-framer-xs hover:shadow-framer-md transition-all duration-200 cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
             >
               {loading ? (
                 <div className="w-4 h-4 border-2 border-white/30 dark:border-black/30 border-t-white dark:border-t-black rounded-full animate-spin" />
@@ -144,7 +144,7 @@ export function LoginPage({ onSwitchToRegister, initialEmail = '' }) {
               <button
                 type="button"
                 onClick={() => onSwitchToRegister && onSwitchToRegister(email)}
-                className="text-indigo-600 dark:text-indigo-400 font-semibold hover:underline cursor-pointer ml-1"
+                className="text-teal-600 dark:text-teal-400 font-semibold hover:underline cursor-pointer ml-1"
               >
                 Create an account
               </button>

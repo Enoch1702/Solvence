@@ -3,7 +3,7 @@ import { ReceiptText, Plus } from 'lucide-react';
 export function EmptyState({ onAction }) {
   return (
     <div className="saas-card text-center py-16 px-6 border border-dashed border-[var(--border-subtle)] bg-[var(--bg-card)] shadow-framer-xs">
-      <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-indigo-500/10 text-indigo-500 mb-4">
+      <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-teal-500/10 text-teal-500 mb-4">
         <ReceiptText className="w-6 h-6 stroke-[1.8]" />
       </div>
       <h3 className="text-sm font-semibold text-[var(--text-primary)] mb-1.5">
@@ -16,7 +16,7 @@ export function EmptyState({ onAction }) {
         <button
           type="button"
           onClick={onAction}
-          className="inline-flex items-center gap-2 px-4 py-2 text-xs font-semibold text-white bg-indigo-600 hover:bg-indigo-500 dark:bg-white dark:text-black dark:hover:bg-zinc-200 rounded-xl shadow-framer-xs transition-all cursor-pointer"
+          className="inline-flex items-center gap-2 px-4 py-2 text-xs font-semibold text-white bg-teal-600 hover:bg-teal-500 dark:bg-white dark:text-black dark:hover:bg-zinc-200 rounded-xl shadow-framer-xs transition-all cursor-pointer"
         >
           <Plus className="w-3.5 h-3.5 stroke-[2.5]" />
           <span>Record First Transaction</span>

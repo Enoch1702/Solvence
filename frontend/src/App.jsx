@@ -25,7 +25,7 @@ function AppContent() {
   if (loading) {
     return (
       <div className="min-h-screen w-screen flex flex-col items-center justify-center bg-[var(--bg-canvas)] text-[var(--text-primary)]">
-        <div className="w-12 h-12 rounded-2xl bg-indigo-600 dark:bg-white text-white dark:text-black flex items-center justify-center shadow-lg animate-pulse mb-4">
+        <div className="w-12 h-12 rounded-2xl bg-teal-600 dark:bg-white text-white dark:text-black flex items-center justify-center shadow-lg animate-pulse mb-4">
           <Compass className="w-6 h-6 stroke-[2.2]" />
         </div>
         <p className="text-xs text-[var(--text-muted)] font-medium">

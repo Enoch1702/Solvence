@@ -283,7 +283,7 @@ export function RunwayChart({ runwayData, customSafeDailySpend = null }) {
                 cx={getX(hoverIndex)}
                 cy={getY(activePoint.projectedBalance)}
                 r="5"
-                className="fill-white dark:fill-zinc-900 stroke-indigo-500"
+                className="fill-white dark:fill-zinc-900 stroke-teal-500"
                 strokeWidth="2.5"
               />
             </g>
