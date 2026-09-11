@@ -3,12 +3,14 @@ package com.solvence.service;
 import com.solvence.dto.CreateTransactionRequest;
 import com.solvence.dto.TransactionResponse;
 import com.solvence.entity.Category;
+import com.solvence.entity.OccurrenceStatus;
 import com.solvence.entity.Transaction;
 import com.solvence.entity.TransactionType;
 import com.solvence.entity.User;
 import com.solvence.exception.ForbiddenException;
 import com.solvence.exception.ResourceNotFoundException;
 import com.solvence.repository.CategoryRepository;
+import com.solvence.repository.ObligationOccurrenceRepository;
 import com.solvence.repository.TransactionRepository;
 import com.solvence.repository.UserRepository;
 import com.solvence.security.CurrentUserProvider;
@@ -17,6 +19,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.time.Clock;
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -27,17 +31,31 @@ public class TransactionService {
     private final UserRepository userRepository;
     private final CurrentUserProvider currentUserProvider;
     private final LifeHourCalculator lifeHourCalculator;
+    private final ObligationOccurrenceRepository obligationOccurrenceRepository;
+    private final Clock clock;
+
+    public TransactionService(TransactionRepository transactionRepository,
+                              CategoryRepository categoryRepository,
+                              UserRepository userRepository,
+                              CurrentUserProvider currentUserProvider,
+                              LifeHourCalculator lifeHourCalculator,
+                              ObligationOccurrenceRepository obligationOccurrenceRepository,
+                              Clock clock) {
+        this.transactionRepository = transactionRepository;
+        this.categoryRepository = categoryRepository;
+        this.userRepository = userRepository;
+        this.currentUserProvider = currentUserProvider;
+        this.lifeHourCalculator = lifeHourCalculator;
+        this.obligationOccurrenceRepository = obligationOccurrenceRepository;
+        this.clock = clock != null ? clock : Clock.systemUTC();
+    }
 
     public TransactionService(TransactionRepository transactionRepository,
                               CategoryRepository categoryRepository,
                               UserRepository userRepository,
                               CurrentUserProvider currentUserProvider,
                               LifeHourCalculator lifeHourCalculator) {
-        this.transactionRepository = transactionRepository;
-        this.categoryRepository = categoryRepository;
-        this.userRepository = userRepository;
-        this.currentUserProvider = currentUserProvider;
-        this.lifeHourCalculator = lifeHourCalculator;
+        this(transactionRepository, categoryRepository, userRepository, currentUserProvider, lifeHourCalculator, null, Clock.systemUTC());
     }
 
     @Transactional
@@ -89,6 +107,21 @@ public class TransactionService {
 
         Transaction transaction = transactionRepository.findByIdAndUserId(id, currentUserId)
                 .orElseThrow(() -> new ResourceNotFoundException("Transaction not found with ID: " + id));
+
+        // INV-06: Check if an obligation occurrence was linked to this transaction
+        if (obligationOccurrenceRepository != null) {
+            obligationOccurrenceRepository.findByTransactionId(transaction.getId()).ifPresent(occurrence -> {
+                LocalDate today = LocalDate.now(clock);
+                if (occurrence.getDueDate().isBefore(today)) {
+                    occurrence.setStatus(OccurrenceStatus.OVERDUE);
+                } else {
+                    occurrence.setStatus(OccurrenceStatus.PENDING);
+                }
+                occurrence.setTransaction(null);
+                occurrence.setPaidAt(null);
+                obligationOccurrenceRepository.save(occurrence);
+            });
+        }
 
         transactionRepository.delete(transaction);
     }

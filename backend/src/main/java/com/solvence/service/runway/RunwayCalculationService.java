@@ -1,11 +1,11 @@
 package com.solvence.service.runway;
 
 import com.solvence.dto.RunwaySummaryResponse;
-import com.solvence.entity.RecurringObligation;
+import com.solvence.entity.OccurrenceStatus;
 import com.solvence.entity.TransactionType;
 import com.solvence.entity.User;
 import com.solvence.exception.ResourceNotFoundException;
-import com.solvence.repository.RecurringObligationRepository;
+import com.solvence.repository.ObligationOccurrenceRepository;
 import com.solvence.repository.TransactionRepository;
 import com.solvence.repository.UserRepository;
 import com.solvence.security.CurrentUserProvider;
@@ -22,35 +22,35 @@ public class RunwayCalculationService {
 
     private final UserRepository userRepository;
     private final TransactionRepository transactionRepository;
-    private final RecurringObligationRepository recurringObligationRepository;
+    private final ObligationOccurrenceRepository obligationOccurrenceRepository;
+    private final OccurrenceGenerationService occurrenceGenerationService;
     private final CurrentUserProvider currentUserProvider;
-    private final CycleCalculator cycleCalculator;
+    private final PayCycleEngine payCycleEngine;
     private final BalanceCalculator balanceCalculator;
-    private final RecurringObligationCalculator recurringObligationCalculator;
     private final SafeSpendCalculator safeSpendCalculator;
     private final Clock clock;
 
     public RunwayCalculationService(UserRepository userRepository,
                                    TransactionRepository transactionRepository,
-                                   RecurringObligationRepository recurringObligationRepository,
+                                   ObligationOccurrenceRepository obligationOccurrenceRepository,
+                                   OccurrenceGenerationService occurrenceGenerationService,
                                    CurrentUserProvider currentUserProvider,
-                                   CycleCalculator cycleCalculator,
+                                   PayCycleEngine payCycleEngine,
                                    BalanceCalculator balanceCalculator,
-                                   RecurringObligationCalculator recurringObligationCalculator,
                                    SafeSpendCalculator safeSpendCalculator,
                                    Clock clock) {
         this.userRepository = userRepository;
         this.transactionRepository = transactionRepository;
-        this.recurringObligationRepository = recurringObligationRepository;
+        this.obligationOccurrenceRepository = obligationOccurrenceRepository;
+        this.occurrenceGenerationService = occurrenceGenerationService;
         this.currentUserProvider = currentUserProvider;
-        this.cycleCalculator = cycleCalculator;
+        this.payCycleEngine = payCycleEngine;
         this.balanceCalculator = balanceCalculator;
-        this.recurringObligationCalculator = recurringObligationCalculator;
         this.safeSpendCalculator = safeSpendCalculator;
         this.clock = clock;
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public RunwaySummaryResponse getRunwaySummary() {
         Long currentUserId = currentUserProvider.getCurrentUserId();
         User user = userRepository.findById(currentUserId)
@@ -66,39 +66,53 @@ public class RunwayCalculationService {
     public RunwaySummaryResponse calculateSummaryForDate(User user, LocalDate today) {
         Long userId = user.getId();
 
-        // 1. Transaction aggregations
-        BigDecimal totalIncome = transactionRepository.sumAmountByUserIdAndType(userId, TransactionType.INCOME);
-        BigDecimal totalExpenses = transactionRepository.sumAmountByUserIdAndType(userId, TransactionType.EXPENSE);
+        // 1. Transaction aggregations (bounded by opening balance effective date and as-of today)
+        LocalDate effectiveDate = user.getOpeningBalanceEffectiveDate();
+        BigDecimal totalIncome;
+        BigDecimal totalExpenses;
 
-        // 2. Liquid Reserve
-        BigDecimal liquidReserve = balanceCalculator.calculateLiquidReserve(
+        if (effectiveDate != null) {
+            totalIncome = transactionRepository.sumAmountByUserIdAndTypeAndDateRange(
+                    userId, TransactionType.INCOME, effectiveDate, today);
+            totalExpenses = transactionRepository.sumAmountByUserIdAndTypeAndDateRange(
+                    userId, TransactionType.EXPENSE, effectiveDate, today);
+        } else {
+            totalIncome = transactionRepository.sumAmountByUserIdAndTypeAndDateBeforeEqual(
+                    userId, TransactionType.INCOME, today);
+            totalExpenses = transactionRepository.sumAmountByUserIdAndTypeAndDateBeforeEqual(
+                    userId, TransactionType.EXPENSE, today);
+        }
+
+        // 2. Current Liquid Cash
+        BigDecimal liquidCash = balanceCalculator.calculateLiquidReserve(
                 user.getOpeningBalance(),
                 totalIncome,
                 totalExpenses
         );
 
-        // 3. Cycle calculation
-        PayCycle cycle = cycleCalculator.calculateCycle(today, user.getCycleStartDay());
+        // 3. Pay Cycle calculation
+        PayCycle cycle = payCycleEngine.calculateCycle(user, today);
 
-        // 4. Committed Bills (active obligations in remaining cycle)
-        List<RecurringObligation> activeObligations = recurringObligationRepository.findByUserIdAndIsActiveTrue(userId);
-        BigDecimal committedBills = recurringObligationCalculator.calculateCommittedBills(
-                activeObligations,
-                today,
+        // 4. Generate/sync occurrences for current cycle
+        occurrenceGenerationService.generateOccurrencesForCycle(user, cycle.startDate(), cycle.endDate(), today);
+
+        // 5. Protected Bills (sum of PENDING and OVERDUE occurrences for cycle)
+        BigDecimal protectedBills = obligationOccurrenceRepository.sumAmountByUserIdAndCycleAndStatusIn(
+                userId,
                 cycle.startDate(),
-                cycle.endDate()
+                List.of(OccurrenceStatus.PENDING, OccurrenceStatus.OVERDUE)
         );
 
-        // 5. Available Cash & Safe Daily Spend
+        // 6. Available Cash & Safe Daily Spend
         SafeSpendResult safeSpend = safeSpendCalculator.calculateSafeSpend(
-                liquidReserve,
-                committedBills,
+                liquidCash,
+                protectedBills,
                 cycle.daysRemaining()
         );
 
         return new RunwaySummaryResponse(
-                liquidReserve,
-                committedBills,
+                liquidCash,
+                protectedBills,
                 safeSpend.availableCash(),
                 safeSpend.safeDailySpend(),
                 cycle.daysRemaining(),
@@ -107,7 +121,11 @@ public class RunwayCalculationService {
                 cycle.endDate(),
                 user.getOpeningBalance(),
                 totalIncome,
-                totalExpenses
+                totalExpenses,
+                liquidCash,
+                protectedBills,
+                safeSpend.isDeficit(),
+                safeSpend.deficitAmount()
         );
     }
 }

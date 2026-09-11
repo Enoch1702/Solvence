@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 
 @Component
 public class DataInitializer implements ApplicationRunner {
@@ -70,8 +71,8 @@ public class DataInitializer implements ApplicationRunner {
             try {
                 // Explicit insertion to guarantee ID 1
                 jdbcTemplate.update("""
-                    INSERT INTO users (id, name, email, password_hash, currency, opening_balance, hourly_rate, cycle_start_day, created_at)
-                    VALUES (1, 'Solvence Dev User', 'user@solvence.local', ?, 'INR', 25000.00, 300.00, 1, NOW())
+                    INSERT INTO users (id, name, email, password_hash, currency, opening_balance, hourly_rate, cycle_start_day, pay_cycle_type, pay_cycle_start_day, opening_balance_effective_date, created_at)
+                    VALUES (1, 'Solvence Dev User', 'user@solvence.local', ?, 'INR', 25000.00, 300.00, 1, 'MONTHLY', 1, CURRENT_DATE, NOW())
                     ON CONFLICT (id) DO NOTHING
                 """, passwordHash);
 
@@ -84,7 +85,8 @@ public class DataInitializer implements ApplicationRunner {
             } catch (Exception e) {
                 log.warn("Direct SQL insert failed, falling back to JPA save: {}", e.getMessage());
                 User fallback = new User(1L, "Solvence Dev User", "user@solvence.local", passwordHash, "INR",
-                        new BigDecimal("25000.00"), new BigDecimal("300.00"), 1);
+                        new BigDecimal("25000.00"), LocalDate.now(), new BigDecimal("300.00"),
+                        PayCycleType.MONTHLY, 1, null, null);
                 userRepository.save(fallback);
             }
         }

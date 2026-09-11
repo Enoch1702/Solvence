@@ -36,6 +36,9 @@ public class RecurringObligation {
     @Column(name = "is_active", nullable = false)
     private boolean isActive = true;
 
+    @Column(name = "notes", length = 255)
+    private String notes;
+
     @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt = Instant.now();
 
@@ -44,6 +47,11 @@ public class RecurringObligation {
 
     public RecurringObligation(Long id, User user, Category category, String name,
                                BigDecimal amount, Integer dueDay, ObligationFrequency frequency, boolean isActive) {
+        this(id, user, category, name, amount, dueDay, frequency, isActive, null);
+    }
+
+    public RecurringObligation(Long id, User user, Category category, String name,
+                               BigDecimal amount, Integer dueDay, ObligationFrequency frequency, boolean isActive, String notes) {
         this.id = id;
         this.user = user;
         this.category = category;
@@ -52,6 +60,7 @@ public class RecurringObligation {
         this.dueDay = dueDay;
         this.frequency = frequency != null ? frequency : ObligationFrequency.MONTHLY;
         this.isActive = isActive;
+        this.notes = notes;
         this.createdAt = Instant.now();
     }
 
@@ -117,6 +126,14 @@ public class RecurringObligation {
 
     public void setActive(boolean active) {
         isActive = active;
+    }
+
+    public String getNotes() {
+        return notes;
+    }
+
+    public void setNotes(String notes) {
+        this.notes = notes;
     }
 
     public Instant getCreatedAt() {

@@ -22,6 +22,34 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
     @Query("SELECT COALESCE(SUM(t.amount), 0.00) FROM Transaction t WHERE t.user.id = :userId AND t.type = :type")
     BigDecimal sumAmountByUserIdAndType(@Param("userId") Long userId, @Param("type") TransactionType type);
 
+    @Query("""
+        SELECT COALESCE(SUM(t.amount), 0.00)
+        FROM Transaction t
+        WHERE t.user.id = :userId
+          AND t.type = :type
+          AND t.transactionDate > :fromDateExclusive
+          AND t.transactionDate <= :toDateInclusive
+    """)
+    BigDecimal sumAmountByUserIdAndTypeAndDateRange(
+            @Param("userId") Long userId,
+            @Param("type") TransactionType type,
+            @Param("fromDateExclusive") LocalDate fromDateExclusive,
+            @Param("toDateInclusive") LocalDate toDateInclusive
+    );
+
+    @Query("""
+        SELECT COALESCE(SUM(t.amount), 0.00)
+        FROM Transaction t
+        WHERE t.user.id = :userId
+          AND t.type = :type
+          AND t.transactionDate <= :asOfDate
+    """)
+    BigDecimal sumAmountByUserIdAndTypeAndDateBeforeEqual(
+            @Param("userId") Long userId,
+            @Param("type") TransactionType type,
+            @Param("asOfDate") LocalDate asOfDate
+    );
+
     @Query("SELECT t.transactionDate, t.type, SUM(t.amount) " +
            "FROM Transaction t " +
            "WHERE t.user.id = :userId " +
@@ -60,4 +88,3 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
             @Param("endDate") LocalDate endDate
     );
 }
-

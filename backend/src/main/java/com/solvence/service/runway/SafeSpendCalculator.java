@@ -23,15 +23,16 @@ public class SafeSpendCalculator {
 
         BigDecimal safeDailySpend;
         if (availableCash.compareTo(BigDecimal.ZERO) <= 0) {
-            // Overspent or zero cash
             safeDailySpend = BigDecimal.ZERO.setScale(2, RoundingMode.HALF_UP);
         } else if (daysRemaining <= 0) {
-            // No days remaining, remaining cash is all available today
             safeDailySpend = availableCash.setScale(2, RoundingMode.HALF_UP);
         } else {
             safeDailySpend = availableCash.divide(BigDecimal.valueOf(daysRemaining), 2, RoundingMode.HALF_UP);
         }
 
-        return new SafeSpendResult(availableCash, safeDailySpend);
+        boolean isDeficit = availableCash.compareTo(BigDecimal.ZERO) < 0;
+        BigDecimal deficitAmount = isDeficit ? availableCash.abs().setScale(2, RoundingMode.HALF_UP) : BigDecimal.ZERO.setScale(2, RoundingMode.HALF_UP);
+
+        return new SafeSpendResult(availableCash, safeDailySpend, isDeficit, deficitAmount);
     }
 }

@@ -3,6 +3,7 @@ package com.solvence.entity;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "users")
@@ -27,11 +28,24 @@ public class User {
     @Column(name = "opening_balance", nullable = false, precision = 14, scale = 2)
     private BigDecimal openingBalance = BigDecimal.ZERO;
 
+    @Column(name = "opening_balance_effective_date", nullable = false)
+    private LocalDate openingBalanceEffectiveDate = LocalDate.now();
+
     @Column(name = "hourly_rate", precision = 10, scale = 2)
     private BigDecimal hourlyRate;
 
-    @Column(name = "cycle_start_day", nullable = false)
-    private Integer cycleStartDay;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "pay_cycle_type", nullable = false, length = 20)
+    private PayCycleType payCycleType = PayCycleType.MONTHLY;
+
+    @Column(name = "pay_cycle_start_day")
+    private Integer payCycleStartDay;
+
+    @Column(name = "pay_cycle_anchor_date")
+    private LocalDate payCycleAnchorDate;
+
+    @Column(name = "pay_cycle_second_day")
+    private Integer payCycleSecondDay;
 
     @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt = Instant.now();
@@ -40,15 +54,35 @@ public class User {
     }
 
     public User(Long id, String name, String email, String passwordHash, String currency,
-                BigDecimal openingBalance, BigDecimal hourlyRate, Integer cycleStartDay) {
+                BigDecimal openingBalance, BigDecimal hourlyRate, Integer payCycleStartDay) {
         this.id = id;
         this.name = name;
         this.email = email;
         this.passwordHash = passwordHash;
         this.currency = currency != null ? currency : "INR";
         this.openingBalance = openingBalance != null ? openingBalance : BigDecimal.ZERO;
+        this.openingBalanceEffectiveDate = LocalDate.now();
         this.hourlyRate = hourlyRate;
-        this.cycleStartDay = cycleStartDay;
+        this.payCycleType = PayCycleType.MONTHLY;
+        this.payCycleStartDay = payCycleStartDay;
+        this.createdAt = Instant.now();
+    }
+
+    public User(Long id, String name, String email, String passwordHash, String currency,
+                BigDecimal openingBalance, LocalDate openingBalanceEffectiveDate, BigDecimal hourlyRate,
+                PayCycleType payCycleType, Integer payCycleStartDay, LocalDate payCycleAnchorDate, Integer payCycleSecondDay) {
+        this.id = id;
+        this.name = name;
+        this.email = email;
+        this.passwordHash = passwordHash;
+        this.currency = currency != null ? currency : "INR";
+        this.openingBalance = openingBalance != null ? openingBalance : BigDecimal.ZERO;
+        this.openingBalanceEffectiveDate = openingBalanceEffectiveDate != null ? openingBalanceEffectiveDate : LocalDate.now();
+        this.hourlyRate = hourlyRate;
+        this.payCycleType = payCycleType != null ? payCycleType : PayCycleType.MONTHLY;
+        this.payCycleStartDay = payCycleStartDay;
+        this.payCycleAnchorDate = payCycleAnchorDate;
+        this.payCycleSecondDay = payCycleSecondDay;
         this.createdAt = Instant.now();
     }
 
@@ -100,6 +134,14 @@ public class User {
         this.openingBalance = openingBalance;
     }
 
+    public LocalDate getOpeningBalanceEffectiveDate() {
+        return openingBalanceEffectiveDate;
+    }
+
+    public void setOpeningBalanceEffectiveDate(LocalDate openingBalanceEffectiveDate) {
+        this.openingBalanceEffectiveDate = openingBalanceEffectiveDate;
+    }
+
     public BigDecimal getHourlyRate() {
         return hourlyRate;
     }
@@ -108,12 +150,45 @@ public class User {
         this.hourlyRate = hourlyRate;
     }
 
+    public PayCycleType getPayCycleType() {
+        return payCycleType;
+    }
+
+    public void setPayCycleType(PayCycleType payCycleType) {
+        this.payCycleType = payCycleType;
+    }
+
+    public Integer getPayCycleStartDay() {
+        return payCycleStartDay;
+    }
+
+    public void setPayCycleStartDay(Integer payCycleStartDay) {
+        this.payCycleStartDay = payCycleStartDay;
+    }
+
+    public LocalDate getPayCycleAnchorDate() {
+        return payCycleAnchorDate;
+    }
+
+    public void setPayCycleAnchorDate(LocalDate payCycleAnchorDate) {
+        this.payCycleAnchorDate = payCycleAnchorDate;
+    }
+
+    public Integer getPayCycleSecondDay() {
+        return payCycleSecondDay;
+    }
+
+    public void setPayCycleSecondDay(Integer payCycleSecondDay) {
+        this.payCycleSecondDay = payCycleSecondDay;
+    }
+
+    // Compatibility adapter for legacy references
     public Integer getCycleStartDay() {
-        return cycleStartDay;
+        return payCycleStartDay;
     }
 
     public void setCycleStartDay(Integer cycleStartDay) {
-        this.cycleStartDay = cycleStartDay;
+        this.payCycleStartDay = cycleStartDay;
     }
 
     public Instant getCreatedAt() {
