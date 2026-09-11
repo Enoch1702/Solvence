@@ -1,5 +1,6 @@
 package com.solvence.service.runway;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.time.Clock;
@@ -15,6 +16,7 @@ public class CycleCalculator {
     private final PayCycleEngine payCycleEngine;
     private final Clock clock;
 
+    @Autowired
     public CycleCalculator(PayCycleEngine payCycleEngine, Clock clock) {
         this.payCycleEngine = payCycleEngine;
         this.clock = clock;

@@ -15,6 +15,7 @@ import com.solvence.repository.TransactionRepository;
 import com.solvence.repository.UserRepository;
 import com.solvence.security.CurrentUserProvider;
 import com.solvence.service.runway.LifeHourCalculator;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,6 +35,7 @@ public class TransactionService {
     private final ObligationOccurrenceRepository obligationOccurrenceRepository;
     private final Clock clock;
 
+    @Autowired
     public TransactionService(TransactionRepository transactionRepository,
                               CategoryRepository categoryRepository,
                               UserRepository userRepository,
