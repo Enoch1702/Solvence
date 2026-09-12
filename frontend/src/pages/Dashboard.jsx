@@ -21,6 +21,7 @@ import { CashflowSummaryCard } from '../components/analytics/CashflowSummaryCard
 import { QuickCaptureCommandBar } from '../components/quickcapture/QuickCaptureCommandBar';
 import { TransactionLedger } from '../components/transactions/TransactionLedger';
 import { TransactionDialog } from '../components/transactions/TransactionDialog';
+import { CanISpendDialog } from '../components/dashboard/CanISpendDialog';
 import { ErrorBanner } from '../components/common/ErrorBanner';
 import { RunwayHeroSkeleton } from '../components/common/Skeleton';
 import { CurrencyDisplay } from '../components/common/CurrencyDisplay';
@@ -48,6 +49,7 @@ export function Dashboard({
   // Quick Capture & Manual Dialog state
   const [isQuickCaptureOpen, setIsQuickCaptureOpen] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isSpendDialogOpen, setIsSpendDialogOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [dialogError, setDialogError] = useState('');
   const [deletingId, setDeletingId] = useState(null);
@@ -100,11 +102,14 @@ export function Dashboard({
   useEffect(() => {
     const handleOpenTx = () => setIsDialogOpen(true);
     const handleOpenQuickCapture = () => setIsQuickCaptureOpen(true);
+    const handleOpenSpend = () => setIsSpendDialogOpen(true);
     window.addEventListener('solvence:open-tx', handleOpenTx);
     window.addEventListener('solvence:open-quick-capture', handleOpenQuickCapture);
+    window.addEventListener('solvence:open-spend-decision', handleOpenSpend);
     return () => {
       window.removeEventListener('solvence:open-tx', handleOpenTx);
       window.removeEventListener('solvence:open-quick-capture', handleOpenQuickCapture);
+      window.removeEventListener('solvence:open-spend-decision', handleOpenSpend);
     };
   }, []);
 
@@ -189,7 +194,10 @@ export function Dashboard({
           {loading || !runwayData ? (
             <RunwayHeroSkeleton />
           ) : (
-            <RunwayHero runwayData={runwayData} />
+            <RunwayHero
+              runwayData={runwayData}
+              onOpenSpendDecision={() => setIsSpendDialogOpen(true)}
+            />
           )}
 
           {/* 4 Core Financial Summary Cards & Reconciliation Strip */}
@@ -683,6 +691,12 @@ export function Dashboard({
         isOpen={isQuickCaptureOpen}
         onClose={() => setIsQuickCaptureOpen(false)}
         onSuccess={handleQuickCaptureSuccess}
+      />
+
+      {/* Decision Engine: Can I Safely Spend This? Dialog */}
+      <CanISpendDialog
+        isOpen={isSpendDialogOpen}
+        onClose={() => setIsSpendDialogOpen(false)}
       />
     </div>
   );

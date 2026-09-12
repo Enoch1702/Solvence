@@ -1,8 +1,8 @@
-import { AlertTriangle, CheckCircle2, ArrowUpRight, Wallet, CalendarCheck } from 'lucide-react';
+import { AlertTriangle, CheckCircle2, ArrowUpRight, Wallet, CalendarCheck, HelpCircle } from 'lucide-react';
 import { CurrencyDisplay } from '../common/CurrencyDisplay';
 import { formatCurrency } from '../../utils/currency';
 
-export function RunwayHero({ runwayData }) {
+export function RunwayHero({ runwayData, onOpenSpendDecision }) {
   if (!runwayData) return null;
 
   const {
@@ -88,15 +88,27 @@ export function RunwayHero({ runwayData }) {
               Safe to Spend Today
             </span>
 
-            <div className="flex items-baseline gap-3">
-              <CurrencyDisplay
-                amount={safeDailySpend}
-                size="hero"
-                className={isNegativeOrZeroCapacity ? "text-amber-500" : "text-[var(--text-primary)] font-bold"}
-              />
-              <span className="text-xs font-semibold px-2 py-0.5 rounded-md bg-[var(--bg-card-elevated)] text-[var(--text-muted)] border border-[var(--border-subtle)]">
-                per day
-              </span>
+            <div className="flex flex-wrap items-center gap-3">
+              <div className="flex items-baseline gap-2">
+                <CurrencyDisplay
+                  amount={safeDailySpend}
+                  size="hero"
+                  className={isNegativeOrZeroCapacity ? "text-amber-500" : "text-[var(--text-primary)] font-bold"}
+                />
+                <span className="text-xs font-semibold px-2 py-0.5 rounded-md bg-[var(--bg-card-elevated)] text-[var(--text-muted)] border border-[var(--border-subtle)]">
+                  per day
+                </span>
+              </div>
+              {onOpenSpendDecision && (
+                <button
+                  type="button"
+                  onClick={onOpenSpendDecision}
+                  className="px-3 py-1.5 rounded-xl bg-teal-600 hover:bg-teal-500 active:scale-95 text-white text-xs font-semibold shadow-xs flex items-center gap-1.5 transition-all duration-200 cursor-pointer ml-auto sm:ml-2"
+                >
+                  <HelpCircle className="w-3.5 h-3.5" />
+                  <span>Can I Spend This?</span>
+                </button>
+              )}
             </div>
 
             <p className="text-xs text-[var(--text-secondary)] leading-relaxed max-w-xl">

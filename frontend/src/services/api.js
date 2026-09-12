@@ -140,6 +140,27 @@ export const api = {
     const res = await apiClient.post('/transactions/quick-capture', { input });
     return res.data;
   },
+
+  // Decision Engine endpoints (Phase 1)
+  evaluateSpend: async (amount) => {
+    const res = await apiClient.post('/decisions/spend', { amount });
+    return res.data;
+  },
+
+  getSpendingPace: async () => {
+    const res = await apiClient.get('/decisions/spending-pace');
+    return res.data;
+  },
+
+  getCycleEndProjection: async () => {
+    const res = await apiClient.get('/decisions/cycle-end-projection');
+    return res.data;
+  },
+
+  getDecisionSummary: async () => {
+    const res = await apiClient.get('/decisions/summary');
+    return res.data;
+  },
 };
 
 export default api;
