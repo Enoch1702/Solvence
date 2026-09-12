@@ -125,7 +125,7 @@ class DecisionCalculationServiceTest {
     }
 
     @Test
-    @DisplayName("Zero days remaining clamps hypothetical safe daily spend to 0.00")
+    @DisplayName("Zero days remaining clamps safe to spend and hypothetical safe daily spend to 0.00")
     void testZeroDaysRemaining() {
         RunwaySummaryResponse zeroDaysRunway = new RunwaySummaryResponse(
                 new BigDecimal("53000.00"),
@@ -142,6 +142,118 @@ class DecisionCalculationServiceTest {
         );
 
         SpendDecisionResponse response = service.evaluateSpend(zeroDaysRunway, new BigDecimal("1000.00"), new BigDecimal("300.00"), "INR");
+        assertEquals(new BigDecimal("0.00"), response.safeToSpendToday());
         assertEquals(new BigDecimal("0.00"), response.hypotheticalSafeToSpendToday());
+        assertEquals(DecisionStatus.CAUTION, response.decision());
+    }
+
+    @Test
+    @DisplayName("Boundary: Proposed amount exactly equal to Spending Money returns CAUTION with zero resulting cash")
+    void testAmountExactlyEqualToSpendingMoneyReturnsCaution() {
+        // Spending Money = 38,000.00; Safe Daily = 2,000.00
+        SpendDecisionResponse response = service.evaluateSpend(runway, new BigDecimal("38000.00"), new BigDecimal("300.00"), "INR");
+
+        assertEquals(DecisionStatus.CAUTION, response.decision());
+        assertEquals(new BigDecimal("0.00"), response.hypotheticalSpendingMoney());
+        assertEquals(new BigDecimal("0.00"), response.hypotheticalSafeToSpendToday());
+        assertFalse(response.isDeficit());
+        assertEquals(new BigDecimal("0.00"), response.deficitAmount());
+    }
+
+    @Test
+    @DisplayName("Boundary: Proposed amount one cent above Spending Money returns NOT_SAFE")
+    void testAmountOneCentGreaterThanSpendingMoneyReturnsNotSafe() {
+        // Spending Money = 38,000.00; spend 38,000.01 -> deficit 0.01
+        SpendDecisionResponse response = service.evaluateSpend(runway, new BigDecimal("38000.01"), new BigDecimal("300.00"), "INR");
+
+        assertEquals(DecisionStatus.NOT_SAFE, response.decision());
+        assertEquals(new BigDecimal("-0.01"), response.hypotheticalSpendingMoney());
+        assertTrue(response.isDeficit());
+        assertEquals(new BigDecimal("0.01"), response.deficitAmount());
+    }
+
+    @Test
+    @DisplayName("Boundary: Spending Money already zero returns NOT_SAFE for any positive spend")
+    void testZeroSpendingMoneyReturnsNotSafe() {
+        RunwaySummaryResponse zeroCashRunway = new RunwaySummaryResponse(
+                new BigDecimal("15000.00"),
+                new BigDecimal("15000.00"),
+                new BigDecimal("0.00"),
+                new BigDecimal("0.00"),
+                10,
+                new BigDecimal("300.00"),
+                LocalDate.of(2026, 3, 1),
+                LocalDate.of(2026, 3, 31),
+                new BigDecimal("15000.00"),
+                BigDecimal.ZERO,
+                BigDecimal.ZERO
+        );
+
+        SpendDecisionResponse response = service.evaluateSpend(zeroCashRunway, new BigDecimal("50.00"), new BigDecimal("300.00"), "INR");
+        assertEquals(DecisionStatus.NOT_SAFE, response.decision());
+        assertEquals(new BigDecimal("-50.00"), response.hypotheticalSpendingMoney());
+        assertTrue(response.isDeficit());
+        assertEquals(new BigDecimal("50.00"), response.deficitAmount());
+    }
+
+    @Test
+    @DisplayName("Boundary: Spending Money already negative returns NOT_SAFE with increased deficit")
+    void testNegativeSpendingMoneyIncreasesDeficit() {
+        RunwaySummaryResponse negCashRunway = new RunwaySummaryResponse(
+                new BigDecimal("10000.00"),
+                new BigDecimal("15000.00"),
+                new BigDecimal("-5000.00"),
+                new BigDecimal("0.00"),
+                10,
+                new BigDecimal("300.00"),
+                LocalDate.of(2026, 3, 1),
+                LocalDate.of(2026, 3, 31),
+                new BigDecimal("10000.00"),
+                BigDecimal.ZERO,
+                BigDecimal.ZERO
+        );
+
+        SpendDecisionResponse response = service.evaluateSpend(negCashRunway, new BigDecimal("1000.00"), new BigDecimal("300.00"), "INR");
+        assertEquals(DecisionStatus.NOT_SAFE, response.decision());
+        assertEquals(new BigDecimal("-6000.00"), response.hypotheticalSpendingMoney());
+        assertTrue(response.isDeficit());
+        assertEquals(new BigDecimal("6000.00"), response.deficitAmount());
+    }
+
+    @Test
+    @DisplayName("Boundary: Safe to Spend Today is 0.00 but Spending Money is positive returns CAUTION")
+    void testSafeToSpendZeroWithPositiveSpendingMoneyReturnsCaution() {
+        RunwaySummaryResponse zeroSafeRunway = new RunwaySummaryResponse(
+                new BigDecimal("20000.00"),
+                new BigDecimal("15000.00"),
+                new BigDecimal("5000.00"),
+                new BigDecimal("0.00"),
+                0,
+                new BigDecimal("300.00"),
+                LocalDate.of(2026, 3, 1),
+                LocalDate.of(2026, 3, 31),
+                new BigDecimal("20000.00"),
+                BigDecimal.ZERO,
+                BigDecimal.ZERO
+        );
+
+        SpendDecisionResponse response = service.evaluateSpend(zeroSafeRunway, new BigDecimal("500.00"), new BigDecimal("300.00"), "INR");
+        assertEquals(DecisionStatus.CAUTION, response.decision());
+        assertEquals(new BigDecimal("4500.00"), response.hypotheticalSpendingMoney());
+    }
+
+    @Test
+    @DisplayName("Labor cost returns null when hourly rate is negative")
+    void testLaborCostNullWhenHourlyRateNegative() {
+        SpendDecisionResponse negRateResp = service.evaluateSpend(runway, new BigDecimal("750.00"), new BigDecimal("-100.00"), "INR");
+        assertNull(negRateResp.laborCostHours());
+    }
+
+    @Test
+    @DisplayName("Projected Cycle-End Balance reflects Total Balance minus Protected Bills")
+    void testProjectedCycleEndBalance() {
+        SpendDecisionResponse response = service.evaluateSpend(runway, new BigDecimal("750.00"), new BigDecimal("300.00"), "INR");
+        // Total Balance (53,000) - Protected Bills (15,000) = 38,000.00
+        assertEquals(new BigDecimal("38000.00"), response.projectedCycleEndBalance());
     }
 }

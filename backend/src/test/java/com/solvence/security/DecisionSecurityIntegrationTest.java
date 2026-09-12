@@ -242,6 +242,50 @@ class DecisionSecurityIntegrationTest {
     }
 
     @Test
+    void testExcessiveIntegerDigitsReturns400ValidationError() throws Exception {
+        String token = "valid-token";
+        when(jwtService.validateToken(token)).thenReturn(true);
+        when(jwtService.extractUserId(token)).thenReturn(1L);
+        when(jwtService.extractEmail(token)).thenReturn("user@example.com");
+
+        // 13 integer digits (limit is 12)
+        String json = "{\"amount\": 1234567890123.00}";
+
+        mockMvc.perform(post("/api/v1/decisions/spend")
+                        .header("Authorization", "Bearer " + token)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.status").value(400))
+                .andExpect(jsonPath("$.title").value("Validation Failure"))
+                .andExpect(jsonPath("$.invalidFields.amount").exists());
+
+        verifyNoInteractions(decisionEngineService);
+    }
+
+    @Test
+    void testExcessiveDecimalFractionsReturns400ValidationError() throws Exception {
+        String token = "valid-token";
+        when(jwtService.validateToken(token)).thenReturn(true);
+        when(jwtService.extractUserId(token)).thenReturn(1L);
+        when(jwtService.extractEmail(token)).thenReturn("user@example.com");
+
+        // 3 decimal places (limit is 2)
+        String json = "{\"amount\": 10.999}";
+
+        mockMvc.perform(post("/api/v1/decisions/spend")
+                        .header("Authorization", "Bearer " + token)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.status").value(400))
+                .andExpect(jsonPath("$.title").value("Validation Failure"))
+                .andExpect(jsonPath("$.invalidFields.amount").exists());
+
+        verifyNoInteractions(decisionEngineService);
+    }
+
+    @Test
     void testAuthenticatedSpendingPaceReturns200() throws Exception {
         String token = "valid-token";
         when(jwtService.validateToken(token)).thenReturn(true);

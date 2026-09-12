@@ -30,40 +30,46 @@ public class SpendingPaceCalculator {
             totalCycleDays = 1;
         }
 
+        // Inclusive elapsed calendar days: cycleStart through today
         long elapsedDays;
         if (cycleStart == null || today == null) {
             elapsedDays = 1;
         } else if (today.isBefore(cycleStart)) {
+            // Explicit 0 elapsed days if today is before the cycle start boundary
             elapsedDays = 0;
         } else if (cycleEnd != null && today.isAfter(cycleEnd)) {
+            // Clamped to total cycle days if evaluated after cycle completion
             elapsedDays = totalCycleDays;
         } else {
+            // Phase 0 inclusive calendar day count
             elapsedDays = ChronoUnit.DAYS.between(cycleStart, today) + 1;
         }
 
-        long divisorDays = Math.max(1, elapsedDays);
-
         BigDecimal averageDailyExpensePace;
-        if (expenses.compareTo(BigDecimal.ZERO) <= 0 || elapsedDays <= 0) {
+        if (elapsedDays <= 0 || expenses.compareTo(BigDecimal.ZERO) <= 0) {
             averageDailyExpensePace = BigDecimal.ZERO.setScale(2, RoundingMode.HALF_UP);
         } else {
-            averageDailyExpensePace = expenses.divide(BigDecimal.valueOf(divisorDays), 2, RoundingMode.HALF_UP);
+            averageDailyExpensePace = expenses.divide(BigDecimal.valueOf(elapsedDays), 2, RoundingMode.HALF_UP);
         }
+
+        // Scale normalization before directional comparison
+        BigDecimal paceNorm = averageDailyExpensePace.setScale(2, RoundingMode.HALF_UP);
+        BigDecimal safeNorm = safeToday.setScale(2, RoundingMode.HALF_UP);
 
         PaceStatus paceStatus;
         String message;
         if (expenses.compareTo(BigDecimal.ZERO) <= 0) {
             paceStatus = PaceStatus.NO_SPENDING_DATA;
             message = "No expenses recorded in the current pay cycle yet.";
-        } else if (averageDailyExpensePace.compareTo(safeToday) > 0) {
+        } else if (paceNorm.compareTo(safeNorm) > 0) {
             paceStatus = PaceStatus.ABOVE_PACE;
-            message = "Your average daily spending pace exceeds today's safe spending capacity.";
-        } else if (averageDailyExpensePace.compareTo(safeToday) == 0) {
+            message = "Historical average daily expense pace is above the remaining daily capacity.";
+        } else if (paceNorm.compareTo(safeNorm) == 0) {
             paceStatus = PaceStatus.AT_PACE;
-            message = "Your average daily spending pace matches today's safe spending capacity.";
+            message = "Historical average daily expense pace equals the remaining daily capacity.";
         } else {
             paceStatus = PaceStatus.BELOW_PACE;
-            message = "Your average daily spending pace is below today's safe spending capacity.";
+            message = "Historical average daily expense pace is below the remaining daily capacity.";
         }
 
         boolean isAbovePace = (paceStatus == PaceStatus.ABOVE_PACE);

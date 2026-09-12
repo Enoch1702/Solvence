@@ -27,8 +27,18 @@ public class DecisionCalculationService {
         BigDecimal totalBalance = runway.liquidCash() != null ? runway.liquidCash() : BigDecimal.ZERO;
         BigDecimal protectedBills = runway.protectedBills() != null ? runway.protectedBills() : BigDecimal.ZERO;
         BigDecimal spendingMoney = runway.availableCash() != null ? runway.availableCash() : BigDecimal.ZERO;
-        BigDecimal safeToSpendToday = runway.safeDailySpend() != null ? runway.safeDailySpend() : BigDecimal.ZERO;
         long daysRemaining = runway.daysRemaining();
+
+        // Authoritative Safe to Spend Today (Section 3):
+        // If Spending Money <= 0 or Days Remaining <= 0: 0.00, otherwise Spending Money / Days Remaining
+        BigDecimal safeToSpendToday;
+        if (spendingMoney.compareTo(BigDecimal.ZERO) <= 0 || daysRemaining <= 0) {
+            safeToSpendToday = BigDecimal.ZERO.setScale(2, RoundingMode.HALF_UP);
+        } else if (runway.safeDailySpend() != null) {
+            safeToSpendToday = runway.safeDailySpend();
+        } else {
+            safeToSpendToday = spendingMoney.divide(BigDecimal.valueOf(daysRemaining), 2, RoundingMode.HALF_UP);
+        }
 
         BigDecimal hypotheticalSpendingMoney = spendingMoney.subtract(amount);
 
@@ -40,7 +50,9 @@ public class DecisionCalculationService {
                     BigDecimal.valueOf(daysRemaining), 2, RoundingMode.HALF_UP);
         }
 
-        BigDecimal projectedCycleEndBalance = hypotheticalSpendingMoney;
+        // Conservative Cycle-End Projection (Section 13):
+        // Current Total Balance minus Protected Bills
+        BigDecimal projectedCycleEndBalance = totalBalance.subtract(protectedBills);
 
         DecisionStatus decision;
         String message;

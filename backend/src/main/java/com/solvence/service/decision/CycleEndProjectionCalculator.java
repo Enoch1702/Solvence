@@ -11,7 +11,7 @@ import java.time.LocalDate;
 public class CycleEndProjectionCalculator {
 
     public static final String CONSERVATIVE_DISCLAIMER =
-            "If no additional income or discretionary spending occurs, this is the balance remaining after protected bills.";
+            "Conservative estimate after currently protected bills. If no additional income or discretionary spending occurs, this is the balance remaining after protected bills.";
 
     public CycleEndProjectionResponse calculateProjection(BigDecimal totalBalance,
                                                           BigDecimal protectedBills,

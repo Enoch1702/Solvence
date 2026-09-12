@@ -17,4 +17,8 @@ public record SpendingPaceResponse(
         @JsonProperty("isAbovePace") boolean isAbovePace,
         String message
 ) {
+    @JsonProperty("isAboveSafeCapacity")
+    public boolean isAboveSafeCapacity() {
+        return isAbovePace;
+    }
 }

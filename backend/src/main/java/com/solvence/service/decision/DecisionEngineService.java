@@ -62,25 +62,24 @@ public class DecisionEngineService {
 
     @Transactional(readOnly = true)
     public SpendingPaceResponse getSpendingPace() {
-        Long currentUserId = currentUserProvider.getCurrentUserId();
-        User user = userRepository.findById(currentUserId)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found with ID: " + currentUserId));
-
-        LocalDate today = LocalDate.now(clock);
         RunwaySummaryResponse runway = runwayCalculationService.getRunwaySummary();
+        return getSpendingPace(runway);
+    }
+
+    public SpendingPaceResponse getSpendingPace(RunwaySummaryResponse runway) {
+        Long currentUserId = currentUserProvider.getCurrentUserId();
+        LocalDate today = LocalDate.now(clock);
 
         LocalDate cycleStart = runway.cycleStart();
-        LocalDate effectiveStart = cycleStart;
-        if (user.getOpeningBalanceEffectiveDate() != null && user.getOpeningBalanceEffectiveDate().isAfter(cycleStart)) {
-            effectiveStart = user.getOpeningBalanceEffectiveDate().plusDays(1);
-        }
-
         BigDecimal totalExpenses;
-        if (effectiveStart.isAfter(today)) {
+        if (cycleStart == null || today.isBefore(cycleStart)) {
             totalExpenses = BigDecimal.ZERO;
         } else {
+            LocalDate queryEnd = runway.cycleEnd() != null && today.isAfter(runway.cycleEnd())
+                    ? runway.cycleEnd()
+                    : today;
             totalExpenses = transactionRepository.sumAmountByUserIdAndTypeAndDateBetween(
-                    currentUserId, TransactionType.EXPENSE, effectiveStart, today);
+                    currentUserId, TransactionType.EXPENSE, cycleStart, queryEnd);
         }
 
         return spendingPaceCalculator.calculatePace(
@@ -97,6 +96,10 @@ public class DecisionEngineService {
     @Transactional(readOnly = true)
     public CycleEndProjectionResponse getCycleEndProjection() {
         RunwaySummaryResponse runway = runwayCalculationService.getRunwaySummary();
+        return getCycleEndProjection(runway);
+    }
+
+    public CycleEndProjectionResponse getCycleEndProjection(RunwaySummaryResponse runway) {
         return cycleEndProjectionCalculator.calculateProjection(
                 runway.liquidCash(),
                 runway.protectedBills(),
@@ -109,14 +112,8 @@ public class DecisionEngineService {
     @Transactional(readOnly = true)
     public DecisionSummaryResponse getDecisionSummary() {
         RunwaySummaryResponse runway = runwayCalculationService.getRunwaySummary();
-        SpendingPaceResponse pace = getSpendingPace();
-        CycleEndProjectionResponse projection = cycleEndProjectionCalculator.calculateProjection(
-                runway.liquidCash(),
-                runway.protectedBills(),
-                runway.cycleStart(),
-                runway.cycleEnd(),
-                runway.daysRemaining()
-        );
+        SpendingPaceResponse pace = getSpendingPace(runway);
+        CycleEndProjectionResponse projection = getCycleEndProjection(runway);
         return new DecisionSummaryResponse(runway, pace, projection);
     }
 }
